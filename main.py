@@ -7,7 +7,8 @@ import os
 import time
 import logging
 import pyinotify
-
+import subprocess
+from helpers import get_user
 steam_config=[
     "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nno_display",
     "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nframe_timing=0\ncpu_stats=0\ngpu_stats=0\nfps=1\nfps_only\nlegacy_layout=0\nwidth=40\nframetime=0",
@@ -167,12 +168,50 @@ class Plugin:
         except Exception as e:
             logging.info(e)
             return False
+    
+    async def SetOverwriteConfig(self,index:int,config:str):
+        try:
+            logging.debug(f"index = {index} config={config}")
+            if self._mango.findConfigPath():
+                self._mango.setOverwriteConfig(index,config)
+                self._mango.overWriteConfig()
+                return True
+            return False
+        except Exception as e:
+            logging.error(e)
+            return False
+    
+    async def SetOverwriteConfigs(self,configs:list):
+        try:
+            logging.debug(f"configs={configs}")
+            if self._mango.findConfigPath():
+                self._mango.setOverwriteConfigs(configs)
+                self._mango.overWriteConfig()
+                return True
+            return False
+        except Exception as e:
+            logging.error(e)
+            return False
 
+    async def get_language(self):
+        try:
+            lang_path=f"/home/{get_user()}/.steam/registry.vdf"
+            if os.path.exists(lang_path):
+                command="sudo cat {}|grep language|sed -n '1p'|xargs|cut  -d \" \" -f  2".format(lang_path)
+                language=subprocess.getoutput(command)
+            else:
+                logging.error(f"語言檢測路徑{lang_path}不存在該文件")
+            logging.info(f"get_language {language} path={lang_path}")
+            return language
+        except Exception as e:
+            logging.error(e)
+            return "english"
+    
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
         logging.info("Running MangoPeel!")
         self._mango=MangoPeel()
-        self._mango.setOverwriteConfigs(my_style)
+        #self._mango.setOverwriteConfigs(my_style)
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):

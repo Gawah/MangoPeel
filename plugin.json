@@ -1,6 +1,6 @@
 {
-  "name": "Example Plugin",
-  "author": "John Doe",
+  "name": "MangoPeel",
+  "author": "yxxs",
   "flags": ["debug", "_root"],
   "publish": {
     "tags": ["template", "root"],
