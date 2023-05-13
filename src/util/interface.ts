@@ -16,7 +16,7 @@ export interface ParamToggle {
 
 export interface ParamPatch {
     label: string;
-    description: string;
+    description?: string;
     type: ParamPatchType;
     args: any[];
     defaultValue: any[];

@@ -71,7 +71,6 @@ paramList[ParamName.cpu_text]={
 paramList[ParamName.core_load_change]={
     name:ParamName.core_load_change,
     group:ParamGroup.CPU,
-    dependenceParam:[{paramName:ParamName.legacy_layout,enable:false}],
     toggle:{
         label:"core_load_change",
         defaultEnable:[false,false,false,false,false],
@@ -81,7 +80,6 @@ paramList[ParamName.core_load_change]={
 paramList[ParamName.cpu_load_change]={
     name:ParamName.cpu_load_change,
     group:ParamGroup.CPU,
-    dependenceParam:[{paramName:ParamName.legacy_layout,enable:false}],
     toggle:{
         label:"cpu_load_change",
         defaultEnable:[false,false,false,false,false],
@@ -91,8 +89,6 @@ paramList[ParamName.cpu_load_change]={
 paramList[ParamName.cpu_mhz]={
     name:ParamName.cpu_mhz,
     group:ParamGroup.CPU,
-    dependenceParam:[{paramName:ParamName.legacy_layout,enable:false},
-                    {paramName:ParamName.cpu_stats,enable:true}],
     toggle:{
         label:"cpu_mhz",
         defaultEnable:[false,false,false,false,false],
@@ -102,8 +98,6 @@ paramList[ParamName.cpu_mhz]={
 paramList[ParamName.cpu_power]={
     name:ParamName.cpu_power,
     group:ParamGroup.CPU,
-    dependenceParam:[{paramName:ParamName.legacy_layout,enable:false},
-                    {paramName:ParamName.cpu_stats,enable:true}],
     toggle:{
         label:"cpu_power",
         defaultEnable:[false,false,false,false,false],
@@ -123,8 +117,6 @@ paramList[ParamName.cpu_stats]={
 paramList[ParamName.cpu_temp]={
     name:ParamName.cpu_temp,
     group:ParamGroup.CPU,
-    dependenceParam:[{paramName:ParamName.legacy_layout,enable:false},
-                    {paramName:ParamName.cpu_stats,enable:true}],
     toggle:{
         label:"cpu_temp",
         defaultEnable:[false,false,false,false,false],
@@ -134,6 +126,7 @@ paramList[ParamName.cpu_temp]={
 paramList[ParamName.frame_timing]={
     name:ParamName.frame_timing,
     group:ParamGroup.OTHER,
+    dependenceParam:[{paramName:ParamName.legacy_layout,enable:true}],
     toggle:{
         label:"frame_timing",
         defaultEnable:[false,false,false,false,false],
@@ -155,20 +148,20 @@ paramList[ParamName.gpu_text]={
         defaultValue:["GPU","GPU","GPU","GPU","GPU"],
     }]
 }
-paramList[ParamName.gpu_power]={
-    name:ParamName.gpu_power,
-    group:ParamGroup.GPU,
-    toggle:{
-        label:"gpu_power",
-        defaultEnable:[false,false,false,false,false],
-    },
-    patch:[]
-}
 paramList[ParamName.gpu_stats]={
     name:ParamName.gpu_stats,
     group:ParamGroup.GPU,
     toggle:{
         label:"gpu_stats",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.gpu_power]={
+    name:ParamName.gpu_power,
+    group:ParamGroup.GPU,
+    toggle:{
+        label:"gpu_power",
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
@@ -208,7 +201,7 @@ paramList[ParamName.offset_x]={
         label:"offset_x",
         description:"offset_x",
         type:ParamPatchType.slider,
-        args:[1,2160,1,true],
+        args:[0,2160,1,true],
         defaultValue:[0,0,0,0,0],
     }]
 }
@@ -223,7 +216,7 @@ paramList[ParamName.offset_y]={
         label:"offset_y",
         description:"offset_y",
         type:ParamPatchType.slider,
-        args:[1,2160,1,true],
+        args:[0,2160,1,true],
         defaultValue:[0,0,0,0,0],
     }]
 }
@@ -235,4 +228,47 @@ paramList[ParamName.legacy_layout]={
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
+}
+paramList[ParamName.fsr]={
+    name:ParamName.fsr,
+    group:ParamGroup.OTHER,
+    toggle:{
+        label:"fsr",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.ram]={
+    name:ParamName.ram,
+    group:ParamGroup.RAM,
+    toggle:{
+        label:"ram",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.vram]={
+    name:ParamName.vram,
+    group:ParamGroup.RAM,
+    toggle:{
+        label:"vram",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.position]={
+    name:ParamName.position,
+    group:ParamGroup.SETTING,
+    toggle:{
+        label:"position",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[
+        {
+            label:"position",
+            type:ParamPatchType.dropdown,
+            args:["top-left","top-right","middle-left","middle-right","bottom-left","bottom-right","top-center","bottom_center"],
+            defaultValue:["top-left","top-left","top-left","top-left","top-left"],
+        }
+    ]
 }

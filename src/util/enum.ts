@@ -19,6 +19,10 @@ export enum ParamName{
     width="width",
     offset_x="offset_x",
     offset_y="offset_y",
+    fsr="fsr",
+    ram="ram",
+    vram="vram",
+    position="position",
 }
 
 export enum ParamGroup{
