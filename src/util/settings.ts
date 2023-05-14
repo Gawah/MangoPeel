@@ -97,6 +97,7 @@ export class paramSetting {
 @JsonObject()
 export class Settings {
   private static _instance:Settings = new Settings();
+  private static _paramVisible:{ [index: string]: boolean } = {};
   public static settingChangeEventBus:EventTarget = new EventTarget();
   @JsonProperty()
   public enabled: boolean = true;
@@ -132,8 +133,12 @@ export class Settings {
   public static setSettingsIndex(index:number){
     if(this._instance.steamIndex!=index){
       this._instance.steamIndex=index;
+      //刷新整个界面
       for(var paramName in ParamName){
         this.settingChangeEventBus.dispatchEvent(new Event(paramName))
+      }
+      for(var groupName in ParamGroup){
+        this.settingChangeEventBus.dispatchEvent(new Event(groupName))
       }
       //Object.entries(this.ensureSettings().paramMap).forEach(([paramName,_paramInfo])=>{})
     }
@@ -142,6 +147,7 @@ export class Settings {
   public static setParamEnable(paramName:ParamName,bEnable:boolean){
     if(bEnable!=this.getParamEnable(paramName)){
       this.ensureSettings().setParamEnale(paramName,bEnable);
+      var updateGroupList:ParamGroup[]=[];
       //刷新前置参数包含此参数的组件
       Object.entries(paramList).filter(([_paramName, paramData]) => {
         var bmatch = false;
@@ -158,7 +164,15 @@ export class Settings {
         return bmatch;
       }).forEach(([_str,paramData])=>{
         this.settingChangeEventBus.dispatchEvent(new Event(paramData.name));
+        if(updateGroupList.indexOf(paramData.group)==-1){
+          updateGroupList.push(paramData.group);
+        }
       })
+      //刷新对应的参数组标题
+      updateGroupList.forEach((groupName)=>{
+        this.settingChangeEventBus.dispatchEvent(new Event(groupName));
+      })
+      
       Backend.applyConfig(this.getSettingsIndex(),this.ensureSettings().toMangoConfig());
     }
   }
@@ -168,7 +182,7 @@ export class Settings {
   }
 
   public static getParamVisible(paramName:ParamName){
-    var paramVisible;
+    var paramVisible=false;
     //未配置前置参数时默认可见
     if(paramList[paramName].preCondition==undefined||paramList[paramName].preCondition?.length==0){
       paramVisible=true;
@@ -192,7 +206,21 @@ export class Settings {
     }
     if(!paramVisible)
       this.setParamEnable(paramName,false);
+    this._paramVisible[paramName]=paramVisible;
     return paramVisible;
+  }
+
+  public static getGroupVisibleParamLength(groupName:ParamGroup){
+    if(!(groupName in this._paramVisible)){
+      Object.entries(paramList).filter(([_paramName,paramData])=>{
+        return paramData.group==groupName;
+      }).forEach(([_paramName,paramData])=>{
+        this.getParamVisible(paramData.name);
+      });
+    }
+    return Object.entries(this._paramVisible).filter(([paramName,paramVisible])=>{
+      return paramList[paramName].group==groupName && paramVisible;
+    })?.length;
   }
 
   public static setParamValue(paramName:ParamName,index:number,paramValue:any){

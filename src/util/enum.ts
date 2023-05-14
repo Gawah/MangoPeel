@@ -12,6 +12,7 @@ export enum ParamName{
     cpu_temp="cpu_temp",
     cpu_text="cpu_text",
     gpu_stats="gpu_stats",
+    gpu_load_change="gpu_load_change",
     gpu_core_clock="gpu_core_clock",
     gpu_power="gpu_power",
     gpu_temp="gpu_temp",
@@ -24,10 +25,15 @@ export enum ParamName{
     fsr="fsr",
     ram="ram",
     vram="vram",
+    swap="swap",
     position="position",
+    fps="fps",
+    fps_only="fps_only",
+    fan="fan",
 }
 
 export enum ParamGroup{
+    LAYOUT="LAYOUT",
     SETTING="SETTING",
     CPU="CPU",
     GPU="GPU",

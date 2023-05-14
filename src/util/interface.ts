@@ -9,13 +9,13 @@ export interface ParamData {
 }
 
 export interface ParamToggle {
-    label: string;
+    label?: string;
     description?: string;
     defaultEnable: boolean[];
 }
 
 export interface ParamPatch {
-    label: string;
+    label?: string;
     description?: string;
     type: ParamPatchType;
     args: any[];
