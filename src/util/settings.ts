@@ -142,12 +142,18 @@ export class Settings {
   public static setParamEnable(paramName:ParamName,bEnable:boolean){
     if(bEnable!=this.getParamEnable(paramName)){
       this.ensureSettings().setParamEnale(paramName,bEnable);
-      //刷新依赖此参数的组件
+      //刷新前置参数包含此参数的组件
       Object.entries(paramList).filter(([_paramName, paramData]) => {
         var bmatch = false;
-        paramData.dependenceParam?.forEach((param)=>{
-          if(paramName==param.paramName)
-            bmatch=true;
+        paramData.preCondition?.forEach((targetState)=>{
+            targetState.enable?.forEach(name => {
+              if(paramName==name)
+                bmatch=true;
+            });
+            targetState.disable?.forEach(name=>{
+              if(paramName==name)
+                bmatch=true;
+            })
         });
         return bmatch;
       }).forEach(([_str,paramData])=>{
@@ -162,14 +168,28 @@ export class Settings {
   }
 
   public static getParamVisible(paramName:ParamName){
-    var paramVisible = true;
-    //判断依赖的参数项是否全部处于配置的状态
-    paramList[paramName].dependenceParam?.forEach((param)=>{
-      var paramEnable=this.getParamEnable(param.paramName);
-      if(paramEnable!=param.enable){
-        paramVisible = false;
+    var paramVisible;
+    //未配置前置参数时默认可见
+    if(paramList[paramName].preCondition==undefined||paramList[paramName].preCondition?.length==0){
+      paramVisible=true;
+    }else{
+      //配置前置参数时，有一组满足条件即为可见
+      for(var targetState of paramList[paramName].preCondition!){
+        paramVisible=true;
+        targetState.enable?.forEach(name => {
+          var paramEnable=this.getParamEnable(name);
+          if(paramEnable!=true)
+            paramVisible=false;
+        });
+        targetState.disable?.forEach(name => {
+          var paramEnable=this.getParamEnable(name);
+          if(paramEnable!=false)
+            paramVisible=false;
+        });
+        if(paramVisible)
+          break;
       }
-    })
+    }
     if(!paramVisible)
       this.setParamEnable(paramName,false);
     return paramVisible;

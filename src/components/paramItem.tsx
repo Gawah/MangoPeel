@@ -37,7 +37,6 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
               min={patch.args[0]}
               max={patch.args[1]}
               step={patch.args[2]}
-              editableValue={patch.args[3]}
               showValue={true}
               value={selectedValue}
               onChangeEnd={(value) => {

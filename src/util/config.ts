@@ -53,9 +53,21 @@ paramList[ParamName.battery_icon]={
     },
     patch:[]
 }
+paramList[ParamName.cpu_stats]={
+    name:ParamName.cpu_stats,
+    group:ParamGroup.CPU,
+    preCondition:[{disable:[ParamName.legacy_layout]}],
+    toggle:{
+        label:"cpu_stats",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
 paramList[ParamName.cpu_text]={
     name:ParamName.cpu_text,
     group:ParamGroup.CPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"cpu_text",
         defaultEnable:[false,false,false,false,false],
@@ -68,9 +80,22 @@ paramList[ParamName.cpu_text]={
         defaultValue:["CPU","CPU","CPU","CPU","CPU"],
     }]
 }
+paramList[ParamName.core_load]={
+    name:ParamName.core_load,
+    group:ParamGroup.CPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
+    toggle:{
+        label:"core_load",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
 paramList[ParamName.core_load_change]={
     name:ParamName.core_load_change,
     group:ParamGroup.CPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"core_load_change",
         defaultEnable:[false,false,false,false,false],
@@ -80,6 +105,8 @@ paramList[ParamName.core_load_change]={
 paramList[ParamName.cpu_load_change]={
     name:ParamName.cpu_load_change,
     group:ParamGroup.CPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"cpu_load_change",
         defaultEnable:[false,false,false,false,false],
@@ -89,6 +116,8 @@ paramList[ParamName.cpu_load_change]={
 paramList[ParamName.cpu_mhz]={
     name:ParamName.cpu_mhz,
     group:ParamGroup.CPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"cpu_mhz",
         defaultEnable:[false,false,false,false,false],
@@ -98,18 +127,10 @@ paramList[ParamName.cpu_mhz]={
 paramList[ParamName.cpu_power]={
     name:ParamName.cpu_power,
     group:ParamGroup.CPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"cpu_power",
-        defaultEnable:[false,false,false,false,false],
-    },
-    patch:[]
-}
-paramList[ParamName.cpu_stats]={
-    name:ParamName.cpu_stats,
-    group:ParamGroup.CPU,
-    dependenceParam:[{paramName:ParamName.legacy_layout,enable:false}],
-    toggle:{
-        label:"cpu_stats",
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
@@ -117,18 +138,21 @@ paramList[ParamName.cpu_stats]={
 paramList[ParamName.cpu_temp]={
     name:ParamName.cpu_temp,
     group:ParamGroup.CPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"cpu_temp",
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
 }
-paramList[ParamName.frame_timing]={
-    name:ParamName.frame_timing,
-    group:ParamGroup.OTHER,
-    dependenceParam:[{paramName:ParamName.legacy_layout,enable:true}],
+
+paramList[ParamName.gpu_stats]={
+    name:ParamName.gpu_stats,
+    group:ParamGroup.GPU,
+    preCondition:[{disable:[ParamName.legacy_layout]}],
     toggle:{
-        label:"frame_timing",
+        label:"gpu_stats",
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
@@ -136,6 +160,8 @@ paramList[ParamName.frame_timing]={
 paramList[ParamName.gpu_text]={
     name:ParamName.gpu_text,
     group:ParamGroup.GPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"gpu_text",
         defaultEnable:[false,false,false,false,false],
@@ -148,11 +174,13 @@ paramList[ParamName.gpu_text]={
         defaultValue:["GPU","GPU","GPU","GPU","GPU"],
     }]
 }
-paramList[ParamName.gpu_stats]={
-    name:ParamName.gpu_stats,
+paramList[ParamName.gpu_core_clock]={
+    name:ParamName.gpu_core_clock,
     group:ParamGroup.GPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
-        label:"gpu_stats",
+        label:"gpu_core_clock",
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
@@ -160,6 +188,8 @@ paramList[ParamName.gpu_stats]={
 paramList[ParamName.gpu_power]={
     name:ParamName.gpu_power,
     group:ParamGroup.GPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"gpu_power",
         defaultEnable:[false,false,false,false,false],
@@ -169,6 +199,8 @@ paramList[ParamName.gpu_power]={
 paramList[ParamName.gpu_temp]={
     name:ParamName.gpu_temp,
     group:ParamGroup.GPU,
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
     toggle:{
         label:"gpu_temp",
         defaultEnable:[false,false,false,false,false],
@@ -271,4 +303,14 @@ paramList[ParamName.position]={
             defaultValue:["top-left","top-left","top-left","top-left","top-left"],
         }
     ]
+}
+paramList[ParamName.frame_timing]={
+    name:ParamName.frame_timing,
+    group:ParamGroup.OTHER,
+    preCondition:[{disable:[ParamName.legacy_layout]}],
+    toggle:{
+        label:"frame_timing",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
 }
