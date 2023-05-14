@@ -20,7 +20,7 @@ export class paramInfo {
     this.setParamValue(paramValue);
   }
   public setParamValue(paramValue:any[]){
-    this.paramValue=paramValue.concat();
+    this.paramValue=paramValue?.concat();
   }
 }
 
@@ -28,15 +28,20 @@ export class paramInfo {
 export class paramSetting {
   @JsonProperty({isDictionary:true, type: paramInfo })
   public paramMap: { [paramName: string]: paramInfo|undefined } = {};
-
+  //初始化所有参数
+  public initParamSetting(defaultIndex:number){
+    Object.entries(ParamName).forEach(([_key,paramName])=>{
+      if(!this.paramMap[paramName]){
+        this.paramMap[paramName]=new paramInfo(paramName,this.getParamEnableDefault(paramName,defaultIndex),this.getParamValueDefault(paramName,defaultIndex));
+        console.log(`init param =${paramName}`);
+      }
+    })
+  }
   public ensureParamInfo(paramName:ParamName):paramInfo{
-    if(!(paramName in this.paramMap)){
-      var steamIndex = Settings.getSettingsIndex();
-      this.paramMap[paramName]=new paramInfo(paramName,paramList[paramName]?.toggle.defaultEnable[steamIndex],paramList[paramName]?.patch.map((value)=>{
-        return value.defaultValue[steamIndex];
-      }));
+    if(!this.paramMap[paramName]){
+      this.paramMap[paramName]=new paramInfo(paramName,false,[]);
     }
-    return this.paramMap[paramName]!!;
+    return this.paramMap[paramName]!;
   }
   public setParamEnale(paramName:ParamName,bEnable:boolean){
     this.ensureParamInfo(paramName).bEnable=bEnable;
@@ -52,11 +57,24 @@ export class paramSetting {
     return this.ensureParamInfo(paramName).paramValue;
   }
 
+  public getParamEnableDefault(paramName:ParamName,defaultIndex:number){
+    return paramList[paramName]?.toggle.defaultEnable[defaultIndex];
+  }
+
+  public getParamValueDefault(paramName:ParamName,defaultIndex:number){
+    return paramList[paramName]?.patch.map((value)=>{
+      return value.defaultValue[defaultIndex];
+    })
+  }
+  /*
   public removeParam(paramName:ParamName){
-    if(!(paramName in this.paramMap)){
+    if(paramName in this.paramMap){
       this.paramMap[paramName]=undefined;
+    }else{
+      console.log(`paramName=${paramName}`);
     }
   }
+  */
 
   public toMangoConfig(){
     var config = "";
@@ -103,7 +121,7 @@ export class Settings {
   public enabled: boolean = true;
   @JsonProperty()
   public steamIndex: number = 0;
-  @JsonProperty({isDictionary:true, type: Settings })
+  @JsonProperty({isDictionary:true, type: paramSetting })
   public paramSettings: { [index: number]: paramSetting } = {};
   
   //插件是否开启
@@ -120,10 +138,13 @@ export class Settings {
   }
 
   //获取当前下标对应配置文件
-  public static ensureSettings(): paramSetting {
-    if(!(this._instance.steamIndex in this._instance.paramSettings))
-      this._instance.paramSettings[this._instance.steamIndex]=new paramSetting();
-    return this._instance.paramSettings[this._instance.steamIndex];
+  public static ensureSettings(index?:number): paramSetting {
+    var getindex=index??this._instance.steamIndex;
+    if(!(getindex in this._instance.paramSettings)){
+      this._instance.paramSettings[getindex]=new paramSetting();
+      this._instance.paramSettings[getindex].initParamSetting(getindex)
+    }
+    return this._instance.paramSettings[getindex];
   }
 
   public static getSettingsIndex():number{
@@ -133,12 +154,13 @@ export class Settings {
   public static setSettingsIndex(index:number){
     if(this._instance.steamIndex!=index){
       this._instance.steamIndex=index;
+      this.settingChangeEventBus.dispatchEvent(new Event("mangoIndex"));
       //刷新整个界面
       for(var paramName in ParamName){
-        this.settingChangeEventBus.dispatchEvent(new Event(paramName))
+        this.settingChangeEventBus.dispatchEvent(new Event(paramName));
       }
       for(var groupName in ParamGroup){
-        this.settingChangeEventBus.dispatchEvent(new Event(groupName))
+        this.settingChangeEventBus.dispatchEvent(new Event(groupName));
       }
       //Object.entries(this.ensureSettings().paramMap).forEach(([paramName,_paramInfo])=>{})
     }
@@ -172,7 +194,7 @@ export class Settings {
       updateGroupList.forEach((groupName)=>{
         this.settingChangeEventBus.dispatchEvent(new Event(groupName));
       })
-      
+      Settings.saveSettingsToLocalStorage();
       Backend.applyConfig(this.getSettingsIndex(),this.ensureSettings().toMangoConfig());
     }
   }
@@ -204,8 +226,10 @@ export class Settings {
           break;
       }
     }
-    if(!paramVisible)
+    if(!paramVisible){
+      //隐藏时关闭该参数
       this.setParamEnable(paramName,false);
+    }
     this._paramVisible[paramName]=paramVisible;
     return paramVisible;
   }
@@ -218,9 +242,15 @@ export class Settings {
         this.getParamVisible(paramData.name);
       });
     }
+
     return Object.entries(this._paramVisible).filter(([paramName,paramVisible])=>{
       return paramList[paramName].group==groupName && paramVisible;
     })?.length;
+  }
+
+  public static resetParamDefault(paramName:ParamName){
+    this.setParamEnable(paramName,this.ensureSettings().getParamEnableDefault(paramName,this._instance.steamIndex));
+    this.settingChangeEventBus.dispatchEvent(new Event(paramName));
   }
 
   public static setParamValue(paramName:ParamName,index:number,paramValue:any){
@@ -228,6 +258,7 @@ export class Settings {
     if(index>=0&&index<paramValueArray.length&&paramValue!=paramValueArray[index]){
       paramValueArray[index]=paramValue;
       this.ensureSettings().setParamValue(paramName,paramValueArray);
+      Settings.saveSettingsToLocalStorage();
       Backend.applyConfig(this.getSettingsIndex(),this.ensureSettings().toMangoConfig());
       //this.settingChangeEventBus.dispatchEvent(new Event(paramName))
     }
@@ -242,6 +273,16 @@ export class Settings {
       });
     }
     return paramValueArray[index];
+  }
+
+  public static getParamConfigs(){
+    var configs:string[]=[];
+    for(var index = 0;index<5;index++) {
+      var config = this.ensureSettings(index).toMangoConfig()
+      configs.push(config);
+      console.debug(`getConfigs index = ${index} config=${config}`);
+    }
+    return configs;
   }
 
   public static isValidParamValue(paramValueArray:any[],paramName:ParamName,index:number){
@@ -285,13 +326,18 @@ export class Settings {
     const settingsString = localStorage.getItem(SETTINGS_KEY) || "{}";
     const settingsJson = JSON.parse(settingsString);
     const loadSetting=serializer.deserializeObject(settingsJson, Settings);
-    this._instance = loadSetting??this._instance??new Settings();
+    //this._instance = loadSetting??this._instance??new Settings();
+    this._instance.enabled = loadSetting?.enabled??false;
+    this._instance.steamIndex = loadSetting?.steamIndex??0;
+    this._instance.paramSettings = loadSetting?.paramSettings??{};
+    console.log(`loadSettingStr=${settingsString}`);
   }
 
   static saveSettingsToLocalStorage() {
     const settingsJson = serializer.serializeObject(this._instance);
     const settingsString = JSON.stringify(settingsJson);
     localStorage.setItem(SETTINGS_KEY, settingsString);
+    console.log(`saveSettingStr=${settingsString}`)
   }
 
 }

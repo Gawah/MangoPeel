@@ -5,31 +5,57 @@ export const paramList:{ [paramName: string]: ParamData }={}
 paramList[ParamName.legacy_layout]={
     name:ParamName.legacy_layout,
     group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"legacy_layout",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[true,false,false,true,true],
     },
     patch:[]
+}
+paramList[ParamName.horizontal]={
+    name:ParamName.horizontal,
+    group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.no_display,ParamName.fps_only]}],
+    toggle:{
+        label:"horizontal",
+        defaultEnable:[false,false,true,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.table_columns]={
+    name:ParamName.table_columns,
+    group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.no_display]}],
+    toggle:{
+        label:"table_columns",
+        defaultEnable:[false,false,true,false,false],
+    },
+    patch:[{
+        type:ParamPatchType.slider,
+        args:[1,50,1],
+        defaultValue:[3,3,14,3,3],
+    }]
 }
 paramList[ParamName.width]={
     name:ParamName.width,
     group:ParamGroup.LAYOUT,
-    preCondition:[{disable:[ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display]}],
     toggle:{
         label:"width",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,true,false,false,false],
     },
     patch:[{
         label:"width",
         description:"width",
         type:ParamPatchType.slider,
         args:[1,2160,1,true],
-        defaultValue:[800,800,800,800,800],
+        defaultValue:[331,40,331,331,331],
     }]
 }
 paramList[ParamName.position]={
     name:ParamName.position,
     group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"position",
         defaultEnable:[false,false,false,false,false],
@@ -43,9 +69,20 @@ paramList[ParamName.position]={
         }
     ]
 }
+paramList[ParamName.hud_no_margin]={
+    name:ParamName.hud_no_margin,
+    group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.no_display]}],
+    toggle:{
+        label:"hud_no_margin",
+        defaultEnable:[false,false,true,false,false],
+    },
+    patch:[]
+}
 paramList[ParamName.offset_x]={
     name:ParamName.offset_x,
     group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"offset_x",
         defaultEnable:[false,false,false,false,false],
@@ -61,6 +98,7 @@ paramList[ParamName.offset_x]={
 paramList[ParamName.offset_y]={
     name:ParamName.offset_y,
     group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"offset_y",
         defaultEnable:[false,false,false,false,false],
@@ -76,6 +114,7 @@ paramList[ParamName.offset_y]={
 paramList[ParamName.alpha]={
     name:ParamName.alpha,
     group:ParamGroup.SETTING,
+    preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"alpha",
         description:"alpha",
@@ -92,6 +131,7 @@ paramList[ParamName.alpha]={
 paramList[ParamName.background_alpha]={
     name:ParamName.background_alpha,
     group:ParamGroup.SETTING,
+    preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"background_alpha",
         description:"background_alpha",
@@ -105,21 +145,120 @@ paramList[ParamName.background_alpha]={
         defaultValue:[0.8,0.8,0.8,0.8,0.8],
     }]
 }
+/*
+paramList[ParamName.font_size]={
+    name:ParamName.font_size,
+    group:ParamGroup.SETTING,
+    preCondition:[{disable:[ParamName.no_display]}],
+    toggle:{
+        label:"font_size",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[{
+        type:ParamPatchType.slider,
+        args:[1,40,1],
+        defaultValue:[24,24,24,24,24],
+    }]
+}*/
+paramList[ParamName.font_scale]={
+    name:ParamName.font_scale,
+    group:ParamGroup.SETTING,
+    preCondition:[{disable:[ParamName.no_display]}],
+    toggle:{
+        label:"font_scale",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[{
+        type:ParamPatchType.slider,
+        args:[0.1,4,0.1],
+        defaultValue:[1,1,1,1,1],
+    }]
+}
+paramList[ParamName.full]={
+    name:ParamName.full,
+    group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"full",
+        defaultEnable:[false,false,false,false,true],
+    },
+    patch:[]
+}
+paramList[ParamName.custom_text_center]={
+    name:ParamName.custom_text_center,
+    group:ParamGroup.CUSTOM,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"custom_text_center",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[{
+        label:"custom_text_center",
+        type:ParamPatchType.textInput,
+        args:[false],
+        defaultValue:["STEAM DECK","STEAM DECK","STEAM DECK","STEAM DECK","STEAM DECK"],
+    }]
+}
+paramList[ParamName.custom_text]={
+    name:ParamName.custom_text,
+    group:ParamGroup.CUSTOM,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"custom_text",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[{
+        label:"custom_text",
+        type:ParamPatchType.textInput,
+        args:[false],
+        defaultValue:["MangoPeel","MangoPeel","MangoPeel","MangoPeel","MangoPeel"],
+    }]
+}
+paramList[ParamName.time]={
+    name:ParamName.time,
+    group:ParamGroup.CUSTOM,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"time",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.version]={
+    name:ParamName.version,
+    group:ParamGroup.CUSTOM,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"version",
+        defaultEnable:[false,false,false,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.frame_timing]={
+    name:ParamName.frame_timing,
+    group:ParamGroup.OTHER,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"frame_timing",
+        defaultEnable:[false,false,true,false,false],
+    },
+    patch:[]
+}
 paramList[ParamName.cpu_stats]={
     name:ParamName.cpu_stats,
     group:ParamGroup.CPU,
-    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
     toggle:{
         label:"cpu_stats",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,true,false,false],
     },
     patch:[]
 }
 paramList[ParamName.cpu_text]={
     name:ParamName.cpu_text,
     group:ParamGroup.CPU,
-    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display]}],
     toggle:{
         label:"cpu_text",
         defaultEnable:[false,false,false,false,false],
@@ -135,8 +274,8 @@ paramList[ParamName.cpu_text]={
 paramList[ParamName.cpu_load_change]={
     name:ParamName.cpu_load_change,
     group:ParamGroup.CPU,
-    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"cpu_load_change",
         defaultEnable:[false,false,false,false,false],
@@ -146,8 +285,8 @@ paramList[ParamName.cpu_load_change]={
 paramList[ParamName.core_load]={
     name:ParamName.core_load,
     group:ParamGroup.CPU,
-    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"core_load",
         defaultEnable:[false,false,false,false,false],
@@ -167,8 +306,8 @@ paramList[ParamName.core_load_change]={
 paramList[ParamName.cpu_mhz]={
     name:ParamName.cpu_mhz,
     group:ParamGroup.CPU,
-    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"cpu_mhz",
         defaultEnable:[false,false,false,false,false],
@@ -178,22 +317,22 @@ paramList[ParamName.cpu_mhz]={
 paramList[ParamName.cpu_power]={
     name:ParamName.cpu_power,
     group:ParamGroup.CPU,
-    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"cpu_power",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,true,true,true],
     },
     patch:[]
 }
 paramList[ParamName.cpu_temp]={
     name:ParamName.cpu_temp,
     group:ParamGroup.CPU,
-    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"cpu_temp",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,false,true,true],
     },
     patch:[]
 }
@@ -201,18 +340,18 @@ paramList[ParamName.cpu_temp]={
 paramList[ParamName.gpu_stats]={
     name:ParamName.gpu_stats,
     group:ParamGroup.GPU,
-    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
     toggle:{
         label:"gpu_stats",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,true,false,false],
     },
     patch:[]
 }
 paramList[ParamName.gpu_text]={
     name:ParamName.gpu_text,
     group:ParamGroup.GPU,
-    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display]}],
     toggle:{
         label:"gpu_text",
         defaultEnable:[false,false,false,false,false],
@@ -228,8 +367,8 @@ paramList[ParamName.gpu_text]={
 paramList[ParamName.gpu_load_change]={
     name:ParamName.gpu_load_change,
     group:ParamGroup.GPU,
-    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"gpu_load_change",
         defaultEnable:[false,false,false,false,false],
@@ -239,8 +378,8 @@ paramList[ParamName.gpu_load_change]={
 paramList[ParamName.gpu_core_clock]={
     name:ParamName.gpu_core_clock,
     group:ParamGroup.GPU,
-    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"gpu_core_clock",
         defaultEnable:[false,false,false,false,false],
@@ -250,49 +389,63 @@ paramList[ParamName.gpu_core_clock]={
 paramList[ParamName.gpu_power]={
     name:ParamName.gpu_power,
     group:ParamGroup.GPU,
-    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"gpu_power",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,true,true,true],
     },
     patch:[]
 }
 paramList[ParamName.gpu_temp]={
     name:ParamName.gpu_temp,
     group:ParamGroup.GPU,
-    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout]},
-                {enable:[ParamName.legacy_layout]}],
+    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"gpu_temp",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,false,true,true],
     },
     patch:[]
 }
+/*
+paramList[ParamName.gpu_name]={
+    name:ParamName.gpu_name,
+    group:ParamGroup.GPU,
+    preCondition:[{enable:[ParamName.gpu_stats],disable:[ParamName.legacy_layout]},
+                {enable:[ParamName.legacy_layout]}],
+    toggle:{
+        label:"gpu_name",
+        defaultEnable:[false,false,false,true,true],
+    },
+    patch:[]
+}*/
 paramList[ParamName.vram]={
     name:ParamName.vram,
     group:ParamGroup.RAM,
-    preCondition:[{disable:[ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display,ParamName.legacy_layout]},
+                    {disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"vram",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,false,true,true],
     },
     patch:[]
 }
 paramList[ParamName.ram]={
     name:ParamName.ram,
     group:ParamGroup.RAM,
-    preCondition:[{disable:[ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display,ParamName.legacy_layout]},
+                    {disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"ram",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,false,true,true],
     },
     patch:[]
 }
 paramList[ParamName.swap]={
     name:ParamName.swap,
     group:ParamGroup.RAM,
-    preCondition:[{disable:[ParamName.fps_only]}],
+    preCondition:[{enable:[ParamName.ram],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"swap",
         defaultEnable:[false,false,false,false,false],
@@ -302,7 +455,8 @@ paramList[ParamName.swap]={
 paramList[ParamName.battery]={
     name:ParamName.battery,
     group:ParamGroup.BATT,
-    preCondition:[{disable:[ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display,ParamName.legacy_layout]},
+                {disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"battery",
         description:"battary",
@@ -313,7 +467,8 @@ paramList[ParamName.battery]={
 paramList[ParamName.battery_icon]={
     name:ParamName.battery_icon,
     group:ParamGroup.BATT,
-    preCondition:[{enable:[ParamName.battery]}],
+    preCondition:[{enable:[ParamName.battery]},
+                {enable:[ParamName.legacy_layout,ParamName.full]}],
     toggle:{
         label:"battery_icon",
         defaultEnable:[false,false,false,false,false],
@@ -323,9 +478,10 @@ paramList[ParamName.battery_icon]={
 paramList[ParamName.fan]={
     name:ParamName.fan,
     group:ParamGroup.OTHER,
-    preCondition:[{disable:[ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display,ParamName.legacy_layout]},
+                    {disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
-        label:"fsr",
+        label:"fan",
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
@@ -333,9 +489,10 @@ paramList[ParamName.fan]={
 paramList[ParamName.fsr]={
     name:ParamName.fsr,
     group:ParamGroup.OTHER,
-    preCondition:[{disable:[ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display,ParamName.legacy_layout]},
+                    {disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
-        label:"fan",
+        label:"fsr",
         defaultEnable:[false,false,false,false,false],
     },
     patch:[]
@@ -343,30 +500,82 @@ paramList[ParamName.fsr]={
 paramList[ParamName.fps]={
     name:ParamName.fps,
     group:ParamGroup.OTHER,
-    preCondition:[{disable:[ParamName.legacy_layout]}],
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.no_display]}],
     toggle:{
         label:"fps",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,true,true,false,false],
     },
     patch:[]
 }
 paramList[ParamName.fps_only]={
     name:ParamName.fps_only,
     group:ParamGroup.OTHER,
-    preCondition:[],
+    preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"fps_only",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,true,false,false,false],
     },
     patch:[]
 }
+/*
+paramList[ParamName.arch]={
+    name:ParamName.arch,
+    group:ParamGroup.OTHER,
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"arch",
+        defaultEnable:[true,false,false,true,true],
+    },
+    patch:[]
+}
+paramList[ParamName.wine]={
+    name:ParamName.wine,
+    group:ParamGroup.OTHER,
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"wine",
+        defaultEnable:[true,false,false,true,true],
+    },
+    patch:[]
+}*/
 paramList[ParamName.frame_timing]={
     name:ParamName.frame_timing,
     group:ParamGroup.OTHER,
-    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only]}],
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
     toggle:{
         label:"frame_timing",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:[false,false,true,false,false],
+    },
+    patch:[]
+}
+paramList[ParamName.frame_count]={
+    name:ParamName.frame_count,
+    group:ParamGroup.OTHER,
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"frame_count",
+        defaultEnable:[false,false,true,false,false],
+    },
+    patch:[]
+}
+/*
+paramList[ParamName.frametime]={
+    name:ParamName.frametime,
+    group:ParamGroup.OTHER,
+    preCondition:[{disable:[ParamName.fps_only,ParamName.no_display]}],
+    toggle:{
+        label:"frame_time",
+        defaultEnable:[false,false,false,true,true],
+    },
+    patch:[]
+}*/
+paramList[ParamName.no_display]={
+    name:ParamName.no_display,
+    group:ParamGroup.OTHER,
+    preCondition:[],
+    toggle:{
+        label:"no_display",
+        defaultEnable:[true,false,false,false,false],
     },
     patch:[]
 }

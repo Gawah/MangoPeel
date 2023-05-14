@@ -2,6 +2,7 @@ import { ServerAPI } from "decky-frontend-lib";
 import { PluginState} from "./enum";
 import { Backend} from "./backend";
 import { localizationManager } from "../i18n/localization";
+import { Settings } from "./settings";
 
 
 export class PluginManager{
@@ -10,7 +11,8 @@ export class PluginManager{
     PluginManager.state = PluginState.INIT; 
     await Backend.init(serverAPI);
     await localizationManager.init(serverAPI);
-    //Settings.loadSettingsFromLocalStorage();
+    Settings.loadSettingsFromLocalStorage();
+    Backend.applyConfigs(Settings.getParamConfigs());
     PluginManager.state = PluginState.RUN;
   }
 

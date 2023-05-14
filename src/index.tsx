@@ -7,11 +7,15 @@ import {
 import { VFC,useEffect,useState} from "react";
 import { FaBorderStyle } from "react-icons/fa";
 import { MangoIndex, ParamItem } from "./components";
-import { ParamGroup, PluginManager, Settings} from "./util";
+import { Backend, ParamGroup, PluginManager, Settings} from "./util";
 import { paramList } from "./util/config";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
- 
+  useEffect(()=>{
+    Backend.getSteamIndex().then((res)=>{
+      Settings.setSettingsIndex(res);
+    });
+  },[])
   return (
     <>
       <PanelSection>

@@ -3,7 +3,7 @@ import {
   PanelSectionRow,
   SliderField
 } from "decky-frontend-lib";
-import {useState, VFC} from "react";
+import {useState,useEffect, VFC} from "react";
 import { localizeStrEnum,localizationManager} from "../i18n";
 import { Settings } from "../util";
 
@@ -17,6 +17,15 @@ const mangIndexLabelList: NotchLabel[] | undefined=[
 
 export const MangoIndex: VFC = () => {
   const [selectedValue, setValue] = useState(Settings.getSettingsIndex());
+  const updateEvent=()=>{
+    setValue(Settings.getSettingsIndex());
+  }
+  useEffect(()=>{
+    Settings.settingChangeEventBus.addEventListener("mangoIndex",updateEvent);
+    return ()=>{
+      Settings.settingChangeEventBus.removeEventListener("mangoIndex",updateEvent);
+  }
+  },[])
   return (
         <div>
           <PanelSectionRow>
@@ -29,7 +38,6 @@ export const MangoIndex: VFC = () => {
               notchCount={mangIndexLabelList.length}
               value={selectedValue}
               onChange={(value) => {
-                setValue(value);
                 Settings.setSettingsIndex(value);
               }}
             />

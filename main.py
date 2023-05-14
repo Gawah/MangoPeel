@@ -104,6 +104,14 @@ class MangoPeel:
             notifier.start()
         except Exception as e:
             logging.error(e)
+    
+    def getSteamIndex(self):
+        try:
+            if(self._steamIndex<0):
+                return 0
+            return self._steamIndex
+        except Exception as e:
+            logging.error(e)
 
     def setOverwriteConfigs(self,configs:list):
         if not self._findConfig:
@@ -206,6 +214,15 @@ class Plugin:
         except Exception as e:
             logging.error(e)
             return "english"
+    
+    async def get_steamIndex(self):
+        try:
+            index = self._mango.getSteamIndex()
+            logging.debug(f"get_steamIndex {index}")
+            return index
+        except Exception as e:
+            logging.error(e)
+            return 0
     
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):

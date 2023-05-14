@@ -1,17 +1,36 @@
 import {ServerAPI } from "decky-frontend-lib";
 export class Backend {
   private static serverAPI: ServerAPI;
+  private static applyCount:number;
   public static async init(serverAPI: ServerAPI) {
     this.serverAPI = serverAPI;
+    this.applyCount = 0;
+
+  }
+
+  public static async getSteamIndex(){
+    var steamindex = 0;
+    await this.serverAPI!.callPluginMethod<{},number>("get_steamIndex",{}).then(res=>{
+      if (res.success){
+        steamindex = res.result;
+      }
+    })
+    return steamindex;
   }
 
   public static applyConfig(index:number,config:string){
-    console.log(`index=${index} config=${config} `);
-    this.serverAPI!.callPluginMethod("SetOverwriteConfig",{"index":index,"config":config})
+    this.applyCount=this.applyCount+1;
+    //取200ms内的最后一次覆写请求，防止连续写入导致mangoapp闪退
+    setTimeout(()=>{
+      this.applyCount=this.applyCount-1;
+      if(this.applyCount==0){
+        console.log(`index=${index} config=${config} `);
+        this.serverAPI!.callPluginMethod("SetOverwriteConfig",{"index":index,"config":config})
+      }
+    },200)
   }
 
   public static applyConfigs(configs:string[]){
-    console.log(`configs=${configs}`);
     this.serverAPI!.callPluginMethod("SetOverwriteConfigs",{"configs":configs})
   }
 
