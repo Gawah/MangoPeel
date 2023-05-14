@@ -3,11 +3,9 @@ import { useState } from "react";
 
 export function TextInputModal({
   closeModal,
-  bNumber,
   OnConfirm,
 }: {
   closeModal?: () => void;
-  bNumber:boolean;
   OnConfirm: (text:string) => void;
 }) {
   const [text, setText] = useState<string>("");
@@ -26,7 +24,6 @@ export function TextInputModal({
       <div/>
       <TextField
         value={text}
-        mustBeNumeric={bNumber}
         rangeMin = {0}
         onChange={(e) => {
           setText(e.target.value);

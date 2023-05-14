@@ -194,6 +194,7 @@ paramList[ParamName.custom_text_center]={
     },
     patch:[{
         label:"custom_text_center",
+        description:"custom_text_center",
         type:ParamPatchType.textInput,
         args:[false],
         defaultValue:["STEAM DECK","STEAM DECK","STEAM DECK","STEAM DECK","STEAM DECK"],
@@ -209,6 +210,7 @@ paramList[ParamName.custom_text]={
     },
     patch:[{
         label:"custom_text",
+        description:"custom_text",
         type:ParamPatchType.textInput,
         args:[false],
         defaultValue:["MangoPeel","MangoPeel","MangoPeel","MangoPeel","MangoPeel"],
@@ -256,7 +258,7 @@ paramList[ParamName.cpu_stats]={
 }
 paramList[ParamName.cpu_text]={
     name:ParamName.cpu_text,
-    group:ParamGroup.CPU,
+    group:ParamGroup.CUSTOM,
     preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]},
                 {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display]}],
     toggle:{

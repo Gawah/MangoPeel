@@ -254,7 +254,10 @@ export class Settings {
   }
 
   public static setParamValue(paramName:ParamName,index:number,paramValue:any){
-    var paramValueArray=this.ensureSettings().getParamValue(paramName);
+    var paramValueArray=this.ensureSettings().getParamValue(paramName)?.length==0?paramList[paramName].patch.map((value)=>{
+      return value.defaultValue[this.getSettingsIndex()];
+    }):this.ensureSettings().getParamValue(paramName);
+    console.log(`paramValue=${paramValue} paramValueArray=${paramValueArray}`);
     if(index>=0&&index<paramValueArray.length&&paramValue!=paramValueArray[index]){
       paramValueArray[index]=paramValue;
       this.ensureSettings().setParamValue(paramName,paramValueArray);
@@ -266,6 +269,7 @@ export class Settings {
 
   public static getParamValue(paramName:ParamName,index:number){
     var paramValueArray=this.ensureSettings().getParamValue(paramName);
+     console.debug(`array=${paramValueArray} paramName=${paramName} index=${index}`);
     //参数值无效时，取默认值
     if(!this.isValidParamValue(paramValueArray,paramName,index)){
       paramValueArray=paramList[paramName].patch.map((value)=>{

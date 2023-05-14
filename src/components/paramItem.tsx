@@ -94,7 +94,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
           label={patch.label}
           description={patch.description}
           >
-          <DialogButton onClick={() => {showModal(<TextInputModal bNumber={patch.args[0]} OnConfirm={(text)=>{
+          <DialogButton onClick={() => {showModal(<TextInputModal OnConfirm={(text)=>{
             console.log(`text=${text}`);
             Settings.setParamValue(paramName,patchIndex,text);
           }} />)}}>
