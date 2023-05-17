@@ -17,14 +17,6 @@ steam_config=[
     "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nfull\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery"
 ]
 
-my_style=[
-    "control=mangohud\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nno_display",
-    "control=mangohud\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nframe_timing=0\ncpu_stats=0\ngpu_stats=0\nfps=1\nfps_only\nlegacy_layout=0\nwidth=40\nframetime=0",
-    "control=mangohud\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nlegacy_layout=0\ncpu_stats\ngpu_stats\ngpu_core_clock\ncpu_mhz\ncpu_temp\ngpu_temp\nram\nvram\nbattery\nfan\nfsr\nfps\nframetime=0\nhud_no_margin\ntable_columns=26\nframe_timing=1\nhorizontal\ncpu_load_change\ngpu_load_change\ncpu_text=Ryzen 6800U\ngpu_text=Radeon 680M\nfull",
-    "control=mangohud\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\ncpu_temp\ncpu_power\ngpu_temp\nram\nswap\nvram\nio_read\nio_write\narch\ngpu_name\ngpu_power\ngpu_core_clock\ncpu_mhz\nfan\nfsr\nwine\nframetime\nbattery\ncpu_text=Ryzen 6800U\ngpu_text=Radeon 680M",
-    "control=mangohud\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nfull\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery\nround_corners=15.0\ncpu_text=Ryzen 6800U\ngpu_text=Radeon 680M",
-]
-
 #日志配置
 try:
     LOG_LOCATION = "/tmp/MangoPeel.log"
@@ -205,7 +197,7 @@ class Plugin:
         try:
             lang_path=f"/home/{get_user()}/.steam/registry.vdf"
             if os.path.exists(lang_path):
-                command="sudo cat {}|grep language|sed -n '1p'|xargs|cut  -d \" \" -f  2".format(lang_path)
+                command="cat {}|grep language|sed -n '1p'|xargs|cut  -d \" \" -f  2".format(lang_path)
                 language=subprocess.getoutput(command)
             else:
                 logging.error(f"語言檢測路徑{lang_path}不存在該文件")
@@ -228,7 +220,6 @@ class Plugin:
     async def _main(self):
         logging.info("Running MangoPeel!")
         self._mango=MangoPeel()
-        #self._mango.setOverwriteConfigs(my_style)
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):

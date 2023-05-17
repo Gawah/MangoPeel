@@ -119,6 +119,9 @@ export class paramSetting {
             case ParamName.legacy_layout:
               config+=`${ParamName.legacy_layout}=0\n`;
               break;
+            case ParamName.frametime:
+              config+=`${ParamName.frametime}=0\n`;
+              break;
           }
         }
       })
