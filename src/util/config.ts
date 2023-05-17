@@ -25,7 +25,7 @@ paramList[ParamName.horizontal]={
 paramList[ParamName.table_columns]={
     name:ParamName.table_columns,
     group:ParamGroup.LAYOUT,
-    preCondition:[{disable:[ParamName.legacy_layout,ParamName.no_display]}],
+    preCondition:[{disable:[ParamName.legacy_layout,ParamName.no_display,ParamName.fps_only]}],
     toggle:{
         label:"table_columns",
         defaultEnable:[false,false,true,false,false],
@@ -258,7 +258,7 @@ paramList[ParamName.cpu_stats]={
 }
 paramList[ParamName.cpu_text]={
     name:ParamName.cpu_text,
-    group:ParamGroup.CUSTOM,
+    group:ParamGroup.CPU,
     preCondition:[{enable:[ParamName.cpu_stats],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]},
                 {enable:[ParamName.legacy_layout],disable:[ParamName.fps_only,ParamName.no_display]}],
     toggle:{
@@ -298,7 +298,8 @@ paramList[ParamName.core_load]={
 paramList[ParamName.core_load_change]={
     name:ParamName.core_load_change,
     group:ParamGroup.CPU,
-    preCondition:[{enable:[ParamName.core_load]}],
+    preCondition:[{enable:[ParamName.cpu_stats,ParamName.core_load],disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display,ParamName.full]},
+                {enable:[ParamName.legacy_layout,ParamName.core_load],disable:[ParamName.fps_only,ParamName.no_display,ParamName.full]}],
     toggle:{
         label:"core_load_change",
         defaultEnable:[false,false,false,false,false],
@@ -469,8 +470,8 @@ paramList[ParamName.battery]={
 paramList[ParamName.battery_icon]={
     name:ParamName.battery_icon,
     group:ParamGroup.BATT,
-    preCondition:[{enable:[ParamName.battery]},
-                {enable:[ParamName.legacy_layout,ParamName.full]}],
+    preCondition:[{enable:[ParamName.battery],disable:[ParamName.no_display,ParamName.fps_only]},
+                {enable:[ParamName.legacy_layout,ParamName.full],disable:[ParamName.no_display,ParamName.fps_only]}],
     toggle:{
         label:"battery_icon",
         defaultEnable:[false,false,false,false,false],
@@ -556,7 +557,7 @@ paramList[ParamName.frame_count]={
     preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
     toggle:{
         label:"frame_count",
-        defaultEnable:[false,false,true,false,false],
+        defaultEnable:[false,false,false,false,false],
     },
     patch:[]
 }

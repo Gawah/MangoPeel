@@ -5,7 +5,7 @@ import {
 } from "decky-frontend-lib";
 import {useState,useEffect, VFC} from "react";
 import { localizeStrEnum,localizationManager} from "../i18n";
-import { Settings } from "../util";
+import { Backend, Settings } from "../util";
 
 const mangIndexLabelList: NotchLabel[] | undefined=[
   {notchIndex: 0,label:localizationManager.getString(localizeStrEnum.MANGOINDEX_LABEL_CLOSE),value:0},
@@ -16,14 +16,22 @@ const mangIndexLabelList: NotchLabel[] | undefined=[
 ]
 
 export const MangoIndex: VFC = () => {
-  const [selectedValue, setValue] = useState(Settings.getSettingsIndex());
-  const updateEvent=()=>{
-    setValue(Settings.getSettingsIndex());
+  const [index, setIndex] = useState(Settings.getSettingsIndex());
+  const checkUpdate=()=>{
+    Backend.getSteamIndex().then((nowIndex)=>{
+        setIndex(nowIndex);
+        Settings.setSettingsIndex(nowIndex);
+    });
   }
   useEffect(()=>{
-    Settings.settingChangeEventBus.addEventListener("mangoIndex",updateEvent);
+    checkUpdate();
+    var intervl=setInterval(()=>{
+      checkUpdate();
+    },200)
+    //Settings.settingChangeEventBus.addEventListener("mangoIndex",updateEvent);
     return ()=>{
-      Settings.settingChangeEventBus.removeEventListener("mangoIndex",updateEvent);
+      clearInterval(intervl);
+      //Settings.settingChangeEventBus.removeEventListener("mangoIndex",updateEvent);
   }
   },[])
   return (
@@ -36,10 +44,7 @@ export const MangoIndex: VFC = () => {
               step={1}
               notchLabels={mangIndexLabelList}
               notchCount={mangIndexLabelList.length}
-              value={selectedValue}
-              onChange={(value) => {
-                Settings.setSettingsIndex(value);
-              }}
+              value={index}
             />
           </PanelSectionRow>
         </div>

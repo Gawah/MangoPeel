@@ -7,15 +7,10 @@ import {
 import { VFC,useEffect,useState} from "react";
 import { FaBorderStyle } from "react-icons/fa";
 import { MangoIndex, ParamItem } from "./components";
-import { Backend, ParamGroup, PluginManager, Settings} from "./util";
+import { ParamGroup, PluginManager, Settings} from "./util";
 import { paramList } from "./util/config";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
-  useEffect(()=>{
-    Backend.getSteamIndex().then((res)=>{
-      Settings.setSettingsIndex(res);
-    });
-  },[])
   return (
     <>
       <PanelSection>
@@ -26,12 +21,12 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
           var groupItem=Object.entries(paramList).filter(([_paramName, paramData]) => {
             return paramData.group==groupName;
           })
-          const [visible,setVisible] = useState(Settings.getGroupVisibleParamLength(groupName)>0);
+          const [visible,setVisible] = useState(Settings.getGroupVisible(groupName));
           console.log(`initGroupEvent ${groupName}`);
           useEffect(()=>{
             const updateEvent=()=>{
               console.log(`UpdateGroupEvent ${groupName}`);
-              setVisible(Settings.getGroupVisibleParamLength(groupName)>0);
+              setVisible(Settings.getGroupVisible(groupName));
             }
             Settings.settingChangeEventBus.addEventListener(groupName,updateEvent);
             return ()=>{
