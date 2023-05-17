@@ -125,7 +125,7 @@ paramList[ParamName.alpha]={
         description:"alpha",
         type:ParamPatchType.slider,
         args:[0,1,0.01,false],
-        defaultValue:[0.8,0.8,0.8,0.8,0.8],
+        defaultValue:[1,1,1,1,1],
     }]
 }
 paramList[ParamName.background_alpha]={
@@ -142,7 +142,7 @@ paramList[ParamName.background_alpha]={
         description:"background_alpha",
         type:ParamPatchType.slider,
         args:[0,1,0.01],
-        defaultValue:[0.8,0.8,0.8,0.8,0.8],
+        defaultValue:[1,1,1,1,1],
     }]
 }
 /*
@@ -233,16 +233,6 @@ paramList[ParamName.version]={
     toggle:{
         label:"version",
         defaultEnable:[false,false,false,false,false],
-    },
-    patch:[]
-}
-paramList[ParamName.frame_timing]={
-    name:ParamName.frame_timing,
-    group:ParamGroup.OTHER,
-    preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
-    toggle:{
-        label:"frame_timing",
-        defaultEnable:[false,false,true,false,false],
     },
     patch:[]
 }

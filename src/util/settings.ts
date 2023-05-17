@@ -287,12 +287,13 @@ export class Settings {
       }).length > 0;
   }
 
-  /*
-  public static resetParamDefault(paramName:ParamName){
-    this.setParamEnable(paramName,this.ensureSettings().getParamEnableDefault(paramName,this._instance.steamIndex));
-    this.settingChangeEventBus.dispatchEvent(new Event(paramName));
+  public static resetParamDefault(){
+    Object.entries(paramList).filter(([paramName]) => {
+      this.ensureSettings().setParamValue(paramName as ParamName,this.ensureSettings().getParamValueDefault(paramName as ParamName,this._instance._steamIndex));
+      this.setParamEnable(paramName as ParamName,this.ensureSettings().getParamEnableDefault(paramName as ParamName,this._instance._steamIndex));
+      this.settingChangeEventBus.dispatchEvent(new Event(paramName));
+    })
   }
-  */
 
   public static setParamValue(paramName:ParamName,patchIndex:number,paramValue:any){
     var paramValues=this.ensureSettings().getParamValues(paramName);

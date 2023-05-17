@@ -22,5 +22,6 @@ export const localizeMap = {
 export enum localizeStrEnum {
     MANGOINDEX_LABEL="MANGOINDEX_LABEL",
     MANGOINDEX_LABEL_CLOSE="MANGOINDEX_LABEL_CLOSE",
+    RESET_PARAM_DEFAULT="RESET_PARAM_DEFAULT",
 }
     

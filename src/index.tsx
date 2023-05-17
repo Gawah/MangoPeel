@@ -2,11 +2,14 @@ import {
   definePlugin,
   ServerAPI,
   staticClasses,
-  PanelSection
+  PanelSection,
+  ButtonItem,
+  PanelSectionRow
 } from "decky-frontend-lib";
 import { VFC,useEffect,useState} from "react";
 import { FaBorderStyle } from "react-icons/fa";
 import { MangoIndex, ParamItem } from "./components";
+import { localizationManager, localizeStrEnum } from "./i18n";
 import { ParamGroup, PluginManager, Settings} from "./util";
 import { paramList } from "./util/config";
 
@@ -46,6 +49,17 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
           ):(<></>)
         })}
       </>
+      <PanelSection>
+        <PanelSectionRow>
+            <ButtonItem
+            layout="below"
+            onClick={() => {
+              Settings.resetParamDefault();
+            }}>
+            {localizationManager.getString(localizeStrEnum.RESET_PARAM_DEFAULT)}
+            </ButtonItem>
+        </PanelSectionRow>
+      </PanelSection>
     </>
   );
 };
