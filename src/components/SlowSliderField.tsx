@@ -32,7 +32,7 @@ export const SlowSliderField: FC<SlowSliderFieldProps> = (slider) => {
   useEffect(() => {
     setTimeout(()=>{
       //console.debug("changeValue=",changeValue,"slider=",slider.value)
-      if(changeValue==slider.value){
+      if(changeValue==slider.value&&isChanging.current){
         slider.onChangeEnd?.call(slider,slider.value);
         isChanging.current=false;
       }

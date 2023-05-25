@@ -16,10 +16,8 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
     console.log(`updateEvent ${paramName}`);
     var new_value=Settings.getParamValue(paramName,patchIndex);
     var new_index=patch.args.indexOf(new_value);
-    if(selectedValue!=new_value)
-      setSelectedValue(new_value);
-    if(selectedIndex!=new_index)
-      setSelectedIndex(new_index);
+    setSelectedValue(new_value);
+    setSelectedIndex(new_index);
   }
   useEffect(()=>{
     Settings.settingChangeEventBus.addEventListener(paramName,updateEvent);

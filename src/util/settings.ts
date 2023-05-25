@@ -215,8 +215,8 @@ export class Settings {
     }
   }
 
-  public static setParamEnable(paramName:ParamName,bEnable:boolean){
-    if(bEnable!=this.getParamEnable(paramName)){
+  public static setParamEnable(paramName:ParamName,bEnable:boolean,bforce?:boolean){
+    if(bEnable!=this.getParamEnable(paramName)||(bforce??false)){
       this.ensureSettings().setParamEnale(paramName,bEnable);
       var updateParamList=this.updateParamVisible(paramName);
       var updateGroupList:ParamGroup[]=[];
@@ -302,7 +302,7 @@ export class Settings {
   public static resetParamDefault(){
     Object.entries(paramList).filter(([paramName]) => {
       this.ensureSettings().setParamValue(paramName as ParamName,this.ensureSettings().getParamValueDefault(paramName as ParamName,this._instance._steamIndex));
-      this.setParamEnable(paramName as ParamName,this.ensureSettings().getParamEnableDefault(paramName as ParamName,this._instance._steamIndex));
+      this.setParamEnable(paramName as ParamName,this.ensureSettings().getParamEnableDefault(paramName as ParamName,this._instance._steamIndex),true);
       this.settingChangeEventBus.dispatchEvent(new Event(paramName));
     })
   }

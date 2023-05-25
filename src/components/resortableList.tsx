@@ -29,6 +29,9 @@ function ResortableList({
   useEffect(()=>{
     currentIndexRef.current = currentIndex;
   },[currentIndex])
+  useEffect(() => {
+    setItems(initialArray);
+  }, [initialArray]);
   const handleSelectItem = (index:number) => {
     if (currentIndex === index) {
       setCurrentIndex(-1);
@@ -39,36 +42,15 @@ function ResortableList({
 
   const handleChangeItem = (oldIndex:number,newIndex:number) => {
     if(oldIndex!=newIndex){
-      var temp = items[newIndex];
-      items[newIndex] = items[oldIndex];
-      items[oldIndex] = temp;
-      setItems(items);
-      onArrayChange(items);
+      var newArray = items.slice();
+      var temp = newArray[newIndex];
+      newArray[newIndex] = newArray[oldIndex];
+      newArray[oldIndex] = temp;
+      setItems(newArray);
+      onArrayChange(newArray);
     }
   }
-/*
-  const moveItemUp = () => {
-    if (currentIndex > 0) {
-      const newArray = items.slice();
-      const temp = newArray[currentIndex - 1];
-      newArray[currentIndex - 1] = newArray[currentIndex];
-      newArray[currentIndex] = temp;
-      setItems(newArray);
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
 
-  const moveItemDown = () => {
-    if (currentIndex < items.length - 1) {
-      const newArray = items.slice();
-      const temp = newArray[currentIndex + 1];
-      newArray[currentIndex + 1] = newArray[currentIndex];
-      newArray[currentIndex] = temp;
-      setItems(newArray);
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-*/
   const onItemFocus = (index:number)=>{
     if(currentIndexRef.current>=0){
       handleChangeItem(currentIndexRef.current,index);
