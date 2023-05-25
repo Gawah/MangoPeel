@@ -2,6 +2,7 @@ import { JsonObject, JsonProperty, JsonSerializer } from 'typescript-json-serial
 import { Backend } from './backend';
 import { paramList } from './config';
 import { ParamGroup, ParamName, ParamPatchType} from './enum';
+import { ParamData } from './interface';
 
 const SETTINGS_KEY = "MangoPeel";
 const serializer = new JsonSerializer();
@@ -93,23 +94,32 @@ export class paramSetting {
   */
   public toMangoConfig(){
     var config = "";
-    Object.entries(ParamGroup).forEach(([groupName,_value])=>{
-      var groupItem=Object.entries(paramList).filter(([_paramName, paramData]) => {
-        return paramData.group==groupName;
-      })
-      groupItem.forEach(([_str,paramData])=>{
+    var paramOrderList=this.getParamValues(ParamName.legacy_layout)?.[0]??[];
+    const paramReSort = (a:[string,ParamData],b:[string,ParamData])=>{
+      var aParamOrder=paramOrderList.indexOf(a[1].name);
+      var bParamOrder=paramOrderList.indexOf(b[1].name);
+      return aParamOrder - bParamOrder;
+    }
+    Object.entries(paramList).sort(paramReSort).forEach(([_str,paramData])=>{
         if(this.getParamWork(paramData.name)){
           config+=paramData.name;
           var valueList = this.getParamValues(paramData.name);
           console.log(`paramname=${paramData.name}  values=${valueList}`);
           if(valueList.length>0){
-            config+="=";
-            valueList.forEach((value,index)=>{
-              if(index!=0){
-                config+=",";
-              }
-              config+=`${value}`;
-            })
+            switch(paramData.name){
+              case ParamName.legacy_layout:
+                config+=`${ParamName.legacy_layout}=1\n`;
+                break;
+              default:
+                config+="=";
+                valueList.forEach((value,index)=>{
+                if(index!=0){
+                  config+=",";
+                }
+                config+=`${value}`;
+              })
+              break;
+            }
           }
           config+="\n";
         }
@@ -125,7 +135,6 @@ export class paramSetting {
           }
         }
       })
-    })
     return config;
   }
 }

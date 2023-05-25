@@ -70,6 +70,7 @@ export enum ParamPatchType{
     slider="slider",
     notchSlider="notchSlider",
     textInput="textInput",
+    resortableList="resortableList",
     none="none"
 }
 

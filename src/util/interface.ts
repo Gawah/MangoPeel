@@ -11,6 +11,7 @@ export interface ParamData {
 export interface ParamToggle {
     label?: string;
     description?: string;
+    isShowPatchWhenEnable?: boolean;
     defaultEnable: boolean[];
 }
 

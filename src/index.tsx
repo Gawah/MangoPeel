@@ -4,7 +4,7 @@ import {
   staticClasses,
   PanelSection,
   ButtonItem,
-  PanelSectionRow
+  PanelSectionRow,
 } from "decky-frontend-lib";
 import { VFC,useEffect,useState} from "react";
 import { FaBorderStyle } from "react-icons/fa";

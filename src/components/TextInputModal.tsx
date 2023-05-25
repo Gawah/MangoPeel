@@ -21,7 +21,6 @@ export function TextInputModal({
         closeModal?.();
       }}
     >
-      <div/>
       <TextField
         value={text}
         rangeMin = {0}

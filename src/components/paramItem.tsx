@@ -4,6 +4,8 @@ import { ParamName, ParamPatchType, Settings } from "../util";
 import { ParamData, ParamPatch } from "../util/interface";
 import { SlowSliderField } from "./SlowSliderField";
 import {TextInputModal} from "./TextInputModal";
+import ResortableList from "./resortableList";
+import { localizationManager, localizeStrEnum } from "../i18n";
 
 const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:number}> = ({ paramName,patch,patchIndex}) => {
   
@@ -104,6 +106,21 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
           </PanelSectionRow>
         </>
       );
+      case ParamPatchType.resortableList:
+      return (
+        <>
+            <ResortableList title={localizationManager.getString(localizeStrEnum.PARAM_MANUALLY_SORT_TITLE)} initialArray={selectedValue.map((value: any)=>{
+              return {label:patch.args.filter((item)=>{ return value==item.value})?.[0]?.label??"not_find",value:value};
+            })}
+            onArrayChange={(newArray)=>{
+              var value = newArray.map((item)=>{
+                return item.value;
+              })
+              setSelectedValue(value);
+              Settings.setParamValue(paramName,patchIndex,value);
+            }}/>
+        </>
+      );
     default:
       return null;
   }
@@ -141,7 +158,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
               }}
             />
           </PanelSectionRow>
-          {enable&&paramData.patch?.length > 0 ? (
+          {(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0 ? (
             <>
               {paramData.patch?.map((e,patchIndex) => (
                 <ParamPatchItem paramName={paramData.name} patch={e} patchIndex={patchIndex}/>
