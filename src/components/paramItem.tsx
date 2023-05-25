@@ -1,4 +1,4 @@
-import { DropdownItem, PanelSectionRow, ToggleField,SliderField,Field,DialogButton, showModal,ButtonItem } from "decky-frontend-lib";
+import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem } from "decky-frontend-lib";
 import { useEffect, useState, VFC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
 import { ParamName, ParamPatchType, Settings } from "../util";
@@ -8,15 +8,15 @@ import {TextInputModal} from "./TextInputModal";
 import ResortableList from "./resortableList";
 import { localizationManager, localizeStrEnum } from "../i18n";
 
-const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:number}> = ({ paramName,patch,patchIndex}) => {
+const ParamPatchItem: VFC<{ paramName:ParamName, patchs: ParamPatch; patchIndex:number}> = ({ paramName,patchs,patchIndex}) => {
   
   const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(paramName,patchIndex));
-  const [selectedIndex, setSelectedIndex] = useState(patch.args.indexOf(selectedValue));
+  const [selectedIndex, setSelectedIndex] = useState(patchs.args.indexOf(selectedValue));
   console.log(`initPatch ${paramName}`);
   function updateEvent(){
     console.log(`updateEvent ${paramName}`);
     var new_value=Settings.getParamValue(paramName,patchIndex);
-    var new_index=patch.args.indexOf(new_value);
+    var new_index=patchs.args.indexOf(new_value);
     setSelectedValue(new_value);
     setSelectedIndex(new_index);
   }
@@ -28,16 +28,16 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
     };
   },[])
 
-  switch (patch.type) {
+  switch (patchs.type) {
     case ParamPatchType.slider:
       return (
         <>
           <PanelSectionRow>
             <SlowSliderField
-              label={patch.label}
-              min={patch.args[0]}
-              max={patch.args[1]}
-              step={patch.args[2]}
+              label={patchs.label}
+              min={patchs.args[0]}
+              max={patchs.args[1]}
+              step={patchs.args[2]}
               showValue={true}
               value={selectedValue}
               bottomSeparator={"none"}
@@ -54,18 +54,18 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
           <>
             <PanelSectionRow>
               <SliderField
-                label={patch.label}
+                label={patchs.label}
                 min={0}
-                max={patch.args.length-1}
+                max={patchs.args.length-1}
                 value={selectedIndex}
                 bottomSeparator={"none"}
-                notchCount={patch.args.length}
-                notchLabels={patch.args.map((x, i) => {
+                notchCount={patchs.args.length}
+                notchLabels={patchs.args.map((x, i) => {
                   return { notchIndex: i, label: x, value:i };
                 })}
                 onChange={(value) => {
                   setSelectedIndex(value);
-                  Settings.setParamValue(paramName,patchIndex,patch.args[value]);
+                  Settings.setParamValue(paramName,patchIndex,patchs.args[value]);
                 }}
               />
             </PanelSectionRow>
@@ -76,8 +76,8 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
         <>
           <PanelSectionRow>
             <DropdownItem
-              label={patch.label}
-              rgOptions={patch.args.map((x, i) => {
+              label={patchs.label}
+              rgOptions={patchs.args.map((x, i) => {
                   return { data: i, label: x }!!;
               })}
               selectedOption={selectedIndex}
@@ -94,18 +94,15 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
       return (
         <>
           <PanelSectionRow>
-          <Field
-          label={patch.label}
-          description={patch.description}
-          bottomSeparator={"none"}
-          >
-          <DialogButton onClick={() => {showModal(<TextInputModal OnConfirm={(text)=>{
-            console.log(`text=${text}`);
-            Settings.setParamValue(paramName,patchIndex,text);
-          }} />)}}>
-            {selectedValue}
-          </DialogButton>
-        </Field>
+            <ButtonItem
+            layout="below"
+            bottomSeparator={"none"}
+            onClick={() => {showModal(<TextInputModal OnConfirm={(text)=>{
+              console.log(`text=${text}`);
+              Settings.setParamValue(paramName,patchIndex,text);
+            }} />)}}>
+              {selectedValue}
+            </ButtonItem>
           </PanelSectionRow>
         </>
       );
@@ -113,7 +110,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
       return (
         <>
             <ResortableList title={localizationManager.getString(localizeStrEnum.PARAM_MANUALLY_SORT_TITLE)} initialArray={selectedValue.map((value: any)=>{
-              return {label:patch.args.filter((item)=>{ return value==item.value})?.[0]?.label??"not_find",value:value};
+              return {label:patchs.args.filter((item)=>{ return value==item.value})?.[0]?.label??"not_find",value:value};
             })}
             onArrayChange={(newArray)=>{
               var value = newArray.map((item)=>{
@@ -152,9 +149,9 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
         <>
           <PanelSectionRow>
             <ToggleField
-              bottomSeparator={(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0?"none":"standard"}
-              label={paramData.toggle.label}
-              description={paramData.toggle.description}
+              bottomSeparator={(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0?"none":"standard"}
+              label={paramData.toggle.label?localizationManager.getString((paramData.toggle.label)as localizeStrEnum):undefined}
+              description={paramData.toggle.description?localizationManager.getString((paramData.toggle.description)as localizeStrEnum):undefined}
               checked={enable}
               onChange={(enable) => {
                 setEnable(enable);
@@ -162,14 +159,14 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
               }}
             />
           </PanelSectionRow>
-          {showPatch&&(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0 ? (
+          {showPatch&&(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0 ? (
             <>
-              {paramData.patch?.map((e,patchIndex) => (
-                <ParamPatchItem paramName={paramData.name} patch={e} patchIndex={patchIndex}/>
+              {paramData.patchs?.map((e,patchIndex) => (
+                <ParamPatchItem paramName={paramData.name} patchs={e} patchIndex={patchIndex}/>
               ))}
             </>
           ) : null}
-          {(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0 &&
+          {(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0 &&
           <PanelSectionRow>
           <ButtonItem
               layout="below"

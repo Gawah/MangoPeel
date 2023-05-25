@@ -73,7 +73,7 @@ export class paramSetting {
   }
 
   public getParamValueDefault(paramName:ParamName,defaultIndex:number){
-    return paramList[paramName]?.patch.map((value)=>{
+    return paramList[paramName]?.patchs.map((value)=>{
       return value.defaultValue[defaultIndex];
     })
   }
@@ -333,7 +333,7 @@ export class Settings {
 
   //获取参数配置的默认值
   public static getDefaultParamValues(paramName:ParamName){
-    return paramList[paramName].patch.map((value)=>{
+    return paramList[paramName].patchs.map((value)=>{
       return value.defaultValue[this.getSettingsIndex()];
     });
   }
@@ -358,7 +358,7 @@ export class Settings {
       return false;
     }
     var paramValue=paramValues[index];
-    var paramPatch = paramList[paramName]?.patch?.[index];
+    var paramPatch = paramList[paramName]?.patchs?.[index];
     if(paramValue==null)
       return false;
     //判断是否在config.ts里面配置过这个参数
@@ -383,6 +383,12 @@ export class Settings {
         }
         break;
       case(ParamPatchType.textInput):
+        break;
+      case(ParamPatchType.resortableList):
+        //长度不一致，可能有新增参数项
+        if(paramPatch.args.length != paramValue?.length){
+          return false;
+        }
         break;
       case(ParamPatchType.none):
         return false;

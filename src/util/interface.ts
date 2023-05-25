@@ -5,7 +5,7 @@ export interface ParamData {
     group:ParamGroup;
     preCondition?:{enable?:ParamName[],disable?:ParamName[]}[];
     toggle: ParamToggle;
-    patch: ParamPatch[];
+    patchs: ParamPatch[];
 }
 
 export interface ParamToggle {
