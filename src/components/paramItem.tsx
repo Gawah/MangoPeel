@@ -1,5 +1,6 @@
-import { DropdownItem, PanelSectionRow, ToggleField,SliderField,Field,DialogButton, showModal } from "decky-frontend-lib";
+import { DropdownItem, PanelSectionRow, ToggleField,SliderField,Field,DialogButton, showModal,ButtonItem } from "decky-frontend-lib";
 import { useEffect, useState, VFC } from "react";
+import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
 import { ParamName, ParamPatchType, Settings } from "../util";
 import { ParamData, ParamPatch } from "../util/interface";
 import { SlowSliderField } from "./SlowSliderField";
@@ -39,6 +40,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
               step={patch.args[2]}
               showValue={true}
               value={selectedValue}
+              bottomSeparator={"none"}
               onChangeEnd={(value) => {
                 setSelectedValue(value);
                 Settings.setParamValue(paramName,patchIndex,value);
@@ -56,6 +58,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
                 min={0}
                 max={patch.args.length-1}
                 value={selectedIndex}
+                bottomSeparator={"none"}
                 notchCount={patch.args.length}
                 notchLabels={patch.args.map((x, i) => {
                   return { notchIndex: i, label: x, value:i };
@@ -78,6 +81,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
                   return { data: i, label: x }!!;
               })}
               selectedOption={selectedIndex}
+              bottomSeparator={"none"}
               onChange={(index) => {
                 setSelectedIndex(index.data);
                 Settings.setParamValue(paramName,patchIndex,index.label);
@@ -93,6 +97,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
           <Field
           label={patch.label}
           description={patch.description}
+          bottomSeparator={"none"}
           >
           <DialogButton onClick={() => {showModal(<TextInputModal OnConfirm={(text)=>{
             console.log(`text=${text}`);
@@ -127,6 +132,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
 export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
       const [enable, setEnable] = useState(Settings.getParamEnable(paramData.name));
       const [visible,setVisible] = useState(Settings.getParamVisible(paramData.name));
+      const [showPatch,setShowPatch] = useState(false);
       console.log(`initToggle ${paramData.name}`);
       const updateEvent=()=>{
         console.log(`updateToggleEvent ${paramData.name}`);
@@ -146,7 +152,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
         <>
           <PanelSectionRow>
             <ToggleField
-              //bottomSeparator={bottomSeparatorValue}
+              bottomSeparator={(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0?"none":"standard"}
               label={paramData.toggle.label}
               description={paramData.toggle.description}
               checked={enable}
@@ -156,13 +162,34 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
               }}
             />
           </PanelSectionRow>
-          {(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0 ? (
+          {showPatch&&(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0 ? (
             <>
               {paramData.patch?.map((e,patchIndex) => (
                 <ParamPatchItem paramName={paramData.name} patch={e} patchIndex={patchIndex}/>
               ))}
             </>
           ) : null}
+          {(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patch?.length > 0 &&
+          <PanelSectionRow>
+          <ButtonItem
+              layout="below"
+              style={{
+                height:10,
+              }}
+              onClick={() => setShowPatch(!showPatch)}
+                    >
+                      {showPatch ? (
+                        <RiArrowUpSFill
+                          style={{ transform: "translate(0, -13px)", fontSize: "1.5em"}}
+                        />
+                      ) : (
+                        <RiArrowDownSFill
+                          style={{ transform: "translate(0, -12px)", fontSize: "1.5em"}}
+                        />
+                      )}
+                    </ButtonItem>
+          </PanelSectionRow>
+          }
         </>:<></>
       );
 };

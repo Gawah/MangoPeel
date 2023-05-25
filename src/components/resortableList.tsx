@@ -25,7 +25,7 @@ function ResortableList({
   const [currentIndex, setCurrentIndex] = useState(-1);
   const currentIndexRef = useRef(currentIndex);
   const [items, setItems] = useState(initialArray);
-  
+
   useEffect(()=>{
     currentIndexRef.current = currentIndex;
   },[currentIndex])
@@ -83,7 +83,7 @@ function ResortableList({
       {items.map((item, index) => (
         <PanelSectionRow key={index}>
               <Field
-              bottomSeparator={index==items.length-1?"standard":"none"}
+              bottomSeparator={"none"}
               icon={
               <>
                 <Arrow direction="up" show={currentIndex == index && index != 0} />

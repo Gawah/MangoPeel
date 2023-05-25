@@ -55,6 +55,7 @@ export const SlowSliderField: FC<SlowSliderFieldProps> = (slider) => {
       editableValue={slider.editableValue}
       validValues={slider.validValues}
       valueSuffix={slider.valueSuffix}
+      bottomSeparator={slider.bottomSeparator}
       minimumDpadGranularity={slider.minimumDpadGranularity}
       onChange={(value:number)=>{
         var tpvalue=value;
