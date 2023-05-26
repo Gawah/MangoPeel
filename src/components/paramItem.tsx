@@ -1,4 +1,4 @@
-import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem } from "decky-frontend-lib";
+import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Field } from "decky-frontend-lib";
 import { useEffect, useState, VFC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
 import { ParamName, ParamPatchType, Settings } from "../util";
@@ -32,21 +32,39 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
     case ParamPatchType.slider:
       return (
         <>
-          <PanelSectionRow>
-            <SlowSliderField
-              label={patch.label}
+          <PanelSectionRow id="MangoPeel_Slider">
+              <SlowSliderField
               min={patch.args[0]}
               max={patch.args[1]}
               step={patch.args[2]}
               showValue={true}
               value={selectedValue}
+              layout={"inline"}
               bottomSeparator={"none"}
               onChangeEnd={(value) => {
                 setSelectedValue(value);
                 Settings.setParamValue(paramName,patchIndex,value);
-              }}
-            />
+              }}/>
           </PanelSectionRow>
+          <style>
+            {
+              //缩短滑动条
+              `#MangoPeel_Slider 
+              .gamepaddialog_Field_S-_La.gamepaddialog_ChildrenWidthFixed_1ugIU 
+              .gamepaddialog_FieldChildren_14_HB{
+                min-width:215px
+              }`
+            }
+            {
+              //调整标签位置
+              `#MangoPeel_Slider 
+              .gamepadslider_DescriptionValue_2oRwF {
+                width: 43px;
+                margin-left: 0;
+                flex-direction: column;
+              }`
+            }
+            </style>
         </>
       );
     case ParamPatchType.notchSlider:

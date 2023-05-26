@@ -172,7 +172,7 @@ paramList[ParamName.position]={
     patchs:[
     {
         type:ParamPatchType.dropdown,
-        args:["top-left","top-right","middle-left","middle-right","bottom-left","bottom-right","top-center","bottom_center"],
+        args:["top-left","top-center","top-right","middle-left","middle-right","bottom-left","bottom_center","bottom-right"],
         defaultValue:["top-left","top-left","top-left","top-left","top-left"],
     }
     ]

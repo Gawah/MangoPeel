@@ -39,9 +39,10 @@ export const SlowSliderField: FC<SlowSliderFieldProps> = (slider) => {
     },500)
   }, [changeValue]);
   return(
-    <SliderField 
+    <SliderField
       value={slider.value}
       label={slider.label}
+      layout={slider.layout}
       description={slider.description}
       min={slider.min}
       max={slider.max}
