@@ -370,7 +370,7 @@ paramList[ParamName.time_format] = {
   },
   patchs: [{
     type: ParamPatchType.textInput,
-    args: [localizeStrEnum.TIME_FORMAT_INPUT_TITLE,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION],
+    args: [localizeStrEnum.TIME_FORMAT_INPUT_TITLE,[localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION1,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION2,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION3,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION4]],
     defaultValue: ["%H:%M:%S", "%H:%M:%S", "%H:%M:%S", "%H:%M:%S", "%H:%M:%S"],
   }]
 };

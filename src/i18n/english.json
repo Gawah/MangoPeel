@@ -83,5 +83,12 @@
     "FRAME_COUNT_LABEL":"Frame Count",
     "FRAME_COUNT_DESCRIPTION":"Display frame count",
     "FRAME_TIME_LABEL":"Frame Time",
-    "FRAME_TIME_DESCRIPTION":"Display frametime next to FPS text"
+    "FRAME_TIME_DESCRIPTION":"Display frametime next to FPS text",
+    "TIME_FORMAT_LABEL":"Time Format",
+    "TIME_FORMAT_DESCRIPTION":"Overrides the format for displaying time",
+    "TIME_FORMAT_INPUT_TITLE":"Time Format",
+    "TIME_FORMAT_INPUT_DESCRIPTION1":"Year: %Y           Month: %m           Day: %d ",
+    "TIME_FORMAT_INPUT_DESCRIPTION2":"Hour: %H           Minute: %M           Second: %S",
+    "TIME_FORMAT_INPUT_DESCRIPTION3":"AM/PM: %p          Timezone: %Z          Timestamp: %s",
+    "TIME_FORMAT_INPUT_DESCRIPTION4":"Day of week: %A/%a(Sunday/Sun)    Month name: %B/%b(January/Jan)"
 }

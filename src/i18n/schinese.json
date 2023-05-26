@@ -87,5 +87,8 @@
     "TIME_FORMAT_LABEL":"时间格式",
     "TIME_FORMAT_DESCRIPTION":"覆盖时间显示的格式",
     "TIME_FORMAT_INPUT_TITLE":"时间格式",
-    "TIME_FORMAT_INPUT_DESCRIPTION":"年份: %Y 表示4位数的年份,例如:2022\n 月份: %m 表示2位数的月份\n日期: %d 表示2位数的日期\n小时: %H 表示24小时制下的2位数小时数\n分钟: %M 表示2位数的分钟数\n秒数: %S 表示2位数的秒数\n星期几: %A/%a 表示完整名称/简短名称(3个字符)的星期几,例如:Sunday/Sun\n月份名称: %B/%b 表示完整名称/简短名称(3个字符)的月份名称,例如:January/Jan\n上下午: %p 表示上午(AM)或下午(PM)\n时间戳: %s 表示自 1970 年 1 月 1 日 00:00:00 UTC 以来的秒数\n时区: %Z 表示时区信息,例如:EST\n在格式化字符串中,除了上述的特定格式化字符之外,还可以使用常见的转义字符(例如 '\n' 表示换行符),以及指定域宽、精度、填充字符等选项。例如,%Y-%m-%d %H:%M:%S 就是一个常见的格式化字符串,它可以将时间对象格式化为标准的日期时间字符串:2022-01-01 15:35:45"
+    "TIME_FORMAT_INPUT_DESCRIPTION1":"年份: %Y           月份: %m           日期: %d ",
+    "TIME_FORMAT_INPUT_DESCRIPTION2":"小时: %H           分钟: %M           秒数: %S",
+    "TIME_FORMAT_INPUT_DESCRIPTION3":"上下午: %p          时区: %Z           时间戳: %s",
+    "TIME_FORMAT_INPUT_DESCRIPTION4":"星期几: %A/%a(Sunday/Sun)    月份名称: %B/%b(January/Jan)"
 }

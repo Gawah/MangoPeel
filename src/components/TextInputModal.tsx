@@ -11,7 +11,7 @@ export function TextInputModal({
 }: {
   closeModal?: () => void;
   strTitle?:string|undefined;
-  strDescription?:string|undefined;
+  strDescription?:string[]|undefined;
   defaultValue?:string|undefined;
   OnConfirm: (text:string) => void;
 }) {
@@ -19,7 +19,15 @@ export function TextInputModal({
   return (
     <ConfirmModal
       strTitle={strTitle?localizationManager.getString(strTitle as localizeStrEnum):"TEXT INPUT"}
-      strDescription={strDescription?localizationManager.getString(strDescription as localizeStrEnum):strDescription}
+      strDescription={<div style={{whiteSpace:"pre-wrap"}}>
+        {
+          strDescription?.map((str)=>{
+            return (
+              <div>{localizationManager.getString(str as localizeStrEnum)}</div>
+            )
+          })
+        }
+      </div>}
       onCancel={closeModal}
       onOK={() => {
         if (text.length === 0) {
