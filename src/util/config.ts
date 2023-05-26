@@ -274,7 +274,19 @@ paramList[ParamName.background_alpha]={
         args:[0,1,0.01],
         defaultValue:[1,1,1,1,1],
     }]
-}    
+}
+/*
+paramList[ParamName.no_small_font]={
+  name:ParamName.no_small_font,
+  group:ParamGroup.SETTING,
+  preCondition:[{disable:[ParamName.no_display]}],
+  toggle:{
+      label: "no_small_font",
+      defaultEnable:[false,false,false,false,false],
+  },
+  patchs:[]
+}
+*/    
     
 paramList[ParamName.font_scale]={
     name:ParamName.font_scale,
@@ -314,7 +326,7 @@ paramList[ParamName.custom_text_center] = {
     },
     patchs: [{
       type: ParamPatchType.textInput,
-      args: [false],
+      args: [],
       defaultValue: ["STEAM DECK", "STEAM DECK", "STEAM DECK", "STEAM DECK", "STEAM DECK"],
     }]
 };
@@ -330,21 +342,37 @@ paramList[ParamName.custom_text] = {
     },
     patchs: [{
       type: ParamPatchType.textInput,
-      args: [false],
+      args: [],
       defaultValue: ["MangoPeel", "MangoPeel", "MangoPeel", "MangoPeel", "MangoPeel"],
     }]
 };
-  
+
 paramList[ParamName.time] = {
-    name: ParamName.time,
-    group: ParamGroup.CUSTOM,
-    preCondition: [{disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
-    toggle: {
-      label: localizeStrEnum.TIME_LABEL,
-      description: localizeStrEnum.TIME_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
-    },
-    patchs: []
+  name: ParamName.time,
+  group: ParamGroup.CUSTOM,
+  preCondition: [{disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
+  toggle: {
+    label: localizeStrEnum.TIME_LABEL,
+    description: localizeStrEnum.TIME_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
+  },
+  patchs: []
+};
+
+paramList[ParamName.time_format] = {
+  name: ParamName.time_format,
+  group: ParamGroup.CUSTOM,
+  preCondition: [{enable:[ParamName.time], disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
+  toggle: {
+    label: localizeStrEnum.TIME_FORMAT_LABEL,
+    description: localizeStrEnum.TIME_FORMAT_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
+  },
+  patchs: [{
+    type: ParamPatchType.textInput,
+    args: [localizeStrEnum.TIME_FORMAT_INPUT_TITLE,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION],
+    defaultValue: ["%H:%M:%S", "%H:%M:%S", "%H:%M:%S", "%H:%M:%S", "%H:%M:%S"],
+  }]
 };
   
 paramList[ParamName.version] = {
@@ -386,7 +414,7 @@ paramList[ParamName.cpu_text] = {
     },
     patchs: [{
       type: ParamPatchType.textInput,
-      args: [false],
+      args: [],
       defaultValue: ["CPU", "CPU", "CPU", "CPU", "CPU"],
     }]
 };
@@ -529,7 +557,7 @@ paramList[ParamName.gpu_text] = {
     },
     patchs: [{
       type: ParamPatchType.textInput,
-      args: [false],
+      args: [],
       defaultValue: ["GPU", "GPU", "GPU", "GPU", "GPU"],
     }]
 };
@@ -652,6 +680,38 @@ paramList[ParamName.swap] = {
     },
     patchs: []
 };
+/*
+paramList[ParamName.procmem] = {
+  name: ParamName.procmem,
+  group: ParamGroup.RAM,
+  toggle: {
+    label: "procem",
+    description: localizeStrEnum.SWAP_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
+  },
+  patchs: []
+};
+paramList[ParamName.procmem_shared] = {
+  name: ParamName.procmem_shared,
+  group: ParamGroup.RAM,
+  toggle: {
+    label: "procmem_shared",
+    description: localizeStrEnum.SWAP_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
+  },
+  patchs: []
+};
+paramList[ParamName.procmem_virt] = {
+  name: ParamName.procmem_virt,
+  group: ParamGroup.RAM,
+  toggle: {
+    label: "procmem_virt",
+    description: localizeStrEnum.SWAP_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
+  },
+  patchs: []
+};
+*/
 
 paramList[ParamName.battery] = {
     name: ParamName.battery,
