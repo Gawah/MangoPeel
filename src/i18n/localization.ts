@@ -14,7 +14,7 @@ export class localizationManager {
     })
   }
   public static getString(defaultString:localizeStrEnum){
-    var str = localizeMap[this.language]?.strings?.[defaultString]??defaultString;
+    var str = localizeMap[this.language]?.strings?.[defaultString]??localizeMap["english"]?.strings?.[defaultString]??defaultString;
     return str
   }
 }
