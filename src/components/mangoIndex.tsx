@@ -27,7 +27,7 @@ export const MangoIndex: VFC = () => {
   },[])
   return (
         <div>
-          <PanelSectionRow>
+          <PanelSectionRow id="MangoPeel_IndexSlider">
             <SliderField
               label={localizationManager.getString(localizeStrEnum.MANGOINDEX_LABEL)}
               min={0}
@@ -45,6 +45,15 @@ export const MangoIndex: VFC = () => {
               value={index}
             />
           </PanelSectionRow>
+          <style>
+            {
+              //底部标签置为灰色
+              `#MangoPeel_IndexSlider
+              .gamepadslider_SliderNotchTick_Fv1Ht.gamepadslider_TickActive_1gnUV {
+                  background-color: #8b929a;
+              }`
+            }
+          </style>
         </div>
     );
 };
