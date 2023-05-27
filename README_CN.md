@@ -19,9 +19,9 @@ MangoPeel是一款steamdeck插件用于[decky-loader](https://github.com/SteamDe
 
 ## 未来目标
 
-- [x]自定义文本样式
-- [ ]加入各个颜色修改参数
-- [ ]允许自定义添加参数
+- [x] 自定义文本样式
+- [ ] 加入各个颜色修改参数
+- [ ] 允许自定义添加参数
 
 ## issues
    遇到任何问题，请在[issues](https://github.com/Gawah/MangoPeel/issues)提交

@@ -18,10 +18,9 @@ MangoPeel is a Steam Deck plugin used for [decky-loader](https://github.com/Stea
 - Some parameters, such as colors and corner radius, can be configured in real time in MangoHud, but changing them after MangoApp has started will not take effect. Therefore, they have not been added to the shortcut menu frontend yet. Waiting for [mangohud](https://github.com/flightlessmango/MangoHud) to fix this issue, or finding another way to make changes effective, before adding them to the configuration list.
 
 ## Future goals
-
-- [x]Custom text format
-- [ ]Add various color modification parameters
-- [ ]Allow adding custom parameters
+- [x] Custom text format
+- [ ] Add various color modification parameters
+- [ ] Allow adding custom parameters
 
 ## issues
    If you encounter any problems, please submit them through [issues](https://github.com/Gawah/MangoPeel/issues).
