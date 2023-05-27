@@ -1,10 +1,10 @@
 {
   "name": "MangoPeel",
-  "author": "yxxs",
-  "flags": ["debug", "_root"],
+  "author": "yxx",
+  "flags": ["_root"],
   "publish": {
-    "tags": ["template", "root"],
-    "description": "Decky example plugin.",
+    "tags": ["mangoapp","mangohud","root"],
+    "description": "A decky plugin for custom performance monitoring style.",
     "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
   }
 }
