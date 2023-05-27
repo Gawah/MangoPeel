@@ -10,11 +10,26 @@ import pyinotify
 import subprocess
 from helpers import get_user
 steam_config=[
-    "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nno_display",
-    "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nframe_timing=0\ncpu_stats=0\ngpu_stats=0\nfps=1\nfps_only\nlegacy_layout=0\nwidth=40\nframetime=0",
-    "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nlegacy_layout=0\nhorizontal\nbattery\ngpu_stats\ncpu_stats\ncpu_power\ngpu_power\nram\nfps\nframetime=0\nhud_no_margin\ntable_columns=14\nframe_timing=1",
-    "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery",
-    "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nfull\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery"
+    [
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nno_display",
+        "preset=0"
+    ],
+    [
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nframe_timing=0\ncpu_stats=0\ngpu_stats=0\nfps=1\nfps_only\nlegacy_layout=0\nwidth=40\nframetime=0",
+        "preset=1"
+    ],
+    [
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nlegacy_layout=0\nhorizontal\nbattery\ngpu_stats\ncpu_stats\ncpu_power\ngpu_power\nram\nfps\nframetime=0\nhud_no_margin\ntable_columns=14\nframe_timing=1",
+        "preset=2"
+    ],
+    [
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery",
+        "preset=3"
+    ],
+    [
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nfull\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery",
+        "preset=4"
+    ]
 ]
 
 #日志配置
@@ -133,16 +148,17 @@ class MangoPeel:
             #没有mangopeel的标签 则查找是否是steam写入的配置 并记录下标
             if not nowConfig.startswith("mangopeel_flag"):
                 for index in range(len(steam_config)):
-                    if steam_config[index] == nowConfig:
+                    if nowConfig in steam_config[index]:
                         self._steamIndex=index
                         self._bmangoapp_steam=True
                         logging.debug(f"识别到steam下标={self._steamIndex} 是否写入mangoapp_steam={self._bmangoapp_steam}")
                         break
-                    if steam_config[index].replace("mangoapp_steam\n","") == nowConfig:
-                        self._steamIndex=index
-                        self._bmangoapp_steam=False
-                        logging.debug(f"识别到steam下标={self._steamIndex} 是否写入mangoapp_steam={self._bmangoapp_steam}")
-                        break
+                    for config in steam_config[index]:    
+                        if config.replace("mangoapp_steam\n","") == nowConfig:
+                            self._steamIndex=index
+                            self._bmangoapp_steam=False
+                            logging.debug(f"识别到steam下标={self._steamIndex} 是否写入mangoapp_steam={self._bmangoapp_steam}")
+                            break
             if not self._findConfig or self._steamIndex<0 or self._setConfigList[self._steamIndex] == "":
                 return
             if self._bmangoapp_steam:
