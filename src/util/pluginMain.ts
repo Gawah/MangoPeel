@@ -22,7 +22,6 @@ export class PluginManager{
   }
 
   public static unregister = ()=>{
-    Backend.resetSettings();
     PluginManager.state = PluginState.QUIT; 
   }
 }

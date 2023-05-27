@@ -104,7 +104,6 @@ export class paramSetting {
         if(this.getParamWork(paramData.name)){
           config+=paramData.name;
           var valueList = this.getParamValues(paramData.name);
-          console.log(`paramname=${paramData.name}  values=${valueList}`);
           if(valueList.length>0){
             switch(paramData.name){
               case ParamName.legacy_layout:
@@ -403,14 +402,12 @@ export class Settings {
     const loadSetting=serializer.deserializeObject(settingsJson, Settings);
     this._instance.enabled = loadSetting?.enabled??false;      
     this._instance.paramSettings = loadSetting?.paramSettings??{};
-    console.log(`loadSettingStr=${settingsString}`);
   }
 
   static saveSettingsToLocalStorage() {
     const settingsJson = serializer.serializeObject(this._instance);
     const settingsString = JSON.stringify(settingsJson);
     localStorage.setItem(SETTINGS_KEY, settingsString);
-    console.log(`saveSettingStr=${settingsString}`)
   }
 
 }

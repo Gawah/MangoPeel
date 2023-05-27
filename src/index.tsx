@@ -25,16 +25,13 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
             return paramData.group==groupName;
           })
           const [visible,setVisible] = useState(Settings.getGroupVisible(groupName));
-          console.log(`initGroupEvent ${groupName}`);
           useEffect(()=>{
             const updateEvent=()=>{
-              console.log(`UpdateGroupEvent ${groupName}`);
               setVisible(Settings.getGroupVisible(groupName));
             }
             Settings.settingChangeEventBus.addEventListener(groupName,updateEvent);
             return ()=>{
               Settings.settingChangeEventBus.removeEventListener(groupName,updateEvent);
-              console.log(`removeUpdateGroupEvent ${groupName}`);
           }
           },[])
           return groupItem.length>0&&visible?(

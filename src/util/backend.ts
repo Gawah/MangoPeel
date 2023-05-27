@@ -24,7 +24,6 @@ export class Backend {
     setTimeout(()=>{
       this.applyCount=this.applyCount-1;
       if(this.applyCount==0){
-        console.log(`index=${index} config=${config} `);
         this.serverAPI!.callPluginMethod("SetOverwriteConfig",{"index":index,"config":config})
       }
     },200)
@@ -33,8 +32,5 @@ export class Backend {
   public static applyConfigs(configs:string[]){
     this.serverAPI!.callPluginMethod("SetOverwriteConfigs",{"configs":configs})
   }
-
-  public static resetSettings = () => {
-    console.log("重置所有设置");
-  };
+  
 }

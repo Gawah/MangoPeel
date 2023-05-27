@@ -12,9 +12,7 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
   
   const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(paramName,patchIndex));
   const [selectedIndex, setSelectedIndex] = useState(patch.args.indexOf(selectedValue));
-  console.log(`initPatch ${paramName}`);
   function updateEvent(){
-    console.log(`updateEvent ${paramName}`);
     var new_value=Settings.getParamValue(paramName,patchIndex);
     var new_index=patch.args.indexOf(new_value);
     setSelectedValue(new_value);
@@ -24,7 +22,6 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
     Settings.settingChangeEventBus.addEventListener(paramName,updateEvent);
     return ()=>{
       Settings.settingChangeEventBus.removeEventListener(paramName,updateEvent);
-      console.log(`removeUpdateEvent ${paramName}`);
     };
   },[])
 
@@ -120,7 +117,6 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
               strDescription={patch.args?.[1]}
               defaultValue={selectedValue}
               OnConfirm={(text)=>{
-              console.log(`text=${text}`);
               Settings.setParamValue(paramName,patchIndex,text);
             }} />)}}>
               {selectedValue}
@@ -152,9 +148,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
       const [enable, setEnable] = useState(Settings.getParamEnable(paramData.name));
       const [visible,setVisible] = useState(Settings.getParamVisible(paramData.name));
       const [showPatch,setShowPatch] = useState(false);
-      console.log(`initToggle ${paramData.name}`);
       const updateEvent=()=>{
-        console.log(`updateToggleEvent ${paramData.name}`);
         //console.log(`enable=${enable} new_enable=${new_enable}`);
         setEnable(Settings.getParamEnable(paramData.name));
         setVisible(Settings.getParamVisible(paramData.name));
@@ -163,7 +157,6 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
         Settings.settingChangeEventBus.addEventListener(paramData.name,updateEvent);
         return ()=>{
           Settings.settingChangeEventBus.removeEventListener(paramData.name,updateEvent);
-          console.log(`removeUpdateToggleEvent ${paramData.name}`);
       }
       },[])
       return (
