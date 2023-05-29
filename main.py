@@ -216,6 +216,7 @@ class Plugin:
                 command="cat {}|grep language|sed -n '1p'|xargs|cut  -d \" \" -f  2".format(lang_path)
                 language=subprocess.getoutput(command)
             else:
+                language="english"
                 logging.error(f"語言檢測路徑{lang_path}不存在該文件")
             logging.info(f"get_language {language} path={lang_path}")
             return language
