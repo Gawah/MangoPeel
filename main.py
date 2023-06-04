@@ -63,6 +63,8 @@ class MangoPeel:
         self._bmangoapp_steam=True
         self._findConfig=False        #是否找到配置文件
         self._findInterval=2     #未找到配置时 间隔多久再找一次
+        self._findCount=0   #当前找几次
+        self._maxFindCount=3    #最多找几次
 
         self.findConfigPath()   #加载文件路径
         self.overWriteConfig()     #覆盖当前的配置
@@ -89,7 +91,12 @@ class MangoPeel:
         if not findCmd:
             logging.error(f"未找到mangoapp配置路径={self._configPath}")
             time.sleep(self._findInterval)
-            return self.findConfigPath()
+            if self._findCount + 1 < self._maxFindCount:
+                self._findCount = self._findCount + 1
+                return self.findConfigPath()
+            else:
+                self._findCount = 0
+                return False
         appEnvs =  open(self._procPath + "/" +"environ", "r").read().strip()
         for appEnv in appEnvs.split("\0"):
             try:

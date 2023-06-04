@@ -5,7 +5,6 @@ export class Backend {
   public static async init(serverAPI: ServerAPI) {
     this.serverAPI = serverAPI;
     this.applyCount = 0;
-
   }
 
   public static async getSteamIndex(){
@@ -24,13 +23,13 @@ export class Backend {
     setTimeout(()=>{
       this.applyCount=this.applyCount-1;
       if(this.applyCount==0){
-        this.serverAPI!.callPluginMethod("SetOverwriteConfig",{"index":index,"config":config})
+        this.serverAPI!.callPluginMethod<{},boolean>("SetOverwriteConfig",{"index":index,"config":config})
       }
     },200)
   }
 
   public static applyConfigs(configs:string[]){
-    this.serverAPI!.callPluginMethod("SetOverwriteConfigs",{"configs":configs})
+    this.serverAPI!.callPluginMethod<{},boolean>("SetOverwriteConfigs",{"configs":configs})
   }
   
 }

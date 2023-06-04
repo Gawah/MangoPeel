@@ -21,9 +21,9 @@ export class paramInfo {
     this.paramName=paramName;
     this.bEnable=bEnable;
     this.bVisible=true;
-    this.setParamValue(paramValue);
+    this.setParamValues(paramValue);
   }
-  public setParamValue(paramValue:any[]){
+  public setParamValues(paramValue:any[]){
     this.paramValues=paramValue?.concat();
   }
 }
@@ -34,38 +34,42 @@ export class paramSetting {
   public paramMap: { [paramName: string]: paramInfo|undefined } = {};
   //初始化所有参数
   public initParamSetting(defaultIndex:number){
+    //参数集中没有数据时给个默认值
     Object.entries(ParamName).forEach(([_key,paramName])=>{
       if(!this.paramMap[paramName]){
         this.paramMap[paramName]=new paramInfo(paramName,this.getParamEnableDefault(paramName,defaultIndex),this.getParamValueDefault(paramName,defaultIndex));
       }
     })
   }
-  public ensureParamInfo(paramName:ParamName):paramInfo{
-    if(!this.paramMap[paramName]){
-      this.paramMap[paramName]=new paramInfo(paramName,false,[]);
-    }
-    return this.paramMap[paramName]!;
+  //拷贝另一个配置
+  public copyParamSettings(newSetting:paramSetting){
+    Object.entries(this.paramMap).forEach(([name,_info])=>{
+      if(name in newSetting.paramMap){
+        this.setParamEnable(name as ParamName,newSetting.getParamEnable(name as ParamName));
+        this.setParamValues(name as ParamName,newSetting.getParamValues(name as ParamName));
+      }
+    })
   }
-  public setParamEnale(paramName:ParamName,bEnable:boolean){
-    this.ensureParamInfo(paramName).bEnable=bEnable;
+  public setParamEnable(paramName:ParamName,bEnable:boolean){
+    this.paramMap[paramName]!.bEnable=bEnable;
   }
   public getParamEnable(paramName:ParamName){
-    return this.ensureParamInfo(paramName).bEnable;
+    return this.paramMap[paramName]!.bEnable;
   }
-  public setParamValue(paramName:ParamName,paramValue:any[]){
-    this.ensureParamInfo(paramName).setParamValue(paramValue);
+  public setParamValues(paramName:ParamName,paramValue:any[]){
+    this.paramMap[paramName]!.setParamValues(paramValue);
   }
 
   public getParamValues(paramName:ParamName){
-    return this.ensureParamInfo(paramName).paramValues??[];
+    return this.paramMap[paramName]!.paramValues??[];
   }
 
   public getParamVisible(paramName:ParamName){
-    return this.ensureParamInfo(paramName).bVisible;
+    return this.paramMap[paramName]!.bVisible;
   }
 
   public setParamVisible(paramName:ParamName,visible:boolean){
-    this.ensureParamInfo(paramName).bVisible=visible;
+    this.paramMap[paramName]!.bVisible=visible;
   }
 
   public getParamEnableDefault(paramName:ParamName,defaultIndex:number){
@@ -83,15 +87,7 @@ export class paramSetting {
     var paramVisible=this.getParamVisible(paramName);
     return paramVisible&&paramEnable;
   }
-  /*
-  public removeParam(paramName:ParamName){
-    if(paramName in this.paramMap){
-      this.paramMap[paramName]=undefined;
-    }else{
-      console.log(`paramName=${paramName}`);
-    }
-  }
-  */
+
   public toMangoConfig(){
     var config = "";
     var paramOrderList=this.getParamValues(ParamName.legacy_layout)?.[0]??[];
@@ -142,7 +138,7 @@ export class paramSetting {
 @JsonObject()
 export class Settings {
   private static _instance:Settings = new Settings();
-  private _steamIndex: number = 0;
+  private static _steamIndex: number = -1;
   public static dependencyGraph: { [index: string]: string[] } = {};
   public static settingChangeEventBus:EventTarget = new EventTarget();
   @JsonProperty()
@@ -150,6 +146,12 @@ export class Settings {
   @JsonProperty({isDictionary:true, type: paramSetting })
   public paramSettings: { [index: number]: paramSetting } = {};
   
+  public static async init():Promise<void>{
+    //加载保存值
+    this.loadSettingsFromLocalStorage();
+    //初始下标0
+    this.setSettingsIndex(0);
+  }
   //插件是否开启
   public static ensureEnable():boolean{
     return this._instance.enabled;
@@ -188,21 +190,16 @@ export class Settings {
 
   //获取指定下标对应配置文件，默认为当前下标
   public static ensureSettings(index?:number): paramSetting {
-    var getindex=index??this._instance._steamIndex;
-    if(!(getindex in this._instance.paramSettings)){
-      this._instance.paramSettings[getindex]=new paramSetting();
-      this._instance.paramSettings[getindex].initParamSetting(getindex)
-    }
-    return this._instance.paramSettings[getindex];
+    return this._instance.paramSettings[index??this._steamIndex];
   }
 
   public static getSettingsIndex():number{
-    return this._instance._steamIndex;
+    return this._steamIndex;
   }
 
   public static setSettingsIndex(index:number){
-    if(this._instance._steamIndex!=index){
-      this._instance._steamIndex=index;
+    if(this._steamIndex!=index){
+      this._steamIndex=index;
       //刷新整个界面
       for(var paramName in ParamName){
         this.settingChangeEventBus.dispatchEvent(new Event(paramName));
@@ -216,7 +213,7 @@ export class Settings {
 
   public static setParamEnable(paramName:ParamName,bEnable:boolean,bforce?:boolean){
     if(bEnable!=this.getParamEnable(paramName)||(bforce??false)){
-      this.ensureSettings().setParamEnale(paramName,bEnable);
+      this.ensureSettings().setParamEnable(paramName,bEnable);
       var updateParamList=this.updateParamVisible(paramName);
       var updateGroupList:ParamGroup[]=[];
       //刷新前置参数包含此参数的组件
@@ -300,8 +297,8 @@ export class Settings {
 
   public static resetParamDefault(){
     Object.entries(paramList).filter(([paramName]) => {
-      this.ensureSettings().setParamValue(paramName as ParamName,this.ensureSettings().getParamValueDefault(paramName as ParamName,this._instance._steamIndex));
-      this.setParamEnable(paramName as ParamName,this.ensureSettings().getParamEnableDefault(paramName as ParamName,this._instance._steamIndex),true);
+      this.ensureSettings().setParamValues(paramName as ParamName,this.ensureSettings().getParamValueDefault(paramName as ParamName,this._steamIndex));
+      this.setParamEnable(paramName as ParamName,this.ensureSettings().getParamEnableDefault(paramName as ParamName,this._steamIndex),true);
       this.settingChangeEventBus.dispatchEvent(new Event(paramName));
     })
   }
@@ -313,7 +310,7 @@ export class Settings {
     }
     if(patchIndex>=0&&patchIndex<paramValues.length&&paramValue!=paramValues[patchIndex]){
       paramValues[patchIndex]=paramValue;
-      this.ensureSettings().setParamValue(paramName,paramValues);
+      this.ensureSettings().setParamValues(paramName,paramValues);
       Settings.saveSettingsToLocalStorage();
       Backend.applyConfig(this.getSettingsIndex(),this.getParamConfig());
       //this.settingChangeEventBus.dispatchEvent(new Event(paramName))
@@ -325,7 +322,7 @@ export class Settings {
     //参数值无效时，重设置为默认值
     if(!this.isValidParamValue(paramValues,paramName,patchIndex)){
       paramValues=this.getDefaultParamValues(paramName);
-      this.ensureSettings().setParamValue(paramName,paramValues);
+      this.ensureSettings().setParamValues(paramName,paramValues);
     }
     return paramValues[patchIndex];
   }
@@ -396,15 +393,25 @@ export class Settings {
   }
 
 
-  static loadSettingsFromLocalStorage(){
+  public static loadSettingsFromLocalStorage(){
     const settingsString = localStorage.getItem(SETTINGS_KEY) || "{}";
     const settingsJson = JSON.parse(settingsString);
     const loadSetting=serializer.deserializeObject(settingsJson, Settings);
-    this._instance.enabled = loadSetting?.enabled??false;      
-    this._instance.paramSettings = loadSetting?.paramSettings??{};
+    this._instance.enabled = loadSetting?.enabled??false;
+    for(var index=0;index<5;index++){
+      //确保有默认值
+      if(!(index in this._instance.paramSettings)){
+        this._instance.paramSettings[index]=new paramSetting();
+      }
+      this._instance.paramSettings[index].initParamSetting(index);
+      //加载保存值
+      if(loadSetting?.paramSettings){
+        this._instance.paramSettings[index].copyParamSettings(loadSetting.paramSettings[index])
+      }
+    }      
   }
 
-  static saveSettingsToLocalStorage() {
+  public static saveSettingsToLocalStorage() {
     const settingsJson = serializer.serializeObject(this._instance);
     const settingsString = JSON.stringify(settingsJson);
     localStorage.setItem(SETTINGS_KEY, settingsString);

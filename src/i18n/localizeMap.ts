@@ -1,22 +1,171 @@
-import * as schinese from "./schinese.json";
-import * as tchinese from "./tchinese.json";
-import * as english from "./english.json";
+import * as cs from './cs.json';
+import * as de from './de.json';
+import * as el from './el.json';
+import * as es from './es.json';
+import * as es419 from './es-419.json';
+import * as fr from './fr.json';
+import * as it from './it.json';
+import * as ja from './ja.json';
+import * as ko from './ko.json';
+import * as nl from './nl.json';
+import * as pl from './pl.json';
+import * as pt from './pt.json';
+import * as ptBr from './pt-br.json';
+import * as ro from './ro.json';
+import * as ru from './ru.json';
+import * as sv from './sv.json';
+import * as tr from './tr.json';
+import * as uk from './uk.json';
+import * as zhCn from './zh-cn.json';
+import * as zhTw from './zh-tw.json';
+import * as en from './en.json';
+
 export const localizeMap = {
-    schinese: {
-      label: '简体中文',
-      strings: schinese,
-      credit: [],
-    },
-    tchinese: {
-        label: '繁體中文',
-        strings: tchinese,
-        credit: [],
-      },
-    english: {
-      label: 'English',
-      strings: english,
-      credit: [],
-    },  
+  en: {
+    name: 'English',
+    strings: en,
+    credit: []
+  },
+  cs: {
+    name: 'Čeština',
+    strings: cs,
+    credit: [],
+  },
+  de: {
+    name: 'Deutsch',
+    strings: de,
+    credit: [],
+  },
+  el: {
+    name: 'Ελληνικά',
+    strings: el,
+    credit: [],
+  },
+  es: {
+    name: 'Español-España',
+    strings: es,
+    credit: [],
+  },
+  'es-419': {
+    name: 'Español-Latinoamérica',
+    strings: es419,
+    credit: [],
+  },
+  fr: {
+    name: 'Français',
+    strings: fr,
+    credit: [],
+  },
+  it: {
+    name: 'Italiano',
+    strings: it,
+    credit: [],
+  },
+  ja: {
+    name: '日本語',
+    strings: ja,
+    credit: [],
+  },
+  ko: {
+    name: '한국어',
+    strings: ko,
+    credit: [],
+  },
+  nl: {
+    name: 'Nederlands',
+    strings: nl,
+    credit: [],
+  },
+  pl: {
+    name: 'Polski',
+    strings: pl,
+    credit: [],
+  },
+  pt: {
+    name: 'Português',
+    strings: pt,
+    credit: [],
+  },
+  'pt-br': {
+    name: 'Português-Brasil',
+    strings: ptBr,
+    credit: [],
+  },
+  ro: {
+    name: 'Română',
+    strings: ro,
+    credit: [],
+  },
+  ru: {
+    name: 'Русский',
+    strings: ru,
+    credit: [],
+  },
+  sv: {
+    name: 'Svenska',
+    strings: sv,
+    credit: [],
+  },
+  tr: {
+    name: 'Türkçe',
+    strings: tr,
+    credit: [],
+  },
+  uk: {
+    name: 'Українська',
+    strings: uk,
+    credit: [],
+  },
+  'zh-cn': {
+    name: '简体中文',
+    strings: zhCn,
+    credit: [],
+  },
+  'sc-sc': {
+    name: '简体中文',
+    strings: zhCn,
+    credit: [],
+  },
+  'zh-tw': {
+    name: '正體中文',
+    strings: zhTw,
+    credit: [],
+  },
+//  th: {
+//    name: 'ไทย',
+//    strings: th,
+//    credit: []
+//  },
+//  da: {
+//    name: 'Dansk',
+//    strings: da,
+//    credit: []
+//  },
+//  fi: {
+//    name: 'Suomi',
+//    strings: fi,
+//    credit: []
+//  },
+//  no: {
+//    name: 'Norsk',
+//    strings: no,
+//    credit: []
+//  },
+//  hu: {
+//    name: 'Magyar',
+//    strings: hu,
+//    credit: []
+//  },
+  //  bg: {
+  //    name: 'български език',
+  //    strings: bg,
+  //    credit: []
+  //  },
+//  vn: {
+//    name: 'Tiếng Việt',
+//    strings: vn,
+//    credit: []
+//  },
 };
 export enum localizeStrEnum {
   MANGOINDEX_LABEL = "MANGOINDEX_LABEL",

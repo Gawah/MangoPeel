@@ -77,18 +77,3 @@ export enum ParamPatchType{
     resortableList="resortableList",
     none="none"
 }
-
-export enum UpdateType{
-    DISABLE="DISABLE",
-    UPDATE="UPDATE",
-    HIDE="HIDE",
-    SHOW="SHOW",
-    ENABLE="ENABLE",
-    DISMOUNT="DISMOUNT"
-}
-
-export enum PluginState{
-    INIT="0",
-    RUN="1",
-    QUIT="2",
-  }
