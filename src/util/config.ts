@@ -29,7 +29,8 @@ paramList[ParamName.legacy_layout]={
         {label:"FSR",value:ParamName.fsr},
         {label:"GAMESCOPE",value:ParamName.fps},
         {label:"FRAME_TIME",value:ParamName.frame_timing},
-        {label:"FRAME_COUNT",value:ParamName.frame_count}
+        {label:"FRAME_COUNT",value:ParamName.frame_count},
+        {label:"APP",value:ParamName.debug}
         ],
         defaultValue:[
         [
@@ -47,7 +48,8 @@ paramList[ParamName.legacy_layout]={
             ParamName.fsr,
             ParamName.fps,
             ParamName.frame_timing,
-            ParamName.frame_count
+            ParamName.frame_count,
+            ParamName.debug
         ],
         [
             ParamName.custom_text_center,
@@ -64,7 +66,8 @@ paramList[ParamName.legacy_layout]={
             ParamName.fan,
             ParamName.fsr,
             ParamName.fps,
-            ParamName.frame_count
+            ParamName.frame_count,
+            ParamName.debug
         ],
         [
             ParamName.custom_text_center,
@@ -81,7 +84,8 @@ paramList[ParamName.legacy_layout]={
             ParamName.fsr,
             ParamName.fps,
             ParamName.frame_timing,
-            ParamName.frame_count
+            ParamName.frame_count,
+            ParamName.debug
         ],
         [
             ParamName.custom_text_center,
@@ -98,7 +102,8 @@ paramList[ParamName.legacy_layout]={
             ParamName.fsr,
             ParamName.fps,
             ParamName.frame_timing,
-            ParamName.frame_count
+            ParamName.frame_count,
+            ParamName.debug
         ],
         [
             ParamName.custom_text_center,
@@ -115,7 +120,8 @@ paramList[ParamName.legacy_layout]={
             ParamName.fsr,
             ParamName.fps,
             ParamName.frame_timing,
-            ParamName.frame_count
+            ParamName.frame_count,
+            ParamName.debug
         ],],
     }]
 }
@@ -746,6 +752,43 @@ paramList[ParamName.battery_icon] = {
     },
     patchs: []
 };
+/*
+paramList[ParamName.battery_watt] = {
+  name: ParamName.battery_watt,
+  group: ParamGroup.BATT,
+  preCondition: [{
+    enable: [ParamName.battery],
+    disable: [ParamName.no_display, ParamName.fps_only]
+  }, {
+    enable: [ParamName.legacy_layout, ParamName.full],
+    disable: [ParamName.no_display, ParamName.fps_only]
+  }],
+  toggle: {
+    label: localizeStrEnum.BATTERY_WATT_LABEL,
+    description: localizeStrEnum.BATTERY_WATT_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
+  },
+  patchs: []
+};
+
+paramList[ParamName.battery_time] = {
+  name: ParamName.battery_time,
+  group: ParamGroup.BATT,
+  preCondition: [{
+    enable: [ParamName.battery],
+    disable: [ParamName.no_display, ParamName.fps_only]
+  }, {
+    enable: [ParamName.legacy_layout, ParamName.full],
+    disable: [ParamName.no_display, ParamName.fps_only]
+  }],
+  toggle: {
+    label: localizeStrEnum.BATTERY_TIME_LABEL,
+    description: localizeStrEnum.BATTERY_TIME_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
+  },
+  patchs: []
+};
+*/
   
 paramList[ParamName.fan] = {
     name: ParamName.fan,
@@ -849,6 +892,19 @@ paramList[ParamName.frametime] = {
     label: localizeStrEnum.FRAME_TIME_LABEL,
     description: localizeStrEnum.FRAME_TIME_DESCRIPTION,
     defaultEnable: [false, false, false, true, true],
+  },
+  patchs: []
+};
+paramList[ParamName.debug] = {
+  name: ParamName.debug,
+  group: ParamGroup.OTHER,
+  preCondition: [{
+    disable: [ParamName.fps_only, ParamName.no_display]
+  }],
+  toggle: {
+    label: localizeStrEnum.DEBUG_LABEL,
+    description: localizeStrEnum.DEBUG_DESCRIPTION,
+    defaultEnable: [false, false, false, false, false],
   },
   patchs: []
 };

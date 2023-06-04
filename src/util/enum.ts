@@ -53,7 +53,10 @@ export enum ParamName {
   custom_text = "custom_text",
   time = "time",
   version = "version",
-  time_format = "time_format"
+  time_format = "time_format",
+  //battery_watt = "battery_watt",
+  //battery_time = "battery_time",
+  debug = "debug"
 }
 
 export enum ParamGroup{
