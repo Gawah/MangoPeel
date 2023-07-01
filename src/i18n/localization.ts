@@ -1,15 +1,19 @@
 import { localizeMap, localizeStrEnum } from "./localizeMap";
 
-export class localizationManager {
-  private static language = "en"
-  //private has_language  = false
+export class LocalizationManager {
+  private static language = "en";
+
   public static async init() {
     this.language = window.LocalizationManager.m_rgLocalesToUse[0];
     console.debug(`this.language=${this.language}`);
   }
-  public static getString(defaultString:localizeStrEnum){
-    var str = localizeMap[this.language]?.strings?.[defaultString]??localizeMap["en"]?.strings?.[defaultString]??defaultString;
-    return str
+
+  public static getString(defaultString: localizeStrEnum) {
+    const str =
+      localizeMap[this.language]?.strings?.[defaultString] ??
+      localizeMap["en"]?.strings?.[defaultString] ??
+      defaultString;
+    return str;
   }
 }
 

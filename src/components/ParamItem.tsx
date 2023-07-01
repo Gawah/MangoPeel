@@ -5,32 +5,38 @@ import { ParamName, ParamPatchType, Settings } from "../util";
 import { ParamData, ParamPatch } from "../util/interface";
 import { SlowSliderField } from "./SlowSliderField";
 import {TextInputModal} from "./TextInputModal";
-import ResortableList from "./resortableList";
-import { localizationManager, localizeStrEnum } from "../i18n";
+import ResortableList from "./ResortableList";
+import { LocalizationManager, localizeStrEnum } from "../i18n";
 
-const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:number}> = ({ paramName,patch,patchIndex}) => {
-  
-  const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(paramName,patchIndex));
+const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number }> = ({ paramName, patch, patchIndex }) => {
+
+  const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(paramName, patchIndex));
   const [selectedIndex, setSelectedIndex] = useState(patch.args.indexOf(selectedValue));
-  function updateEvent(){
-    var new_value=Settings.getParamValue(paramName,patchIndex);
-    var new_index=patch.args.indexOf(new_value);
-    setSelectedValue(new_value);
-    setSelectedIndex(new_index);
-  }
-  useEffect(()=>{
-    Settings.settingChangeEventBus.addEventListener(paramName,updateEvent);
-    return ()=>{
-      Settings.settingChangeEventBus.removeEventListener(paramName,updateEvent);
+
+  useEffect(() => {
+    const updateEvent = () => {
+      const new_value = Settings.getParamValue(paramName, patchIndex);
+      const new_index = patch.args.indexOf(new_value);
+      setSelectedValue(new_value);
+      setSelectedIndex(new_index);
     };
-  },[])
+    Settings.settingChangeEventBus.addEventListener(paramName, updateEvent);
+    return () => {
+      Settings.settingChangeEventBus.removeEventListener(paramName, updateEvent);
+    };
+  }, []);
+
+  const updateSelectedValue = (value: any) => {
+    setSelectedValue(value);
+    Settings.setParamValue(paramName, patchIndex, value);
+  };
 
   switch (patch.type) {
     case ParamPatchType.slider:
       return (
         <>
           <PanelSectionRow id="MangoPeel_Slider">
-              <SlowSliderField
+            <SlowSliderField
               min={patch.args[0]}
               max={patch.args[1]}
               step={patch.args[2]}
@@ -38,10 +44,8 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
               value={selectedValue}
               layout={"inline"}
               bottomSeparator={"none"}
-              onChangeEnd={(value) => {
-                setSelectedValue(value);
-                Settings.setParamValue(paramName,patchIndex,value);
-              }}/>
+              onChangeEnd={updateSelectedValue}
+            />
           </PanelSectionRow>
           <style>
             {
@@ -61,31 +65,31 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
                 flex-direction: column;
               }`
             }
-            </style>
+          </style>
         </>
       );
     case ParamPatchType.notchSlider:
-        return (
-          <>
-            <PanelSectionRow>
-              <SliderField
-                label={patch.label}
-                min={0}
-                max={patch.args.length-1}
-                value={selectedIndex}
-                bottomSeparator={"none"}
-                notchCount={patch.args.length}
-                notchLabels={patch.args.map((x, i) => {
-                  return { notchIndex: i, label: x, value:i };
-                })}
-                onChange={(value) => {
-                  setSelectedIndex(value);
-                  Settings.setParamValue(paramName,patchIndex,patch.args[value]);
-                }}
-              />
-            </PanelSectionRow>
-          </>
-        );
+      return (
+        <>
+          <PanelSectionRow>
+            <SliderField
+              label={patch.label}
+              min={0}
+              max={patch.args.length - 1}
+              value={selectedIndex}
+              bottomSeparator={"none"}
+              notchCount={patch.args.length}
+              notchLabels={patch.args.map((x, i) => {
+                return { notchIndex: i, label: x, value: i };
+              })}
+              onChange={(value) => {
+                setSelectedIndex(value);
+                updateSelectedValue(patch.args[value]);
+              }}
+            />
+          </PanelSectionRow>
+        </>
+      );
     case ParamPatchType.dropdown:
       return (
         <>
@@ -93,49 +97,54 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
             <DropdownItem
               label={patch.label}
               rgOptions={patch.args.map((x, i) => {
-                  return { data: i, label: x }!!;
+                return { data: i, label: x };
               })}
               selectedOption={selectedIndex}
               bottomSeparator={"none"}
               onChange={(index) => {
                 setSelectedIndex(index.data);
-                Settings.setParamValue(paramName,patchIndex,index.label);
+                updateSelectedValue(index.label);
               }}
             />
           </PanelSectionRow>
         </>
       );
-      case ParamPatchType.textInput:
+    case ParamPatchType.textInput:
       return (
         <>
           <PanelSectionRow>
             <ButtonItem
-            layout="below"
-            bottomSeparator={"none"}
-            onClick={() => {showModal(<TextInputModal
-              strTitle={patch.args?.[0]}
-              strDescription={patch.args?.[1]}
-              defaultValue={selectedValue}
-              OnConfirm={(text)=>{
-              Settings.setParamValue(paramName,patchIndex,text);
-            }} />)}}>
+              layout="below"
+              bottomSeparator={"none"}
+              onClick={() => {
+                showModal(
+                  <TextInputModal
+                    strTitle={patch.args?.[0]}
+                    strDescription={patch.args?.[1]}
+                    defaultValue={selectedValue}
+                    OnConfirm={(text) => {
+                      updateSelectedValue(text);
+                    }}
+                  />
+                );
+              }}
+            >
               {selectedValue}
             </ButtonItem>
           </PanelSectionRow>
         </>
       );
-      case ParamPatchType.resortableList:
+    case ParamPatchType.resortableList:
       return (
         <>
-            <ResortableList title={localizationManager.getString(localizeStrEnum.PARAM_MANUALLY_SORT_TITLE)} initialArray={selectedValue.map((value: any)=>{
+            <ResortableList initialArray={selectedValue.map((value: any)=>{
               return {label:patch.args.filter((item)=>{ return value==item.value})?.[0]?.label??"not_find",value:value};
             })}
             onArrayChange={(newArray)=>{
               var value = newArray.map((item)=>{
                 return item.value;
               })
-              setSelectedValue(value);
-              Settings.setParamValue(paramName,patchIndex,value);
+              updateSelectedValue(value);
             }}/>
         </>
       );
@@ -145,13 +154,13 @@ const ParamPatchItem: VFC<{ paramName:ParamName, patch: ParamPatch; patchIndex:n
 };
 
 export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
-      const [enable, setEnable] = useState(Settings.getParamEnable(paramData.name));
-      const [visible,setVisible] = useState(Settings.getParamVisible(paramData.name));
+      const [enable, setEnable] = useState(Settings.getParamEnable(paramData.name as ParamName));
+      const [visible,setVisible] = useState(Settings.getParamVisible(paramData.name as ParamName));
       const [showPatch,setShowPatch] = useState(false);
       const updateEvent=()=>{
         //console.log(`enable=${enable} new_enable=${new_enable}`);
-        setEnable(Settings.getParamEnable(paramData.name));
-        setVisible(Settings.getParamVisible(paramData.name));
+        setEnable(Settings.getParamEnable(paramData.name as ParamName));
+        setVisible(Settings.getParamVisible(paramData.name as ParamName));
       }
       useEffect(()=>{
         Settings.settingChangeEventBus.addEventListener(paramData.name,updateEvent);
@@ -165,8 +174,8 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
           <PanelSectionRow>
             <ToggleField
               bottomSeparator={(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0?"none":"standard"}
-              label={paramData.toggle.label?localizationManager.getString((paramData.toggle.label)as localizeStrEnum):undefined}
-              description={paramData.toggle.description?localizationManager.getString((paramData.toggle.description)as localizeStrEnum):undefined}
+              label={paramData.toggle.label?LocalizationManager.getString((paramData.toggle.label)as localizeStrEnum):undefined}
+              description={paramData.toggle.description?LocalizationManager.getString((paramData.toggle.description)as localizeStrEnum):undefined}
               checked={enable}
               onChange={(enable) => {
                 setEnable(enable);

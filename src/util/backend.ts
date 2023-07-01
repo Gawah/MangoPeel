@@ -17,6 +17,13 @@ export class Backend {
     return steamindex;
   }
 
+  public static reloadConfig(){
+    this.serverAPI!.callPluginMethod<{},boolean>("ReloadConfigPath",{}).then(res=>{
+      if (res.success){
+        console.debug("ReloadConfigPath = " + res.result);
+      }
+    })
+  }
   public static applyConfig(index:number,config:string){
     this.applyCount=this.applyCount+1;
     //取200ms内的最后一次覆写请求，防止连续写入导致mangoapp闪退

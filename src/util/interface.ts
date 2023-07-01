@@ -3,7 +3,7 @@ import { ParamGroup, ParamName, ParamPatchType } from "./enum";
 export interface ParamData {
     name: ParamName;
     group:ParamGroup;
-    preCondition:{enable?:ParamName[],disable?:ParamName[]}[];
+    preCondition?:{enable?:ParamName[],disable?:ParamName[]}[];
     toggle: ParamToggle;
     patchs: ParamPatch[];
 }

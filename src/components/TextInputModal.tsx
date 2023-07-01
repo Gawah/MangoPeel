@@ -1,49 +1,50 @@
 import { ConfirmModal, TextField } from "decky-frontend-lib";
 import { useState } from "react";
-import { localizationManager, localizeStrEnum } from "../i18n";
+import { LocalizationManager, localizeStrEnum } from "../i18n";
+
+interface TextInputModalProps {
+  closeModal?: () => void;
+  strTitle?: string;
+  strDescription?: string[];
+  defaultValue?: string;
+  OnConfirm: (text: string) => void;
+}
 
 export function TextInputModal({
   closeModal,
-  strTitle,
-  strDescription,
-  defaultValue,
+  strTitle = "TEXT INPUT",
+  strDescription = [],
+  defaultValue = "",
   OnConfirm,
-}: {
-  closeModal?: () => void;
-  strTitle?:string|undefined;
-  strDescription?:string[]|undefined;
-  defaultValue?:string|undefined;
-  OnConfirm: (text:string) => void;
-}) {
-  const [text, setText] = useState<string>(defaultValue??"");
+}: TextInputModalProps) {
+  const [text, setText] = useState<string>(defaultValue);
+
+  const handleConfirm = () => {
+    if (text.length === 0) {
+      return;
+    }
+    OnConfirm(text);
+    closeModal?.();
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
   return (
     <ConfirmModal
-      strTitle={strTitle?localizationManager.getString(strTitle as localizeStrEnum):"TEXT INPUT"}
-      strDescription={<div style={{whiteSpace:"pre-wrap"}}>
-        {
-          strDescription?.map((str)=>{
-            return (
-              <div>{localizationManager.getString(str as localizeStrEnum)}</div>
-            )
-          })
-        }
-      </div>}
+      strTitle={LocalizationManager.getString(strTitle as localizeStrEnum)}
+      strDescription={
+        <div style={{ whiteSpace: "pre-wrap" }}>
+          {strDescription.map((str) => (
+            <div key={str}>{LocalizationManager.getString(str as localizeStrEnum)}</div>
+          ))}
+        </div>
+      }
       onCancel={closeModal}
-      onOK={() => {
-        if (text.length === 0) {
-          return;
-        }
-        OnConfirm(text);
-        closeModal?.();
-      }}
+      onOK={handleConfirm}
     >
-      <TextField
-        value={text}
-        rangeMin = {0}
-        onChange={(e) => {
-          setText(e.target.value);
-        }}
-      />
+      <TextField value={text} onChange={handleTextChange} />
     </ConfirmModal>
   );
 }

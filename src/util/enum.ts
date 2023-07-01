@@ -69,7 +69,6 @@ export enum ParamGroup{
     RAM="RAM",
     BATT="BATT",
     OTHER="OTHER",
-
 }
 
 export enum ParamPatchType{
