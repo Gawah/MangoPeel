@@ -1,48 +1,50 @@
 # The decky plugin module is located at decky-loader/plugin
 # For easy intellisense checkout the decky-loader code one directory up
 # or add the `decky-loader/plugin` path to `python.analysis.extraPaths` in `.vscode/settings.json`
-import decky_plugin
 import asyncio
 import os
 import time
 import logging
-import pyinotify
 import subprocess
-from helpers import get_user
+
 steam_config=[
     [
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nno_display",
-        "preset=0"
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\npreset=0"
     ],
     [
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nframe_timing=0\ncpu_stats=0\ngpu_stats=0\nfps=1\nfps_only\nlegacy_layout=0\nwidth=40\nframetime=0",
-        "preset=1"
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\npreset=1"
     ],
     [
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nlegacy_layout=0\nhorizontal\nbattery\ngpu_stats\ncpu_stats\ncpu_power\ngpu_power\nram\nfps\nframetime=0\nhud_no_margin\ntable_columns=14\nframe_timing=1",
-        "preset=2"
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\npreset=2"
     ],
     [
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery",
-        "preset=3"
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\npreset=3"
     ],
     [
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nfull\ncpu_temp\ngpu_temp\nram\nvram\nio_read\nio_write\narch\ngpu_name\ncpu_power\ngpu_power\nwine\nframetime\nbattery",
-        "preset=4"
+        "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\npreset=4"
     ]
 ]
 
 #日志配置
+logging.basicConfig(
+    level = logging.DEBUG,
+    filename = "/tmp/MangoPeel.log",
+    format="[%(asctime)s | %(filename)s:%(lineno)s:%(funcName)s] %(levelname)s: %(message)s",
+    filemode = 'w',
+    force = True
+)
+
 try:
-    LOG_LOCATION = "/tmp/MangoPeel.log"
-    logging.basicConfig(
-        level = logging.DEBUG,
-        filename = LOG_LOCATION,
-        format="[%(asctime)s | %(filename)s:%(lineno)s:%(funcName)s] %(levelname)s: %(message)s",
-        filemode = 'w',
-        force = True)
+    import pyinotify
+    from helpers import get_user
+    import decky_plugin
 except Exception as e:
-    logging.error(f"日志配置异常|{e}")
+    logging.error(f"加载模块失败|{e}")
 
 class MangoPeel:
     class ConfigEventHandler(pyinotify.ProcessEvent):

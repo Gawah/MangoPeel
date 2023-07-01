@@ -68,7 +68,7 @@ from collections import deque
 from datetime import datetime, timedelta
 import time
 import re
-import asyncore
+import asyncio
 import glob
 import locale
 import subprocess
@@ -76,7 +76,7 @@ import subprocess
 try:
     from functools import reduce
 except ImportError:
-    pass  # Will fail on Python 2.4 which has reduce() builtin anyway.
+    pass  # Will fail on Python 2.4 which has reduce() builtin anyy.
 
 try:
     import ctypes
@@ -1494,33 +1494,59 @@ class ThreadedNotifier(threading.Thread, Notifier):
         self.loop()
 
 
-class AsyncNotifier(asyncore.file_dispatcher, Notifier):
+class AsyncNotifier(asyncio.Protocol, Notifier):
     """
-    This notifier inherits from asyncore.file_dispatcher in order to be able to
-    use pyinotify along with the asyncore framework.
+    This notifier inherits from asyncio.Protocol in order to be able to
+    use pyinotify along with the asyncio framework.
 
     """
     def __init__(self, watch_manager, default_proc_fun=None, read_freq=0,
                  threshold=0, timeout=None, channel_map=None):
         """
         Initializes the async notifier. The only additional parameter is
-        'channel_map' which is the optional asyncore private map. See
+        'channel_map' which is the optional asyncio private map. See
         Notifier class for the meaning of the others parameters.
 
         """
         Notifier.__init__(self, watch_manager, default_proc_fun, read_freq,
                           threshold, timeout)
-        asyncore.file_dispatcher.__init__(self, self._fd, channel_map)
+        self.channel_map = channel_map
+
+    def connection_made(self, transport):
+        """
+        Called when the connection is made. Override this method to perform any
+        necessary setup.
+
+        """
+        self.transport = transport
+        super().connection_made(transport)
+
+    def data_received(self, data):
+        """
+        Called when some data is received. Override this method to handle the
+        received data.
+
+        """
+        self.handle_read()
 
     def handle_read(self):
         """
-        When asyncore tells us we can read from the fd, we proceed processing
+        When asyncio tells us we can read from the socket, we proceed processing
         events. This method can be overridden for handling a notification
         differently.
 
         """
         self.read_events()
         self.process_events()
+
+    def connection_lost(self, exc):
+        """
+        Called when the connection is lost or closed. Override this method to
+        perform any necessary cleanup.
+
+        """
+        super().connection_lost(exc)
+        # Perform cleanup tasks here
 
 
 class TornadoAsyncNotifier(Notifier):
