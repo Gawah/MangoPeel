@@ -90,5 +90,7 @@
     "TIME_FORMAT_INPUT_DESCRIPTION1":"Year: %Y           Month: %m           Day: %d ",
     "TIME_FORMAT_INPUT_DESCRIPTION2":"Hour: %H           Minute: %M           Second: %S",
     "TIME_FORMAT_INPUT_DESCRIPTION3":"AM/PM: %p          Timezone: %Z          Timestamp: %s",
-    "TIME_FORMAT_INPUT_DESCRIPTION4":"Day of week: %A/%a(Sunday/Sun)    Month name: %B/%b(January/Jan)"
+    "TIME_FORMAT_INPUT_DESCRIPTION4":"Day of week: %A/%a(Sunday/Sun)    Month name: %B/%b(January/Jan)",
+    "DEBUG_LABEL":"App",
+    "DEBUG_DESCRIPTION":"Display App Debug Information"
 }

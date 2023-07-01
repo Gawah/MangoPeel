@@ -90,5 +90,7 @@
     "TIME_FORMAT_INPUT_DESCRIPTION1":"年份: %Y           月份: %m           日期: %d ",
     "TIME_FORMAT_INPUT_DESCRIPTION2":"小时: %H           分钟: %M           秒數: %S",
     "TIME_FORMAT_INPUT_DESCRIPTION3":"上下午: %p          時區: %Z           时间戳: %s",
-    "TIME_FORMAT_INPUT_DESCRIPTION4":"星期几: %A/%a(Sunday/Sun)    月份名称: %B/%b(January/Jan)"
+    "TIME_FORMAT_INPUT_DESCRIPTION4":"星期几: %A/%a(Sunday/Sun)    月份名称: %B/%b(January/Jan)",
+    "DEBUG_LABEL":"App",
+    "DEBUG_DESCRIPTION":"顯示應用程式除錯資訊"
 }

@@ -1,6 +1,6 @@
 {
   "name": "MangoPeel",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A decky plugin for custom performance monitoring style.",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
@@ -36,12 +36,12 @@
     "rollup": "^2.79.1",
     "rollup-plugin-import-assets": "^1.1.1",
     "shx": "^0.3.4",
-    "tslib": "^2.5.2",
+    "tslib": "^2.6.0",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "decky-frontend-lib": "^3.21.0",
-    "react-icons": "^4.8.0",
+    "decky-frontend-lib": "^3.21.8",
+    "react-icons": "^4.10.1",
     "typescript-json-serializer": "^4.3.0"
   },
   "pnpm": {
