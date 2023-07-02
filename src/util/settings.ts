@@ -409,7 +409,7 @@ export class Settings {
       }
       this._instance.paramSettings[index].initParamSetting(index);
       //加载保存值
-      if(loadSetting?.paramSettings){
+      if(loadSetting?.paramSettings?.[index]){
         this._instance.paramSettings[index].copyParamSettings(loadSetting.paramSettings[index])
       }
     }      
