@@ -6,8 +6,27 @@ import os
 import time
 import logging
 import subprocess
+import ctypes
+import struct
+import sys
+import threading
+from ctypes import CDLL, get_errno
+from threading import Thread, Timer
 
-steam_config=[
+IN_ACCESS        = 0x00000001  # 文件被访问
+IN_MODIFY        = 0x00000002  # 文件被修改
+IN_ATTRIB       = 0x00000004    # 元数据改变
+IN_CLOSE_WRITE   = 0x00000008  # 可写文件被关闭
+IN_CLOSE_NOWRITE = 0x00000010  # 不可写文件被关闭
+IN_OPEN          = 0x00000020  # 文件被打开
+IN_MOVED_FROM    = 0x00000040  # 文件从X移动
+IN_MOVED_TO      = 0x00000080  # 文件被移动到Y
+IN_CREATE       = 0x00000100  # 子文件创建
+IN_DELETE       = 0x00000200  # 子文件删除
+IN_DELETE_SELF   = 0x00000400  # 自身（被监视的项本身）被删除
+IN_MOVE_SELF     = 0x00000800  # 自身（被监视的项本身）被移动
+
+STEAM_CONFIG=[
     [
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nno_display",
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\npreset=0"
@@ -39,27 +58,103 @@ logging.basicConfig(
     force = True
 )
 
-try:
-    import pyinotify
-    from helpers import get_user
-    import decky_plugin
-except Exception as e:
-    logging.error(f"加载模块失败|{e}")
+class Inotify:
+    def __init__(self):
+        try:
+            self._libc = CDLL(None, use_errno=True)
+            self._libc.inotify_init.argtypes = []
+            self._libc.inotify_init.restype = ctypes.c_int
+            self._libc.inotify_add_watch.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_uint32]
+            self._libc.inotify_add_watch.restype = ctypes.c_int
+            self._libc.inotify_rm_watch.argtypes = [ctypes.c_int, ctypes.c_int]
+            self._libc.inotify_rm_watch.restype = ctypes.c_int
+
+            self.fd = self._libc.inotify_init()
+
+            self._wdMap = {}
+            self._delay = 0.005
+            self._delaytimer = None
+            self._runThread = None
+        except Exception as e:
+             logging.error(e)
+
+    def _process(self):
+        try:
+            if self._runThread:
+                nowThread = self._runThread.name
+            while self._runThread and self._runThread.name == nowThread:
+                buf = os.read(self.fd, 4096)
+                pos = 0
+                wdMap = self._wdMap.copy()
+                while pos < len(buf):
+                    (wd, mask, cookie, name_len) = struct.unpack('iIII', buf[pos:pos + 16])
+                    pos += 16
+                    (name,) = struct.unpack('%ds' % name_len, buf[pos:pos + name_len])
+                    pos += name_len
+                    item = wdMap.get(wd)
+                    if item and self._runThread and self._runThread.name == nowThread:
+                        logging.debug(f"callback path:{item['path']}, mask:{mask}")
+                        self._delayCall(item['callback'], item['path'], mask)
+        except Exception as e:
+             logging.error(e)
+
+    def _delayCall(self, callfunc, *args):
+        try:
+            if self._delaytimer is not None and self._delaytimer.is_alive():
+                self._delaytimer.cancel()
+            self._delaytimer = Timer(self._delay, lambda: callfunc(*args))
+            self._delaytimer.start()
+        except Exception as e:
+             logging.error(e)
+
+    def add_watch(self, path, mask, callback):
+        try:
+            logging.debug(f"add_watch(self, path:{path}, mask:{mask}, callback:{callback})")
+            path_buf = ctypes.create_string_buffer(path.encode(sys.getfilesystemencoding()))
+            wd = self._libc.inotify_add_watch(self.fd, path_buf, mask)
+            self._wdMap[wd] = {'path': path, 'callback': callback}
+            if wd < 0:
+                sys.stderr.write(f"can't add watch for {path_buf}: {os.strerror(get_errno())}\n")
+            return wd
+        except Exception as e:
+             logging.error(e)
+
+    def remove_watch(self, path):
+        try:
+            for wd in list(self._wdMap):
+                if path == self._wdMap[wd]['path']:
+                    if self._libc.inotify_rm_watch(self.fd, wd) < 0:
+                        sys.stderr.write(f"can't remove watch: {os.strerror(get_errno())}\n")
+                    else:
+                        self._wdMap.pop(wd)
+        except Exception as e:
+             logging.error(e)
+
+    def run(self):
+        try:
+            if self._runThread:
+                pass
+            else:
+                self._runThread =  Thread(target=self._process)
+                self._runThread.start()
+        except Exception as e:
+             logging.error(e)
+
+    def stop(self):
+        self._runThread = None
 
 class MangoPeel:
-    class ConfigEventHandler(pyinotify.ProcessEvent):
-        def __init__(self,mangoapp):
-            self._mangoapp=mangoapp
 
-        def process_IN_MODIFY(self, event):
-            self._mangoapp.overWriteConfig()     #覆盖当前的配置
+    def process_IN_MODIFY(self, path, mask):
+        logging.debug(f"process_IN_MODIFY path:{path} mask:{mask}")
+        self.overWriteConfig()     #覆盖当前的配置
 
     def __init__(self):
         self._procPath=""    #proc路径
         self._appPid=""     #进程PID
         self._appcmdLine=""     #cmdline
         self._configPath=""      #mangoapp配置文件路径
-        self._configMonitor = pyinotify.WatchManager()  #配置监视
+        self._inotify = Inotify()
         self._setConfigList=["","","","",""]       #要设置的mangoapp配置
         self._steamIndex=-1
         self._bmangoapp_steam=True
@@ -67,10 +162,16 @@ class MangoPeel:
         self._findInterval=2     #未找到配置时 间隔多久再找一次
         self._findCount=0   #当前找几次
         self._maxFindCount=3    #最多找几次
+        
 
+    def register(self):
         self.findConfigPath()   #加载文件路径
         self.overWriteConfig()     #覆盖当前的配置
-        self._registerConfigNotifier()  #注册文件监听
+        self._inotify.run()     #开启监控线程
+
+    def unregister(self):
+        self._inotify.stop()    #关闭监控线程
+
 
     def findConfigPath(self):
         procPath="/proc"
@@ -105,21 +206,12 @@ class MangoPeel:
                 if appEnv.startswith("MANGOHUD_CONFIGFILE"):
                     self._configPath=appEnv.split("=")[1]
                     self._findConfig = True
-                    self._configMonitor.add_watch(self._configPath, pyinotify.IN_MODIFY, rec=True)
+                    self._inotify.add_watch(self._configPath, IN_MODIFY, self.process_IN_MODIFY)
                     logging.info(f"找到mangoapp配置路径 MANGOHUD_CONFIGFILE={self._configPath}")
                     return True
             except:
                 continue
         return False
-
-    def _registerConfigNotifier(self):
-        try:
-            if(not self._findConfig):
-                return
-            notifier = pyinotify.ThreadedNotifier(self._configMonitor, MangoPeel.ConfigEventHandler(self))
-            notifier.start()
-        except Exception as e:
-            logging.error(e)
     
     def getSteamIndex(self):
         try:
@@ -156,13 +248,13 @@ class MangoPeel:
             nowConfig = open(self._configPath, "r").read().strip()
             #没有mangopeel的标签 则查找是否是steam写入的配置 并记录下标
             if not nowConfig.startswith("mangopeel_flag"):
-                for index in range(len(steam_config)):
-                    if nowConfig in steam_config[index]:
+                for index in range(len(STEAM_CONFIG)):
+                    if nowConfig in STEAM_CONFIG[index]:
                         self._steamIndex=index
                         self._bmangoapp_steam=True
                         logging.debug(f"识别到steam下标={self._steamIndex} 是否写入mangoapp_steam={self._bmangoapp_steam}")
                         break
-                    for config in steam_config[index]:    
+                    for config in STEAM_CONFIG[index]:    
                         if config.replace("mangoapp_steam\n","") == nowConfig:
                             self._steamIndex=index
                             self._bmangoapp_steam=False
@@ -217,21 +309,6 @@ class Plugin:
         except Exception as e:
             logging.error(e)
             return False
-
-    async def get_language(self):
-        try:
-            lang_path=f"/home/{get_user()}/.steam/registry.vdf"
-            if os.path.exists(lang_path):
-                command="cat {}|grep language|sed -n '1p'|xargs|cut  -d \" \" -f  2".format(lang_path)
-                language=subprocess.getoutput(command)
-            else:
-                language="english"
-                logging.error(f"語言檢測路徑{lang_path}不存在該文件")
-            logging.info(f"get_language {language} path={lang_path}")
-            return language
-        except Exception as e:
-            logging.error(e)
-            return "english"
     
     async def get_steamIndex(self):
         try:
@@ -246,27 +323,10 @@ class Plugin:
     async def _main(self):
         logging.info("Running MangoPeel!")
         self._mango=MangoPeel()
+        self._mango.register()
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
+        self._mango.unregister()
         logging.info("End MangoPeel!")
         pass 
-
-    # Migrations that should be performed before entering `_main()`.
-    async def _migration(self):
-        logging.info("Migrating")
-        # Here's a migration example for logs:
-        # - `~/.config/decky-template/template.log` will be migrated to `decky_plugin.DECKY_PLUGIN_LOG_DIR/template.log`
-        #decky_plugin.migrate_logs(os.path.join("/tmp/MangoPeel.log"))
-        # Here's a migration example for settings:
-        # - `~/homebrew/settings/template.json` is migrated to `decky_plugin.DECKY_PLUGIN_SETTINGS_DIR/template.json`
-        # - `~/.config/decky-template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_SETTINGS_DIR/`
-        #decky_plugin.migrate_settings(
-        #    os.path.join(decky_plugin.DECKY_HOME, "settings", "template.json"),
-        #    os.path.join(decky_plugin.DECKY_USER_HOME, ".config", "decky-template"))
-        # Here's a migration example for runtime data:
-        # - `~/homebrew/template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_RUNTIME_DIR/`
-        # - `~/.local/share/decky-template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_RUNTIME_DIR/`
-        #decky_plugin.migrate_runtime(
-        #    os.path.join(decky_plugin.DECKY_HOME, "template"),
-        #    os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
