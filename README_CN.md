@@ -5,7 +5,7 @@
 
 [简体中文](README_CN.md) | [English](README.md)
 
-MangoPeel是一款steamdeck插件用于[decky-loader](https://github.com/SteamDeckHomebrew/decky-loader)。它可以让用户配置自己喜欢的mangoapp样式来覆盖steam原有的5档样式。它的工作原理是找到mangoapp的配置文件，通过快捷菜单的UI快速配置各种mangoapp参数，写入到配置文件并根据[pyinotify](https://pypi.org/project/pyinotify/)来实时监控配置文件，以此来实现自定义的mangoapp样式。
+MangoPeel是一款steamdeck插件用于[decky-loader](https://github.com/SteamDeckHomebrew/decky-loader)。它可以让用户配置自己喜欢的mangoapp样式来覆盖steam原有的5档样式。它的工作原理是找到mangoapp的配置文件，通过快捷菜单的UI快速配置各种mangoapp参数写入到配置文件。
 
 ## 插件效果截图
 

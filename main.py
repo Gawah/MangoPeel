@@ -72,7 +72,7 @@ class Inotify:
             self.fd = self._libc.inotify_init()
 
             self._wdMap = {}
-            self._delay = 0.005
+            self._delay = 0.002
             self._delaytimer = None
             self._runThread = None
         except Exception as e:
