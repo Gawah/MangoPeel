@@ -10,6 +10,7 @@ import ctypes
 import struct
 import sys
 import threading
+import re
 from ctypes import CDLL, get_errno
 from threading import Thread, Timer
 
@@ -260,12 +261,19 @@ class MangoPeel:
                             self._bmangoapp_steam=False
                             logging.debug(f"识别到steam下标={self._steamIndex} 是否写入mangoapp_steam={self._bmangoapp_steam}")
                             break
+            else:
+                match = re.search(r"mangopeel_flag=(\d+)", nowConfig)
+                if match:
+                    self._steamIndex = int(match.group(1))
+                    self._bmangoapp_steam = nowConfig.find("mangoapp_steam") != -1
+                    logging.debug(f"识别到steam下标={self._steamIndex} 是否写入mangoapp_steam={self._bmangoapp_steam}")
+                
             if not self._findConfig or self._steamIndex<0 or self._setConfigList[self._steamIndex] == "":
                 return
             if self._bmangoapp_steam:
-                writeStr = ("mangopeel_flag\nmangoapp_steam\n" + self._setConfigList[self._steamIndex])
+                writeStr = (f"mangopeel_flag={self._steamIndex}\nmangoapp_steam\n" + self._setConfigList[self._steamIndex])
             else:
-                writeStr = "mangopeel_flag\n" + self._setConfigList[self._steamIndex]
+                writeStr = f"mangopeel_flag={self._steamIndex}\n" + self._setConfigList[self._steamIndex]
 
             if writeStr.replace("\n","")!= nowConfig.replace("\n",""):
                 open(self._configPath, "w").write(writeStr)
