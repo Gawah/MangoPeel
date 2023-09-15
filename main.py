@@ -319,6 +319,7 @@ class Plugin:
             logging.error(e)
             return 0
     
+    
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
         logging.info("Running MangoPeel!")

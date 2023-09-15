@@ -50,11 +50,11 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
           <style>
             {
               //缩短滑动条
-              `#MangoPeel_Slider 
+              `#MangoPeel_Slider
               .gamepaddialog_Field_S-_La.gamepaddialog_ChildrenWidthFixed_1ugIU 
-              .gamepaddialog_FieldChildren_14_HB{
-                min-width:215px
-              }`
+              .gamepaddialog_FieldChildrenWithIcon_2ZQ9w{
+                min-width: 215px!important;
+              } `
             }
             {
               //调整标签位置
