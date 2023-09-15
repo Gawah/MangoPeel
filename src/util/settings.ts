@@ -107,7 +107,7 @@ export class ParamSetting {
         if (valueList.length > 0) {
           switch (paramData.name) {
             case ParamName.legacy_layout:
-              config += `${ParamName.legacy_layout}=1\n`;
+              config += `=1`;
               break;
             default:
               config += "=";
