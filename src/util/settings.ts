@@ -1,6 +1,6 @@
 import { JsonObject, JsonProperty, JsonSerializer } from 'typescript-json-serializer';
 import { Backend } from './backend';
-import { paramList } from './config';
+import { Config } from './config';
 import { ParamGroup, ParamName, ParamPatchType} from './enum';
 import { ParamData } from './interface';
 
@@ -77,11 +77,11 @@ export class ParamSetting {
   }
 
   public getParamEnableDefault(paramName: ParamName, defaultIndex: number) {
-    return paramList[paramName]?.toggle.defaultEnable[defaultIndex];
+    return Config.paramList[paramName]?.toggle.defaultEnable[defaultIndex]??false;
   }
 
   public getParamValueDefault(paramName: ParamName, defaultIndex: number) {
-    return paramList[paramName]?.patchs.map((value) => {
+    return Config.paramList[paramName]?.patchs.map((value) => {
       return value.defaultValue[defaultIndex];
     })
   }
@@ -100,7 +100,7 @@ export class ParamSetting {
       const bParamOrder = paramOrderList.indexOf(b[1].name);
       return aParamOrder - bParamOrder;
     }
-    for (const [_name, paramData] of Object.entries(paramList).sort(paramReSort)) {
+    for (const [_name, paramData] of Object.entries(Config.paramList).sort(paramReSort)) {
       if (this.getParamWork(paramData.name)) {
         config += paramData.name;
         const valueList = this.getParamValues(paramData.name);
@@ -142,7 +142,7 @@ export class ParamSetting {
 export class Settings {
   private static _instance = new Settings();
   private static _steamIndex = -1;
-  public static dependencyGraph: Record<string, string[]> = {};
+  private static _dependencyGraph: Record<string, string[]> = {};
   public static settingChangeEventBus = new EventTarget();
   @JsonProperty()
   public enabled = true;
@@ -152,8 +152,10 @@ export class Settings {
   public static async init(): Promise<void> {
     //加载保存值
     this.loadSettingsFromLocalStorage();
-    //初始下标0
-    this.setSettingsIndex(0);
+    //初始下标
+    await Backend.getSteamIndex().then((nowIndex)=>{
+      Settings.setSettingsIndex(nowIndex);
+  });
   }
 
   //插件是否开启
@@ -170,9 +172,9 @@ export class Settings {
   }
 
   public static ensureDependence(paramName:ParamName){
-    if(this.dependencyGraph[paramName])
-      return this.dependencyGraph[paramName];
-    var dependenceList=Object.values(paramList).filter((paramData) => {
+    if(this._dependencyGraph[paramName])
+      return this._dependencyGraph[paramName];
+    var dependenceList=Object.values(Config.paramList).filter((paramData) => {
       var bmatch = false;
       paramData.preCondition?.forEach((targetState)=>{
           targetState.enable?.forEach(name => {
@@ -188,8 +190,8 @@ export class Settings {
     }).map((paramData)=>{
       return paramData.name;
     });
-    this.dependencyGraph[paramName]=dependenceList;
-    return this.dependencyGraph[paramName];
+    this._dependencyGraph[paramName]=dependenceList;
+    return this._dependencyGraph[paramName];
   }
 
   //获取指定下标对应配置文件，默认为当前下标
@@ -224,8 +226,8 @@ export class Settings {
       updateParamList.forEach((paramName)=>{
         //刷新组件
         this.settingChangeEventBus.dispatchEvent(new Event(paramName));
-        if(updateGroupList.indexOf(paramList[paramName].group)==-1){
-          updateGroupList.push(paramList[paramName].group);
+        if(updateGroupList.indexOf(Config.paramList[paramName].group)==-1){
+          updateGroupList.push(Config.paramList[paramName].group);
         }
       })
       //刷新对应的参数组标题
@@ -258,11 +260,11 @@ export class Settings {
       onVisited.push(paramName);
       var paramVisible=false;
       //未配置前置参数时默认可见
-      if(paramList[paramName].preCondition==undefined||paramList[paramName].preCondition?.length==0){
+      if(Config.paramList[paramName].preCondition==undefined||Config.paramList[paramName].preCondition?.length==0){
         paramVisible=true;
       }else{
         //配置前置参数时，有一组满足条件即为可见
-        for(var targetState of paramList[paramName].preCondition!){
+        for(var targetState of Config.paramList[paramName].preCondition!){
           paramVisible=true;
           targetState.enable?.forEach(name => {
             var paramEnable=Settings.getParamWork(name);
@@ -294,13 +296,13 @@ export class Settings {
 
 
   public static getGroupVisible(groupName:ParamGroup){
-    return Object.entries(paramList).filter(([_paramName,paramData])=>{
+    return Object.entries(Config.paramList).filter(([_paramName,paramData])=>{
         return paramData.group==groupName&&this.getParamVisible(paramData.name);
       }).length > 0;
   }
 
   public static resetParamDefault(){
-    Object.keys(paramList).map((paramName) => {
+    Object.keys(Config.paramList).map((paramName) => {
       this.ensureSettings().setParamValues(paramName as ParamName,this.ensureSettings().getParamValueDefault(paramName as ParamName,this._steamIndex));
       this.setParamEnable(paramName as ParamName,this.ensureSettings().getParamEnableDefault(paramName as ParamName,this._steamIndex),true);
       this.settingChangeEventBus.dispatchEvent(new Event(paramName));
@@ -333,7 +335,7 @@ export class Settings {
 
   //获取参数配置的默认值
   public static getDefaultParamValues(paramName:ParamName){
-    return paramList[paramName].patchs.map((value)=>{
+    return Config.paramList[paramName].patchs.map((value)=>{
       return value.defaultValue[this.getSettingsIndex()];
     });
   }
@@ -358,7 +360,7 @@ export class Settings {
       return false;
     }
     var paramValue=paramValues[index];
-    var paramPatch = paramList[paramName]?.patchs?.[index];
+    var paramPatch = Config.paramList[paramName]?.patchs?.[index];
     if(paramValue==null)
       return false;
     //判断是否在config.ts里面配置过这个参数

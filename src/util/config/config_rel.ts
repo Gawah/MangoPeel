@@ -1,6 +1,6 @@
-import { localizeStrEnum } from "../i18n"
-import { ParamGroup, ParamName, ParamPatchType } from "./enum"
-import { ParamData } from "./interface"
+import { localizeStrEnum } from "../../i18n"
+import { ParamGroup, ParamName, ParamPatchType } from ".././enum"
+import { ParamData } from ".././interface"
 export const paramList:{ [paramName: string]: ParamData }={
   [ParamName.legacy_layout]:{
     name:ParamName.legacy_layout,

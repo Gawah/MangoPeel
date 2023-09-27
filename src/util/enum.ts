@@ -79,3 +79,8 @@ export enum ParamPatchType{
     resortableList="resortableList",
     none="none"
 }
+
+export enum steamChannel{
+  rel="rel",
+  main="main"
+}

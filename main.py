@@ -166,7 +166,7 @@ class MangoPeel:
         
 
     def register(self):
-        self.findConfigPath()   #加载文件路径
+        self.findConfigPath(True)   #加载文件路径
         self.overWriteConfig()     #覆盖当前的配置
         self._inotify.run()     #开启监控线程
 
@@ -174,9 +174,11 @@ class MangoPeel:
         self._inotify.stop()    #关闭监控线程
 
 
-    def findConfigPath(self):
+    def findConfigPath(self,refind:bool):
         procPath="/proc"
         findCmd=False
+        if not refind and self._findConfig:
+            return True
         for procdir in os.listdir(procPath):
             try:
                 if os.path.isdir(procPath + "/" + procdir):
@@ -197,7 +199,7 @@ class MangoPeel:
             time.sleep(self._findInterval)
             if self._findCount + 1 < self._maxFindCount:
                 self._findCount = self._findCount + 1
-                return self.findConfigPath()
+                return self.findConfigPath(True)
             else:
                 self._findCount = 0
                 return False
@@ -286,7 +288,7 @@ class Plugin:
 
     async def ReloadConfigPath(self):
         try:
-            if self._mango.findConfigPath():
+            if self._mango.findConfigPath(True):
                 self._mango.overWriteConfig()
                 return True
             return False
@@ -297,7 +299,7 @@ class Plugin:
     async def SetOverwriteConfig(self,index:int,config:str):
         try:
             logging.debug(f"index = {index} config={config}")
-            if self._mango.findConfigPath():
+            if self._mango.findConfigPath(False):
                 self._mango.setOverwriteConfig(index,config)
                 self._mango.overWriteConfig()
                 return True
@@ -309,7 +311,7 @@ class Plugin:
     async def SetOverwriteConfigs(self,configs:list):
         try:
             logging.debug(f"configs={configs}")
-            if self._mango.findConfigPath():
+            if self._mango.findConfigPath(False):
                 self._mango.setOverwriteConfigs(configs)
                 self._mango.overWriteConfig()
                 return True
@@ -321,11 +323,20 @@ class Plugin:
     async def get_steamIndex(self):
         try:
             index = self._mango.getSteamIndex()
-            logging.debug(f"get_steamIndex {index}")
+            #logging.debug(f"get_steamIndex {index}")
             return index
         except Exception as e:
             logging.error(e)
             return 0
+    
+    async def get_steamChannel(self):
+        try:
+            steamChannel =  open("/var/lib/steamos-branch", "r").read().strip()
+            return steamChannel
+        except Exception as e:
+            logging.error(e)
+            return "main"
+
     
     
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded

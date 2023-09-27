@@ -11,7 +11,7 @@ import { FaBorderStyle } from "react-icons/fa";
 import { MangoIndex, ParamItem } from "./components";
 import { LocalizationManager, localizeStrEnum } from "./i18n";
 import { ParamGroup, PluginManager, Settings} from "./util";
-import { paramList } from "./util/config";
+import { Config } from "./util/config";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
   return (
@@ -21,7 +21,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
       </PanelSection>
       <>{
         Object.values(ParamGroup).map((groupName)=>{
-          var groupItem=Object.values(paramList).filter((paramData) => {
+          var groupItem=Object.values(Config.paramList).filter((paramData) => {
             return paramData.group==groupName;
           })
           const [visible,setVisible] = useState(Settings.getGroupVisible(groupName));
