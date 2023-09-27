@@ -1,6 +1,6 @@
 import { localizeStrEnum } from "../../i18n"
 import { ParamGroup, ParamName, ParamPatchType } from "../enum"
-import { ParamData } from "../interface"
+import { ParamData, ParamDefalut } from "../interface"
 export const paramList:{ [paramName: string]: ParamData }={
   [ParamName.legacy_layout]:{
     name:ParamName.legacy_layout,
@@ -987,3 +987,21 @@ export const paramList:{ [paramName: string]: ParamData }={
       patchs:[]
   }*/
 }
+
+export const paramDefalut:{[paramName:string]:ParamDefalut}[] = [
+  {
+    [ParamName.preset]:{enable:true,values:0},
+  },
+  {
+    [ParamName.preset]:{enable:true,values:1},
+  },
+  {
+    [ParamName.preset]:{enable:true,values:2},
+  },
+  {
+    [ParamName.preset]:{enable:true,values:3},
+  },
+  {
+    [ParamName.preset]:{enable:true,values:4},
+  },
+]

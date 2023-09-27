@@ -23,8 +23,8 @@ export enum ParamName {
   offset_y = "offset_y",
   fsr = "fsr",
   //io_stats="io_stats",
-  //io_read="io_read",
-  //io_write="io_write",
+  io_read="io_read",
+  io_write="io_write",
   ram = "ram",
   vram = "vram",
   swap = "swap",
@@ -40,9 +40,9 @@ export enum ParamName {
   horizontal = "horizontal",
   hud_no_margin = "hud_no_margin",
   table_columns = "table_columns",
-  //arch="arch",
-  //gpu_name="gpu_name",
-  //wine="wine",
+  arch="arch",
+  gpu_name="gpu_name",
+  wine="wine",
   frametime = "frametime",
   frame_timing = "frame_timing",
   frame_count = "frame_count",
@@ -56,7 +56,8 @@ export enum ParamName {
   time_format = "time_format",
   //battery_watt = "battery_watt",
   //battery_time = "battery_time",
-  debug = "debug"
+  debug = "debug",
+  preset = "preset",
 }
 
 export enum ParamGroup{

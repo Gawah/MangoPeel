@@ -1,6 +1,6 @@
 import { localizeStrEnum } from "../../i18n"
-import { ParamGroup, ParamName, ParamPatchType } from ".././enum"
-import { ParamData } from ".././interface"
+import { ParamGroup, ParamName, ParamPatchType } from "../enum"
+import { ParamData, ParamDefalut } from "../interface"
 export const paramList:{ [paramName: string]: ParamData }={
   [ParamName.legacy_layout]:{
     name:ParamName.legacy_layout,
@@ -987,3 +987,65 @@ export const paramList:{ [paramName: string]: ParamData }={
       patchs:[]
   }*/
 }
+
+export const paramDefalut:{[paramName:string]:ParamDefalut}[] = [
+  {
+    [ParamName.no_display]:{enable:true},
+  },
+  {
+    [ParamName.frame_timing]:{enable:false},
+    [ParamName.cpu_stats]:{enable:false},
+    [ParamName.gpu_stats]:{enable:false},
+    [ParamName.fps]:{enable:true},
+    [ParamName.fps_only]:{enable:true},
+    [ParamName.legacy_layout]:{enable:false},
+    [ParamName.width]:{enable:true,values:40},
+    [ParamName.frametime]:{enable:false},
+  },
+  {
+    [ParamName.legacy_layout]:{enable:false},
+    [ParamName.horizontal]:{enable:true},
+    [ParamName.battery]:{enable:true},
+    [ParamName.cpu_stats]:{enable:true},
+    [ParamName.gpu_stats]:{enable:true},
+    [ParamName.cpu_power]:{enable:true},
+    [ParamName.gpu_power]:{enable:true},
+    [ParamName.ram]:{enable:true},
+    [ParamName.fps]:{enable:true},
+    [ParamName.frametime]:{enable:false},
+    [ParamName.hud_no_margin]:{enable:true},
+    [ParamName.table_columns]:{enable:true,values:14},
+    [ParamName.frame_timing]:{enable:true},
+  },
+  {
+    [ParamName.cpu_temp]:{enable:true},
+    [ParamName.gpu_temp]:{enable:true},
+    [ParamName.ram]:{enable:true},
+    [ParamName.vram]:{enable:true},
+    [ParamName.io_read]:{enable:true},
+    [ParamName.io_write]:{enable:true},
+    [ParamName.arch]:{enable:true},
+    [ParamName.gpu_name]:{enable:true},
+    [ParamName.cpu_power]:{enable:true},
+    [ParamName.gpu_power]:{enable:true},
+    [ParamName.wine]:{enable:true},
+    [ParamName.frametime]:{enable:true},
+    [ParamName.battery]:{enable:true},
+  },
+  {
+    [ParamName.full]:{enable:true},
+    [ParamName.cpu_temp]:{enable:true},
+    [ParamName.gpu_temp]:{enable:true},
+    [ParamName.ram]:{enable:true},
+    [ParamName.vram]:{enable:true},
+    [ParamName.io_read]:{enable:true},
+    [ParamName.io_write]:{enable:true},
+    [ParamName.arch]:{enable:true},
+    [ParamName.gpu_name]:{enable:true},
+    [ParamName.cpu_power]:{enable:true},
+    [ParamName.gpu_power]:{enable:true},
+    [ParamName.wine]:{enable:true},
+    [ParamName.frametime]:{enable:true},
+    [ParamName.battery]:{enable:true},
+  },
+]
