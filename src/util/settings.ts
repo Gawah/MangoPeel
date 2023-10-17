@@ -2,7 +2,6 @@ import { JsonObject, JsonProperty, JsonSerializer } from 'typescript-json-serial
 import { Backend } from './backend';
 import { Config } from './config';
 import { ParamGroup, ParamName, ParamPatchType} from './enum';
-import { ParamData } from './interface';
 
 const SETTINGS_KEY = "MangoPeel";
 const serializer = new JsonSerializer();
@@ -12,78 +11,75 @@ export class ParamInfo {
   @JsonProperty()
   public paramName: string;
   @JsonProperty()
-  public bEnable: boolean;
+  public paramOrder:number;
   @JsonProperty()
+  public bEnable: boolean;
   public bVisible: boolean;
   @JsonProperty()
   public paramValues!: any[];  //某些参数可能包含多个值
-  constructor(paramName: string, bEnable: boolean, paramValue: any[]) {
+  constructor(paramName: string, bEnable: boolean, paramValue: any[],paramOrder: number) {
     this.paramName = paramName;
     this.bEnable = bEnable;
     this.bVisible = true;
-    this.setParamValues(paramValue);
-  }
-  public setParamValues(paramValue: any[]) {
+    this.paramOrder = paramOrder;
     this.paramValues = paramValue?.concat();
   }
+
+  public copyParamInfo(newParamInfo: ParamInfo) {
+    this.paramName = newParamInfo.paramName;
+    this.bEnable = newParamInfo.bEnable;
+    this.bVisible = newParamInfo.bVisible;
+    this.paramOrder = newParamInfo.paramOrder;
+    this.paramValues = newParamInfo.paramValues?.concat();
+  }
+
 }
 
 @JsonObject()
 export class ParamSetting {
   @JsonProperty({ isDictionary: true, type: ParamInfo })
-  public paramMap: Record<string, ParamInfo | undefined> = {};
-  //初始化所有参数
-  public initParamSetting(defaultIndex: number) {
-    //参数集中没有数据时给个默认值
-    for (const paramName of Object.values(ParamName)) {
-      if (!this.paramMap[paramName]) {
-        this.paramMap[paramName] = new ParamInfo(
-          paramName,
-          this.getParamEnableDefault(paramName, defaultIndex),
-          this.getParamValueDefault(paramName, defaultIndex),
-        );
-      }
-    }
-  }
-  //拷贝另一个配置
-  public copyParamSettings(newSetting: ParamSetting) {
-    for (const name of Object.keys(this.paramMap)) {
-      if (name in newSetting.paramMap) {
-        this.setParamEnable(name as ParamName, newSetting.getParamEnable(name as ParamName));
-        this.setParamValues(name as ParamName, newSetting.getParamValues(name as ParamName));
-      }
-    }
+  public paramMap: Record<string, ParamInfo> = {};
+
+  public getParamEnable(paramName: ParamName) {
+    return this.paramMap[paramName]?.bEnable??false;
   }
   public setParamEnable(paramName: ParamName, bEnable: boolean) {
-    this.paramMap[paramName]!.bEnable = bEnable;
-  }
-  public getParamEnable(paramName: ParamName) {
-    return this.paramMap[paramName]!.bEnable;
-  }
-  public setParamValues(paramName: ParamName, paramValue: any[]) {
-    this.paramMap[paramName]!.setParamValues(paramValue);
+    if(paramName in this.paramMap){
+      this.paramMap[paramName]!.bEnable = bEnable;
+    }
   }
 
   public getParamValues(paramName: ParamName) {
-    return this.paramMap[paramName]!.paramValues ?? [];
+    console.log(`paramName=${paramName}, values=${this.paramMap[paramName]?.paramValues??[]}`)
+    return this.paramMap[paramName]?.paramValues??[];
+  }
+  public setParamValues(paramName: ParamName, paramValue: any[]) {
+    if(paramName in this.paramMap){
+      this.paramMap[paramName]!.paramValues = paramValue?.concat();
+    }
   }
 
   public getParamVisible(paramName: ParamName) {
-    return this.paramMap[paramName]!.bVisible;
+    return this.paramMap[paramName]?.bVisible??false;
   }
-
   public setParamVisible(paramName: ParamName, visible: boolean) {
-    this.paramMap[paramName]!.bVisible = visible;
+    if(paramName in this.paramMap){
+      this.paramMap[paramName]!.bVisible = visible;
+    }
   }
 
-  public getParamEnableDefault(paramName: ParamName, defaultIndex: number) {
-    return Config.paramList[paramName]?.toggle.defaultEnable[defaultIndex]??false;
+  public getParamOrder(paramName: ParamName) {
+    return this.paramMap[paramName]?.paramOrder??0;
   }
-
-  public getParamValueDefault(paramName: ParamName, defaultIndex: number) {
-    return Config.paramList[paramName]?.patchs.map((value) => {
-      return value.defaultValue[defaultIndex];
-    })
+  public setParamOrder(paramName: ParamName, paramOrder: number) {
+    if(paramName in this.paramMap){
+      console.log(`name= ${paramName} nowOrder = ${this.paramMap[paramName]!.paramOrder} setOrder = ${paramOrder}`);
+      //参与排序的参数不可设置为0
+      if (this.paramMap[paramName]!.paramOrder !=0 && paramOrder == 0){
+        return;
+      }
+      this.paramMap[paramName]!.paramOrder = paramOrder;
+    }
   }
 
   public getParamWork(paramName: ParamName) {
@@ -92,20 +88,37 @@ export class ParamSetting {
     return paramVisible && paramEnable;
   }
 
+  //拷贝另一个配置
+  public copyParamSettings(newSetting: ParamSetting) {
+    for (const name of Object.keys(this.paramMap)) {
+      if (name in newSetting.paramMap) {
+        this.setParamEnable(name as ParamName, newSetting.getParamEnable(name as ParamName));
+        this.setParamValues(name as ParamName, newSetting.getParamValues(name as ParamName));
+        this.setParamOrder(name as ParamName, newSetting.getParamOrder(name as ParamName));
+      }
+    }
+  }
+
+  //转换为mangoapp的配置字符串格式
   public toMangoConfig() {
     let config = "";
-    const paramOrderList = this.getParamValues(ParamName.legacy_layout)?.[0] ?? [];
-    const paramReSort = (a: [string, ParamData], b: [string, ParamData]) => {
-      const aParamOrder = paramOrderList.indexOf(a[1].name);
-      const bParamOrder = paramOrderList.indexOf(b[1].name);
+    //参数排序规则，order越小越靠前，0代表该参数先后顺序不影响效果，放置到后面
+    const paramReSort = (a: ParamInfo, b: ParamInfo) => {
+      const aParamOrder = this.getParamOrder(a.paramName as ParamName);
+      const bParamOrder = this.getParamOrder(b.paramName as ParamName);
+      if(aParamOrder == 0||bParamOrder == 0){
+        return bParamOrder - aParamOrder;
+      }
       return aParamOrder - bParamOrder;
     }
-    for (const [_name, paramData] of Object.entries(Config.paramList).sort(paramReSort)) {
-      if (this.getParamWork(paramData.name)) {
-        config += paramData.name;
-        const valueList = this.getParamValues(paramData.name);
+    //排序后针对每个参数一一转换
+    for (const paramInfo of Object.values(this.paramMap).sort(paramReSort)) {
+      console.log(`resort name=${paramInfo.paramName} order=${paramInfo.paramOrder} work=${this.getParamWork(paramInfo.paramName as ParamName)} visible=${paramInfo.bVisible})}`)
+      if (this.getParamWork(paramInfo.paramName as ParamName)) {
+        config += paramInfo.paramName;
+        const valueList = this.getParamValues(paramInfo.paramName as ParamName);
         if (valueList.length > 0) {
-          switch (paramData.name) {
+          switch (paramInfo.paramName) {
             case ParamName.legacy_layout:
               config += `=1`;
               break;
@@ -123,8 +136,11 @@ export class ParamSetting {
         config += "\n";
       }
       //一些特殊的参数 未开启时也要写入param=xxx
-      else {
-        switch (paramData.name) {
+      else{
+        if((this.getParamWork(ParamName.preset))){
+          continue;
+        }
+        switch (paramInfo.paramName) {
           case ParamName.legacy_layout:
             config += `${ParamName.legacy_layout}=0\n`;
             break;
@@ -142,7 +158,7 @@ export class ParamSetting {
 export class Settings {
   private static _instance = new Settings();
   private static _steamIndex = -1;
-  private static _dependencyGraph: Record<string, string[]> = {};
+  private static _dependencyGraph: Record<string, string[]>[] = [];
   public static settingChangeEventBus = new EventTarget();
   @JsonProperty()
   public enabled = true;
@@ -150,16 +166,20 @@ export class Settings {
   public paramSettings: Record<number, ParamSetting> = {};
 
   public static async init(): Promise<void> {
+    //初始化设置
+    this.initSettingsFromConfig();
     //加载保存值
     this.loadSettingsFromLocalStorage();
+
     //初始下标
     await Backend.getSteamIndex().then((nowIndex)=>{
       Settings.setSettingsIndex(nowIndex);
   });
   }
 
+  /*
   //插件是否开启
-  public static ensureEnable(): boolean {
+  public static getEnable(): boolean {
     return this._instance.enabled;
   }
 
@@ -170,10 +190,16 @@ export class Settings {
       Settings.saveSettingsToLocalStorage();
     }
   }
+  */
 
-  public static ensureDependence(paramName:ParamName){
-    if(this._dependencyGraph[paramName])
-      return this._dependencyGraph[paramName];
+  //获取该参数的依赖关系
+  public static getDependence(index:number,paramName:ParamName,){
+    if(!(index in this._dependencyGraph)){
+      this._dependencyGraph[index] = {} as Record<string, string[]>
+    }
+    if(paramName in this._dependencyGraph[index]){
+      return this._dependencyGraph[index][paramName];
+    }
     var dependenceList=Object.values(Config.paramList).filter((paramData) => {
       var bmatch = false;
       paramData.preCondition?.forEach((targetState)=>{
@@ -190,37 +216,40 @@ export class Settings {
     }).map((paramData)=>{
       return paramData.name;
     });
-    this._dependencyGraph[paramName]=dependenceList;
-    return this._dependencyGraph[paramName];
+    this._dependencyGraph[index][paramName]=dependenceList;
+    return this._dependencyGraph[index][paramName];
   }
 
   //获取指定下标对应配置文件，默认为当前下标
-  public static ensureSettings(index?:number): ParamSetting {
+  public static getSettings(index:number): ParamSetting {
     return this._instance.paramSettings[index??this._steamIndex];
   }
 
   public static getSettingsIndex():number{
     return this._steamIndex;
   }
-
   public static setSettingsIndex(index:number){
     if(this._steamIndex!=index){
       this._steamIndex=index;
       //刷新整个界面
-      for(var paramName in ParamName){
-        this.settingChangeEventBus.dispatchEvent(new Event(paramName));
-        this.updateParamVisible(paramName as ParamName);
+      for (const data of Object.values(Config.paramList)) {
+        this.updateParamVisible(index,data.name as ParamName);
+        this.settingChangeEventBus.dispatchEvent(new Event(data.name));
       }
+      //刷新组标题
       for(var groupName in ParamGroup){
         this.settingChangeEventBus.dispatchEvent(new Event(groupName));
       }
     }
   }
 
-  public static setParamEnable(paramName:ParamName,bEnable:boolean,bforce?:boolean){
-    if(bEnable!=this.getParamEnable(paramName)||(bforce??false)){
-      this.ensureSettings().setParamEnable(paramName,bEnable);
-      var updateParamList=this.updateParamVisible(paramName);
+  public static getParamEnable(index:number,paramName:ParamName){
+    return this.getSettings(index).getParamEnable(paramName);
+  }
+  public static setParamEnable(index:number,paramName:ParamName,bEnable:boolean){
+    if(bEnable!=this.getParamEnable(index,paramName)){
+      this.getSettings(index).setParamEnable(paramName,bEnable);
+      var updateParamList=this.updateParamVisible(index,paramName);
       var updateGroupList:ParamGroup[]=[];
       //刷新前置参数包含此参数的组件
       updateParamList.forEach((paramName)=>{
@@ -235,24 +264,44 @@ export class Settings {
         this.settingChangeEventBus.dispatchEvent(new Event(groupName));
       })
       Settings.saveSettingsToLocalStorage();
-      Backend.applyConfig(this.getSettingsIndex(),this.getParamConfig());
+      Backend.applyConfig(index,this.toMangoConfig(index));
     }
   }
 
-  public static getParamWork(paramName:ParamName){
-    return this.ensureSettings().getParamWork(paramName);
+  public static getParamValue(index:number,paramName:ParamName,patchIndex:number){
+    var paramValues=this.getSettings(index).getParamValues(paramName);
+    //参数值无效时，重设置为默认值
+    if(!this.isValidParamValue(index,paramValues,paramName,patchIndex)){
+      //paramValues=this.getDefaultParam(index,paramName,this.getSettingsIndex()).paramValues;
+      this.getSettings(index).setParamValues(paramName,paramValues);
+    }
+    return paramValues[patchIndex];
   }
 
-  public static getParamEnable(paramName:ParamName){
-    return this.ensureSettings().getParamEnable(paramName);
+  public static setParamValue(index:number,paramName:ParamName,patchIndex:number,paramValue:any){
+    var paramValues=this.getSettings(index).getParamValues(paramName);
+    if(patchIndex>=paramValues.length){
+      paramValues=this.getDefaultParam(index,paramName).paramValues;
+    }
+    if(patchIndex>=0&&patchIndex<paramValues.length&&paramValue!=paramValues[patchIndex]){
+      paramValues[patchIndex]=paramValue;
+      this.getSettings(index).setParamValues(paramName,paramValues);
+      Settings.saveSettingsToLocalStorage();
+      Backend.applyConfig(index,this.toMangoConfig(index));
+      //this.settingChangeEventBus.dispatchEvent(new Event(paramName))
+    }
   }
 
-  public static getParamVisible(paramName:ParamName){
-    return this.ensureSettings().getParamVisible(paramName);
+  public static getParamWork(index:number,paramName:ParamName){
+    return this.getSettings(index).getParamWork(paramName);
   }
 
-  public static updateParamVisible(paramName:ParamName){
-    function topologicalOrderDFS(paramName:ParamName,onVisited:ParamName[],onUpdated:ParamName[]){
+  public static getParamVisible(index:number,paramName:ParamName){
+    return this.getSettings(index).getParamVisible(paramName);
+  }
+
+  public static updateParamVisible(index:number,paramName:ParamName){
+    function topologicalOrderDFS(paramName:ParamName,index:number,onVisited:ParamName[],onUpdated:ParamName[]){
       if(onVisited.indexOf(paramName)!=-1){
         console.error(`存在循环依赖 paramName=${paramName} onVisited:${onVisited}`);
         return [];
@@ -260,19 +309,19 @@ export class Settings {
       onVisited.push(paramName);
       var paramVisible=false;
       //未配置前置参数时默认可见
-      if(Config.paramList[paramName].preCondition==undefined||Config.paramList[paramName].preCondition?.length==0){
+      if(Config.paramList[paramName]?.preCondition==undefined||Config.paramList[paramName]?.preCondition?.length==0){
         paramVisible=true;
       }else{
         //配置前置参数时，有一组满足条件即为可见
         for(var targetState of Config.paramList[paramName].preCondition!){
           paramVisible=true;
           targetState.enable?.forEach(name => {
-            var paramEnable=Settings.getParamWork(name);
+            var paramEnable=Settings.getParamWork(index,name);
             if(paramEnable!=true)
               paramVisible=false;
           });
           targetState.disable?.forEach(name => {
-            var paramEnable=Settings.getParamWork(name);
+            var paramEnable=Settings.getParamWork(index,name);
             if(paramEnable!=false)
               paramVisible=false;
           });
@@ -283,84 +332,83 @@ export class Settings {
       if(onUpdated.indexOf(paramName)==-1){
         onUpdated.push(paramName);
       }
-      Settings.ensureSettings().setParamVisible(paramName,paramVisible);
-      var updateList=Settings.ensureDependence(paramName);
+      Settings.getSettings(index).setParamVisible(paramName,paramVisible);
+      var updateList=Settings.getDependence(index,paramName);
       for(var neighbor of updateList){
-        topologicalOrderDFS(neighbor as ParamName,onVisited,onUpdated);
+        topologicalOrderDFS(neighbor as ParamName,index,onVisited,onUpdated);
       }
       onVisited.splice(onVisited.indexOf(paramName),1);
       return onUpdated;
     }
-    return topologicalOrderDFS(paramName,[],[]);
+    return topologicalOrderDFS(paramName,index,[],[]);
   }
 
-
-  public static getGroupVisible(groupName:ParamGroup){
+  public static getGroupVisible(index:number,groupName:ParamGroup){
     return Object.entries(Config.paramList).filter(([_paramName,paramData])=>{
-        return paramData.group==groupName&&this.getParamVisible(paramData.name);
+        return paramData.group==groupName&&this.getParamVisible(index,paramData.name);
       }).length > 0;
   }
 
   public static resetParamDefault(){
-    Object.keys(Config.paramList).map((paramName) => {
-      this.ensureSettings().setParamValues(paramName as ParamName,this.ensureSettings().getParamValueDefault(paramName as ParamName,this._steamIndex));
-      this.setParamEnable(paramName as ParamName,this.ensureSettings().getParamEnableDefault(paramName as ParamName,this._steamIndex),true);
-      this.settingChangeEventBus.dispatchEvent(new Event(paramName));
-    })
-  }
-
-  public static setParamValue(paramName:ParamName,patchIndex:number,paramValue:any){
-    var paramValues=this.ensureSettings().getParamValues(paramName);
-    if(patchIndex>=paramValues.length){
-      paramValues=this.getDefaultParamValues(paramName);
-    }
-    if(patchIndex>=0&&patchIndex<paramValues.length&&paramValue!=paramValues[patchIndex]){
-      paramValues[patchIndex]=paramValue;
-      this.ensureSettings().setParamValues(paramName,paramValues);
+    var index = this.getSettingsIndex();
+    Object.entries(Config.paramList).map(([paramName,paramData]) => {
+      var defaultParam = this.getDefaultParam(index,paramName as ParamName);
+      this.getSettings(index).setParamValues(paramName as ParamName,defaultParam.paramValues);
+      this.getSettings(index).setParamEnable(paramName as ParamName,defaultParam.bEnable);
+      this.getSettings(index).setParamOrder(paramName as ParamName,defaultParam.paramOrder);
       Settings.saveSettingsToLocalStorage();
-      Backend.applyConfig(this.getSettingsIndex(),this.getParamConfig());
-      //this.settingChangeEventBus.dispatchEvent(new Event(paramName))
-    }
+      this.updateParamVisible(index,paramName as ParamName);
+      this.settingChangeEventBus.dispatchEvent(new Event(paramName));
+      this.settingChangeEventBus.dispatchEvent(new Event(paramData.group));
+      //console.log(`defaultParam: name=${defaultParam.paramName} enable=${defaultParam.bEnable} value=${defaultParam.paramValues} nowvalue=${this.getSettings().getParamValues(paramName as ParamName)} order=${defaultParam.paramOrder}`)
+    })
+    Backend.applyConfig(index,this.toMangoConfig(index));
   }
 
-  public static getParamValue(paramName:ParamName,patchIndex:number){
-    var paramValues=this.ensureSettings().getParamValues(paramName);
-    //参数值无效时，重设置为默认值
-    if(!this.isValidParamValue(paramValues,paramName,patchIndex)){
-      paramValues=this.getDefaultParamValues(paramName);
-      this.ensureSettings().setParamValues(paramName,paramValues);
-    }
-    return paramValues[patchIndex];
-  }
-
+  
   //获取参数配置的默认值
-  public static getDefaultParamValues(paramName:ParamName){
-    return Config.paramList[paramName].patchs.map((value)=>{
-      return value.defaultValue[this.getSettingsIndex()];
-    });
+  public static getDefaultParam(index:number,paramName:ParamName){
+    //查找steam是否配置了默认值
+    if(index>=0&&index<Config.steamParamDefault.length&&paramName in Config.steamParamDefault[index]){
+      return new ParamInfo(paramName,Config.steamParamDefault[index][paramName].enable,Config.steamParamDefault[index][paramName].values??[],Config.steamParamDefault[index][paramName].order??0);
+    }
+    //查找插件配置的默认值
+    if(paramName in Config.paramList){
+      return new ParamInfo(paramName,Config.paramList[paramName].toggle.defaultEnable,Config.paramList[paramName].patchs.map((value)=>{
+        return value.defaultValue??[];
+      }),Config.paramOrder[paramName]??0);
+    }
+    else{
+      console.error(`参数${paramName}未找到默认值配置`);
+      return new ParamInfo(paramName,false,[],0);
+    }
   }
 
-  public static getParamConfig(index?:number){
-    return this.ensureSettings(index).toMangoConfig()??""
+  //获取配置转化mango格式
+  public static toMangoConfig(index:number){
+    return this.getSettings(index).toMangoConfig()??""
   }
 
-  public static getParamConfigs(){
+  //获取所有配置转化mango格式
+  public static toMangoConfigs(){
     var configs:string[]=[];
     for(var index = 0;index<5;index++) {
-      var config = this.ensureSettings(index).toMangoConfig()
+      var config = this.getSettings(index).toMangoConfig()
       configs.push(config);
       console.debug(`getConfigs index = ${index} config=${config}`);
     }
     return configs;
   }
 
-  public static isValidParamValue(paramValues:any,paramName:ParamName,index:number){
-    var defaultValues=this.getDefaultParamValues(paramName);
+  //判断是否为合法的参数值
+  public static isValidParamValue(index:number,paramValues:any,paramName:ParamName,patchIndex:number){
+    var defaultValues=this.getDefaultParam(index,paramName).paramValues;
+    //长度和配置的默认值不一致，判定不合法
     if(paramValues.length!=defaultValues.length){
       return false;
     }
-    var paramValue=paramValues[index];
-    var paramPatch = Config.paramList[paramName]?.patchs?.[index];
+    var paramValue=paramValues[patchIndex];
+    var paramPatch = Config.paramList[paramName]?.patchs?.[patchIndex];
     if(paramValue==null)
       return false;
     //判断是否在config.ts里面配置过这个参数
@@ -387,10 +435,6 @@ export class Settings {
       case(ParamPatchType.textInput):
         break;
       case(ParamPatchType.resortableList):
-        //长度不一致，可能有新增参数项
-        if(paramPatch.args.length != paramValue?.length){
-          return false;
-        }
         break;
       case(ParamPatchType.none):
         return false;
@@ -398,28 +442,73 @@ export class Settings {
     return true;
   }
 
+  //获取排序参数列表
+  public static getSortParamList(index:number){
+    //参数排序规则，order越小越靠前，0代表该参数先后顺序不影响效果，放置到后面
+    const paramReSort = (a: ParamInfo, b: ParamInfo) => {
+      const aParamOrder = this.getSettings(index).getParamOrder(a.paramName as ParamName);
+      const bParamOrder = this.getSettings(index).getParamOrder(b.paramName as ParamName);
+      return aParamOrder - bParamOrder;
+    }
+    return Object.values(this.getSettings(index).paramMap).filter((paramInfo)=>{
+      return paramInfo.paramOrder!=0 && this.getParamWork(index,paramInfo.paramName as ParamName)
+    }).sort(paramReSort).map((value)=>{
+      return Config.paramList[value.paramName];
+    })
+  }
 
+  //设置排序参数列表
+  public static setParamOrder(index:number,paramName:ParamName,order:number){
+    var paramOrder=this.getSettings(index).getParamOrder(paramName);
+    if(order!=paramOrder){
+      this.getSettings(index).setParamOrder(paramName,order);
+      Settings.saveSettingsToLocalStorage();
+      Backend.applyConfig(index,this.toMangoConfig(index));
+      //this.settingChangeEventBus.dispatchEvent(new Event(paramName))
+    }
+  }
+
+  //根据config配置进行初始化
+  public static initSettingsFromConfig(){
+    for(var index=0;index<5;index++){
+      if(!(index in this._instance.paramSettings)){
+        this._instance.paramSettings[index]=new ParamSetting();
+      }
+      //初始化默认值
+      for (const data of Object.values(Config.paramList)) {
+        this._instance.paramSettings[index].paramMap[data.name]=this.getDefaultParam(index,data.name);
+      }
+      //更新可见性
+      for (const data of Object.values(Config.paramList)) {
+        this.updateParamVisible(index,data.name);
+      }
+    }
+  }
+
+  //加载保存的配置
   public static loadSettingsFromLocalStorage(){
     const settingsString = localStorage.getItem(SETTINGS_KEY) || "{}";
     const settingsJson = JSON.parse(settingsString);
     const loadSetting=serializer.deserializeObject(settingsJson, Settings);
     this._instance.enabled = loadSetting?.enabled??false;
+    console.log(`loadConfig=${settingsJson}`)
     for(var index=0;index<5;index++){
-      //确保有默认值
-      if(!(index in this._instance.paramSettings)){
-        this._instance.paramSettings[index]=new ParamSetting();
-      }
-      this._instance.paramSettings[index].initParamSetting(index);
       //加载保存值
       if(loadSetting?.paramSettings?.[index]){
         this._instance.paramSettings[index].copyParamSettings(loadSetting.paramSettings[index])
       }
+      //更新可见性
+      for (const data of Object.values(Config.paramList)) {
+        this.updateParamVisible(index,data.name);
+      }
     }      
   }
 
+  //保存配置到本地
   public static saveSettingsToLocalStorage() {
     const settingsJson = serializer.serializeObject(this._instance);
     const settingsString = JSON.stringify(settingsJson);
+    console.log(`saveConfig=${settingsJson}`)
     localStorage.setItem(SETTINGS_KEY, settingsString);
   }
 

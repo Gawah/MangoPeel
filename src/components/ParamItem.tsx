@@ -1,7 +1,7 @@
 import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem } from "decky-frontend-lib";
 import { useEffect, useState, VFC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
-import { ParamName, ParamPatchType, Settings } from "../util";
+import { ParamName, ParamPatchType, ResortType, Settings } from "../util";
 import { ParamData, ParamPatch } from "../util/interface";
 import { SlowSliderField } from "./SlowSliderField";
 import {TextInputModal} from "./TextInputModal";
@@ -10,12 +10,11 @@ import { LocalizationManager, localizeStrEnum } from "../i18n";
 
 const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number }> = ({ paramName, patch, patchIndex }) => {
 
-  const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(paramName, patchIndex));
+  const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(Settings.getSettingsIndex(),paramName, patchIndex));
   const [selectedIndex, setSelectedIndex] = useState(patch.args.indexOf(selectedValue));
-
   useEffect(() => {
     const updateEvent = () => {
-      const new_value = Settings.getParamValue(paramName, patchIndex);
+      const new_value = Settings.getParamValue(Settings.getSettingsIndex(),paramName, patchIndex);
       const new_index = patch.args.indexOf(new_value);
       setSelectedValue(new_value);
       setSelectedIndex(new_index);
@@ -28,7 +27,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
 
   const updateSelectedValue = (value: any) => {
     setSelectedValue(value);
-    Settings.setParamValue(paramName, patchIndex, value);
+    Settings.setParamValue(Settings.getSettingsIndex(),paramName, patchIndex, value);
   };
 
   switch (patch.type) {
@@ -135,32 +134,37 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
         </>
       );
     case ParamPatchType.resortableList:
-      return (
-        <>
-            <ResortableList initialArray={selectedValue.map((value: any)=>{
-              return {label:patch.args.filter((item)=>{ return value==item.value})?.[0]?.label??"not_find",value:value};
-            })}
-            onArrayChange={(newArray)=>{
-              var value = newArray.map((item)=>{
-                return item.value;
-              })
-              updateSelectedValue(value);
-            }}/>
-        </>
-      );
+      switch(patch.args[0]){
+        case(ResortType.paramOrder):
+        var sortList = Settings.getSortParamList(Settings.getSettingsIndex());
+          return (
+            <>
+                <ResortableList initialArray={sortList.map((data)=>{
+                  return {label: LocalizationManager.getString(data.toggle.label as localizeStrEnum),value:data.name};
+                })}
+                onArrayChange={(newArray)=>{
+                  newArray.forEach((value,order)=>{
+                    Settings.setParamOrder(Settings.getSettingsIndex(),value.value as ParamName,order + 1);
+                  })
+                }}/>
+            </>
+          );
+        default:
+          return <></>
+      }
     default:
       return null;
   }
 };
 
 export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
-      const [enable, setEnable] = useState(Settings.getParamEnable(paramData.name as ParamName));
-      const [visible,setVisible] = useState(Settings.getParamVisible(paramData.name as ParamName));
+      const [enable, setEnable] = useState(Settings.getParamEnable(Settings.getSettingsIndex(),paramData.name as ParamName));
+      const [visible,setVisible] = useState(Settings.getParamVisible(Settings.getSettingsIndex(),paramData.name as ParamName));
       const [showPatch,setShowPatch] = useState(false);
       const updateEvent=()=>{
         //console.log(`enable=${enable} new_enable=${new_enable}`);
-        setEnable(Settings.getParamEnable(paramData.name as ParamName));
-        setVisible(Settings.getParamVisible(paramData.name as ParamName));
+        setEnable(Settings.getParamEnable(Settings.getSettingsIndex(),paramData.name as ParamName));
+        setVisible(Settings.getParamVisible(Settings.getSettingsIndex(),paramData.name as ParamName));
       }
       useEffect(()=>{
         Settings.settingChangeEventBus.addEventListener(paramData.name,updateEvent);
@@ -179,7 +183,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
               checked={enable}
               onChange={(enable) => {
                 setEnable(enable);
-                Settings.setParamEnable(paramData.name,enable);
+                Settings.setParamEnable(Settings.getSettingsIndex(),paramData.name,enable);
               }}
             />
           </PanelSectionRow>

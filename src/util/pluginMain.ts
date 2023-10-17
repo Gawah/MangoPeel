@@ -12,7 +12,7 @@ export class PluginManager{
     await Settings.init();
     await LocalizationManager.init();
     Backend.reloadConfig();
-    Backend.applyConfigs(Settings.getParamConfigs());
+    Backend.applyConfigs(Settings.toMangoConfigs());
   }
 
   public static unregister = (_serverAPI:ServerAPI)=>{

@@ -14,6 +14,7 @@ export enum ParamName {
   gpu_stats = "gpu_stats",
   gpu_load_change = "gpu_load_change",
   gpu_core_clock = "gpu_core_clock",
+  gpu_mem_clock = "gpu_mem_clock",
   gpu_power = "gpu_power",
   gpu_temp = "gpu_temp",
   gpu_text = "gpu_text",
@@ -28,9 +29,9 @@ export enum ParamName {
   ram = "ram",
   vram = "vram",
   swap = "swap",
-  //procmem="procmem",
-  //procmem_shared="procmem_shared",
-  //procmem_virt="procmem_virt",
+  procmem="procmem",
+  procmem_shared="procmem_shared",
+  procmem_virt="procmem_virt",
   position = "position",
   fps = "fps",
   fps_only = "fps_only",
@@ -54,21 +55,34 @@ export enum ParamName {
   time = "time",
   version = "version",
   time_format = "time_format",
-  //battery_watt = "battery_watt",
-  //battery_time = "battery_time",
+  battery_watt = "battery_watt",
+  battery_time = "battery_time",
   debug = "debug",
   preset = "preset",
+  throttling_status = "throttling_status",
+  throttling_status_graph = "throttling_status_graph",
+  engine_version = "engine_version",
+  gamemode = "gamemode",
+  vkbasalt = "vkbasalt",
+  show_fps_limit = "show_fps_limit",
+  resolution = "resolution",
+  fps_limit = "fps_limit",
+  fps_limit_method = "fps_limit_method",
+  hide_fsr_sharpness = "hide_fsr_sharpness",
 }
 
 export enum ParamGroup{
+    PRESET="PRESET",
     LAYOUT="LAYOUT",
     SETTING="SETTING",
-    CUSTOM="CUSTOM",
+    ALPHA="ALPHA",
+    CUSTOM_TEXT="CUSTOM TEXT",
     CPU="CPU",
     GPU="GPU",
-    //IO="IO",
+    IO="IO",
     RAM="RAM",
     BATT="BATT",
+    FPS="FPS",
     OTHER="OTHER",
 }
 
@@ -81,7 +95,11 @@ export enum ParamPatchType{
     none="none"
 }
 
-export enum steamChannel{
+export enum SteamChannel{
   rel="rel",
   main="main"
+}
+
+export enum ResortType{
+  paramOrder="paramOrder",
 }

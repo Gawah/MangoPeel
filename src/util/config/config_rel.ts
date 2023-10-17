@@ -1,6 +1,6 @@
 import { localizeStrEnum } from "../../i18n"
-import { ParamGroup, ParamName, ParamPatchType } from "../enum"
-import { ParamData, ParamDefalut } from "../interface"
+import { ParamGroup, ParamName, ParamPatchType, ResortType } from "../enum"
+import { ParamData, SteamParamDefalut } from "../interface"
 export const paramList:{ [paramName: string]: ParamData }={
   [ParamName.legacy_layout]:{
     name:ParamName.legacy_layout,
@@ -9,119 +9,12 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle:{
         label:localizeStrEnum.LEGACY_LAYOUT_LABEL,
         description:localizeStrEnum.LEGACY_LAYOUT_DESCRIPTION,
-        defaultEnable:[true,false,false,true,true],
+        defaultEnable:true,
         isShowPatchWhenEnable:false,
     },
     patchs:[{
         type:ParamPatchType.resortableList,
-        args:[{label:"CUSTOM_TEXT_CENTER",value:ParamName.custom_text_center},
-        {label:"CUSTOM_TEXT",value:ParamName.custom_text},
-        {label:"TIME",value:ParamName.time},
-        {label:"VERSION",value:ParamName.version},
-        {label:"CPU",value:ParamName.cpu_stats},
-        {label:"CPU_CORE",value:ParamName.core_load},
-        {label:"GPU",value:ParamName.gpu_stats},
-        {label:"VRAM",value:ParamName.vram},
-        {label:"RAM",value:ParamName.ram},
-        {label:"BATT",value:ParamName.battery},
-        {label:"FAN",value:ParamName.fan},
-        {label:"FSR",value:ParamName.fsr},
-        {label:"GAMESCOPE",value:ParamName.fps},
-        {label:"FRAME_TIME",value:ParamName.frame_timing},
-        {label:"FRAME_COUNT",value:ParamName.frame_count},
-        {label:"APP",value:ParamName.debug}
-        ],
-        defaultValue:[
-        [
-            ParamName.custom_text_center,
-            ParamName.custom_text,
-            ParamName.time,
-            ParamName.version,
-            ParamName.cpu_stats,
-            ParamName.core_load,
-            ParamName.gpu_stats,
-            ParamName.vram,
-            ParamName.ram,
-            ParamName.battery,
-            ParamName.fan,
-            ParamName.fsr,
-            ParamName.fps,
-            ParamName.frame_timing,
-            ParamName.frame_count,
-            ParamName.debug
-        ],
-        [
-            ParamName.custom_text_center,
-            ParamName.custom_text,
-            ParamName.time,
-            ParamName.version,
-            ParamName.frame_timing,
-            ParamName.cpu_stats,
-            ParamName.core_load,
-            ParamName.gpu_stats,
-            ParamName.vram,
-            ParamName.ram,
-            ParamName.battery,
-            ParamName.fan,
-            ParamName.fsr,
-            ParamName.fps,
-            ParamName.frame_count,
-            ParamName.debug
-        ],
-        [
-            ParamName.custom_text_center,
-            ParamName.custom_text,
-            ParamName.time,
-            ParamName.version,
-            ParamName.battery,
-            ParamName.gpu_stats,
-            ParamName.cpu_stats,
-            ParamName.core_load,
-            ParamName.vram,
-            ParamName.ram,
-            ParamName.fan,
-            ParamName.fsr,
-            ParamName.fps,
-            ParamName.frame_timing,
-            ParamName.frame_count,
-            ParamName.debug
-        ],
-        [
-            ParamName.custom_text_center,
-            ParamName.custom_text,
-            ParamName.time,
-            ParamName.version,
-            ParamName.cpu_stats,
-            ParamName.core_load,
-            ParamName.gpu_stats,
-            ParamName.vram,
-            ParamName.ram,
-            ParamName.battery,
-            ParamName.fan,
-            ParamName.fsr,
-            ParamName.fps,
-            ParamName.frame_timing,
-            ParamName.frame_count,
-            ParamName.debug
-        ],
-        [
-            ParamName.custom_text_center,
-            ParamName.custom_text,
-            ParamName.time,
-            ParamName.version,
-            ParamName.cpu_stats,
-            ParamName.core_load,
-            ParamName.gpu_stats,
-            ParamName.vram,
-            ParamName.ram,
-            ParamName.battery,
-            ParamName.fan,
-            ParamName.fsr,
-            ParamName.fps,
-            ParamName.frame_timing,
-            ParamName.frame_count,
-            ParamName.debug
-        ],],
+        args:[ResortType.paramOrder],
     }]
   },
   [ParamName.horizontal]:{
@@ -131,7 +24,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label:localizeStrEnum.HORIZONTAL_LABEL,
           description:localizeStrEnum.HORIZONTAL_DESCRIPTION,
-          defaultEnable:[false,false,true,false,false],
+          defaultEnable:false,
       },
       patchs:[]
   },
@@ -142,12 +35,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label:localizeStrEnum.TABLE_COLUMNS_LABEL,
           description:localizeStrEnum.TABLE_COLUMNS_DESCRIPTION,
-          defaultEnable:[false,false,true,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
           args:[1,50,1],
-          defaultValue:[3,3,14,3,3],
+          defaultValue:3,
       }]
   },
   [ParamName.width]:{
@@ -157,12 +50,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label:localizeStrEnum.WIDTH_LABLE,
           description:localizeStrEnum.WIDTH_DESCRIPTION,
-          defaultEnable:[false,true,false,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
           args:[1,2160,1,true],
-          defaultValue:[330,40,330,330,330],
+          defaultValue:330,
       }]
   },
   [ParamName.position]:{
@@ -172,13 +65,13 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label:localizeStrEnum.POSITION_LABEL,
           description:localizeStrEnum.POSITION_DESCRIPTION,
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[
       {
           type:ParamPatchType.dropdown,
           args:["top-left","top-center","top-right","middle-left","middle-right","bottom-left","bottom_center","bottom-right"],
-          defaultValue:["top-left","top-left","top-left","top-left","top-left"],
+          defaultValue:"top-left"
       }
       ]
   },
@@ -189,7 +82,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label:localizeStrEnum.HUD_NO_MARGIN_LABEL,
           description:localizeStrEnum.HUD_NO_MARGIN_DESCRIPTION,
-          defaultEnable:[false,false,true,false,false],
+          defaultEnable:false,
       },
       patchs:[]
   },
@@ -200,12 +93,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.no_display]}],
       toggle:{
           label:localizeStrEnum.OFFSET_X_LABEL,
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
           args:[0,2160,1,true],
-          defaultValue:[0,0,0,0,0],
+          defaultValue:0,
       }]
   },
       
@@ -216,12 +109,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.no_display]}],
       toggle:{
           label:localizeStrEnum.OFFSET_Y_LABEL,
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
           args:[0,2160,1,true],
-          defaultValue:[0,0,0,0,0],
+          defaultValue:0,
       }]
   },
       
@@ -232,7 +125,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.no_display]}],
       toggle:{
           label:localizeStrEnum.FPS_ONLY_LABEL,
-          defaultEnable:[false,true,false,false,false],
+          defaultEnable:false,
       },
       patchs:[]
   },
@@ -243,7 +136,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[],
       toggle:{
           label: localizeStrEnum.NO_DISPLAY_LABEL,
-          defaultEnable:[true,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[]
   },
@@ -255,12 +148,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label: localizeStrEnum.ALPHA_LABEL,
           description: localizeStrEnum.ALPHA_DESCRIPTION,
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
           args:[0,1,0.01,false],
-          defaultValue:[1,1,1,1,1],
+          defaultValue:1,
       }]
   },
 
@@ -271,12 +164,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label: localizeStrEnum.BACKGROUND_ALPHA_LABEL,
           description: localizeStrEnum.BACKGROUND_ALPHA_DESCRIPTION,
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
           args:[0,1,0.01],
-          defaultValue:[1,1,1,1,1],
+          defaultValue:1,
       }]
   },
   /*
@@ -286,7 +179,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label: "no_small_font",
-        defaultEnable:[false,false,false,false,false],
+        defaultEnable:false,
     },
     patchs:[]
   },
@@ -298,12 +191,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.no_display]}],
       toggle:{
           label: localizeStrEnum.FONT_SCALE_LABEL,
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
           args:[0.1,3,0.1],
-          defaultValue:[1,1,1,1,1],
+          defaultValue:1,
       }]
   },
 
@@ -314,79 +207,79 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle:{
           label: localizeStrEnum.FULL_LABEL,
           description: localizeStrEnum.FULL_DESCRIPTION,
-          defaultEnable:[false,false,false,false,true],
+          defaultEnable:false,
       },
       patchs:[]
   },
 
   [ParamName.custom_text_center] : {
       name: ParamName.custom_text_center,
-      group: ParamGroup.CUSTOM,
+      group: ParamGroup.CUSTOM_TEXT,
       preCondition: [{disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
       toggle: {
         label: localizeStrEnum.CUSTOM_TEXT_CENTER_LABEL,
         description: localizeStrEnum.CUSTOM_TEXT_CENTER_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: [{
         type: ParamPatchType.textInput,
         args: [],
-        defaultValue: ["STEAM DECK", "STEAM DECK", "STEAM DECK", "STEAM DECK", "STEAM DECK"],
+        defaultValue: "STEAM DECK",
       }]
   },
     
   [ParamName.custom_text] : {
       name: ParamName.custom_text,
-      group: ParamGroup.CUSTOM,
+      group: ParamGroup.CUSTOM_TEXT,
       preCondition: [{disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
       toggle: {
         label: localizeStrEnum.CUSTOM_TEXT_LABEL,
         description: localizeStrEnum.CUSTOM_TEXT_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: [{
         type: ParamPatchType.textInput,
         args: [],
-        defaultValue: ["MangoPeel", "MangoPeel", "MangoPeel", "MangoPeel", "MangoPeel"],
+        defaultValue: "MangoPeel",
       }]
   },
 
   [ParamName.time] : {
     name: ParamName.time,
-    group: ParamGroup.CUSTOM,
+    group: ParamGroup.CUSTOM_TEXT,
     preCondition: [{disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
     toggle: {
       label: localizeStrEnum.TIME_LABEL,
       description: localizeStrEnum.TIME_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
 
   [ParamName.time_format] : {
     name: ParamName.time_format,
-    group: ParamGroup.CUSTOM,
+    group: ParamGroup.CUSTOM_TEXT,
     preCondition: [{enable:[ParamName.time], disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
     toggle: {
       label: localizeStrEnum.TIME_FORMAT_LABEL,
       description: localizeStrEnum.TIME_FORMAT_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: [{
       type: ParamPatchType.textInput,
       args: [localizeStrEnum.TIME_FORMAT_INPUT_TITLE,[localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION1,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION2,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION3,localizeStrEnum.TIME_FORMAT_INPUT_DESCRIPTION4]],
-      defaultValue: ["%H:%M:%S", "%H:%M:%S", "%H:%M:%S", "%H:%M:%S", "%H:%M:%S"],
+      defaultValue: "%H:%M:%S"
     }]
   },
     
   [ParamName.version] : {
       name: ParamName.version,
-      group: ParamGroup.CUSTOM,
+      group: ParamGroup.OTHER,
       preCondition: [{disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
       toggle: {
         label: localizeStrEnum.VERSION_LABEL,
         description: localizeStrEnum.VERSION_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -397,7 +290,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition: [{disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display]}],
       toggle: {
         label: localizeStrEnum.CPU_STATS_LABEL,
-        defaultEnable: [false, false, true, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -414,12 +307,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.CPU_TEXT_LABEL,
         description: localizeStrEnum.CPU_TEXT_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: [{
         type: ParamPatchType.textInput,
         args: [],
-        defaultValue: ["CPU", "CPU", "CPU", "CPU", "CPU"],
+        defaultValue: "CPU_TEXT",
       }]
   },
     
@@ -436,7 +329,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.CPU_LOAD_CHANGE_LABEL,
         description: localizeStrEnum.CPU_LOAD_CHANGE_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -454,7 +347,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.CORE_LOAD_LABEL,
         description: localizeStrEnum.CORE_LOAD_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -472,7 +365,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.CORE_LOAD_CHANGE_LABEL,
         description: localizeStrEnum.CORE_LOAD_CHANGE_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
     },
@@ -490,7 +383,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.CPU_MHZ_LABEL,
         description: localizeStrEnum.CPU_MHZ_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -508,7 +401,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.CPU_POWER_LABEL,
         description: localizeStrEnum.CPU_POWER_DESCRIPTION,
-        defaultEnable: [false, false, true, true, true],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -526,7 +419,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.CPU_TEMP_LABEL,
         description: localizeStrEnum.CPU_TEMP_DESCRIPTION,
-        defaultEnable: [false, false, false, true, true],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -539,7 +432,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       }],
       toggle: {
         label: localizeStrEnum.GPU_STATS_LABEL,
-        defaultEnable: [false, false, true, false, false],
+        defaultEnable: false,
       },
       patchs: []
     },
@@ -557,12 +450,12 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.GPU_TEXT_LABEL,
         description: localizeStrEnum.GPU_TEXT_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: [{
         type: ParamPatchType.textInput,
         args: [],
-        defaultValue: ["GPU", "GPU", "GPU", "GPU", "GPU"],
+        defaultValue: "GPU_TEXT",
       }]
   },
     
@@ -579,7 +472,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.GPU_LOAD_CHANGE_LABEL,
         description: localizeStrEnum.GPU_LOAD_CHANGE_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -597,7 +490,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.GPU_CORE_CLOCK_LABEL,
         description: localizeStrEnum.GPU_CORE_CLOCK_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -615,7 +508,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.GPU_POWER_LABEL,
         description: localizeStrEnum.GPU_POWER_DESCRIPTION,
-        defaultEnable: [false, false, true, true, true],
+        defaultEnable: false,
       },
       patchs: []
     },
@@ -633,7 +526,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.GPU_TEMP_LABEL,
         description: localizeStrEnum.GPU_TEMP_DESCRIPTION,
-        defaultEnable: [false, false, false, true, true],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -649,7 +542,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.VRAM_LABEL,
         description: localizeStrEnum.VRAM_DESCRIPTION,
-        defaultEnable: [false, false, false, true, true],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -665,7 +558,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.RAM_LABEL,
         description: localizeStrEnum.RAM_DESCRIPTION,
-        defaultEnable: [false, false, true, true, true],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -680,7 +573,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.SWAP_LABEL,
         description: localizeStrEnum.SWAP_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -691,7 +584,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: "procem",
       description: localizeStrEnum.SWAP_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -701,7 +594,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: "procmem_shared",
       description: localizeStrEnum.SWAP_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -711,7 +604,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: "procmem_virt",
       description: localizeStrEnum.SWAP_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -728,7 +621,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.BATTERY_LABEL,
         description: localizeStrEnum.BATTERY_DESCRIPTION,
-        defaultEnable: [false, false, true, true, true],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -746,7 +639,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.BATTERY_ICON_LABEL,
         description: localizeStrEnum.BATTERY_ICON_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -764,7 +657,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: localizeStrEnum.BATTERY_WATT_LABEL,
       description: localizeStrEnum.BATTERY_WATT_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -782,7 +675,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: localizeStrEnum.BATTERY_TIME_LABEL,
       description: localizeStrEnum.BATTERY_TIME_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -799,7 +692,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.FAN_LABEL,
         description: localizeStrEnum.FAN_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -815,7 +708,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.FSR_LABEL,
         description: localizeStrEnum.FSR_DESCRIPTION,
-        defaultEnable: [false, false, false, false, false],
+        defaultEnable: false,
       },
       patchs: []
   },
@@ -829,9 +722,24 @@ export const paramList:{ [paramName: string]: ParamData }={
       toggle: {
         label: localizeStrEnum.FPS_LABEL,
         description: localizeStrEnum.FPS_DESCRIPTION,
-        defaultEnable: [false, true, true, false, false],
+        defaultEnable: false,
       },
       patchs: []
+  },
+
+  [ParamName.frametime] : {
+    name: ParamName.frametime,
+    group: ParamGroup.OTHER,
+    preCondition: [{
+      enable: [ParamName.fps],
+      disable: [ParamName.fps_only, ParamName.no_display]
+    }],
+    toggle: {
+      label: localizeStrEnum.FRAME_TIME_LABEL,
+      description: localizeStrEnum.FRAME_TIME_DESCRIPTION,
+      defaultEnable: true,
+    },
+    patchs: []
   },
 
   [ParamName.fps_color_change] : {
@@ -847,7 +755,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: localizeStrEnum.FPS_COLOR_CHANGE_LABEL,
       description: localizeStrEnum.FPS_COLOR_CHANGE_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -861,7 +769,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: localizeStrEnum.FRAME_TIMING_LABEL,
       description: localizeStrEnum.FRAME_TIMING_DESCRIPTION,
-      defaultEnable: [false, false, true, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -875,24 +783,11 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: localizeStrEnum.FRAME_COUNT_LABEL,
       description: localizeStrEnum.FRAME_COUNT_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
 
-  [ParamName.frametime] : {
-    name: ParamName.frametime,
-    group: ParamGroup.OTHER,
-    preCondition: [{
-      disable: [ParamName.fps_only, ParamName.no_display]
-    }],
-    toggle: {
-      label: localizeStrEnum.FRAME_TIME_LABEL,
-      description: localizeStrEnum.FRAME_TIME_DESCRIPTION,
-      defaultEnable: [false, false, false, true, true],
-    },
-    patchs: []
-  },
   [ParamName.debug] : {
     name: ParamName.debug,
     group: ParamGroup.OTHER,
@@ -902,7 +797,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: localizeStrEnum.DEBUG_LABEL,
       description: localizeStrEnum.DEBUG_DESCRIPTION,
-      defaultEnable: [false, false, false, false, false],
+      defaultEnable: false,
     },
     patchs: []
   },
@@ -925,7 +820,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
       toggle:{
           label:"io_stats",
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[]
   }
@@ -935,7 +830,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
       toggle:{
           label:"io_read",
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[]
   }
@@ -945,7 +840,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.legacy_layout,ParamName.fps_only,ParamName.no_display]}],
       toggle:{
           label:"io_write",
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[]
   }
@@ -957,7 +852,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       preCondition:[{disable:[ParamName.no_display]}],
       toggle:{
           label:"font_size",
-          defaultEnable:[false,false,false,false,false],
+          defaultEnable:false,
       },
       patchs:[{
           type:ParamPatchType.slider,
@@ -988,40 +883,41 @@ export const paramList:{ [paramName: string]: ParamData }={
   }*/
 }
 
-export const paramDefalut:{[paramName:string]:ParamDefalut}[] = [
+//steam默认的参数设置
+export const steamParamDefalut:{[paramName:string]:SteamParamDefalut}[] = [
   {
     [ParamName.no_display]:{enable:true},
   },
   {
-    [ParamName.frame_timing]:{enable:false},
-    [ParamName.cpu_stats]:{enable:false},
-    [ParamName.gpu_stats]:{enable:false},
-    [ParamName.fps]:{enable:true},
+    [ParamName.frame_timing]:{enable:false,order:1},
+    [ParamName.cpu_stats]:{enable:false,order:2},
+    [ParamName.gpu_stats]:{enable:false,order:3},
+    [ParamName.fps]:{enable:true,order:4},
     [ParamName.fps_only]:{enable:true},
     [ParamName.legacy_layout]:{enable:false},
-    [ParamName.width]:{enable:true,values:40},
+    [ParamName.width]:{enable:true,values:[40]},
     [ParamName.frametime]:{enable:false},
   },
   {
     [ParamName.legacy_layout]:{enable:false},
     [ParamName.horizontal]:{enable:true},
-    [ParamName.battery]:{enable:true},
-    [ParamName.cpu_stats]:{enable:true},
-    [ParamName.gpu_stats]:{enable:true},
+    [ParamName.battery]:{enable:true,order:1},
+    [ParamName.cpu_stats]:{enable:true,order:2},
+    [ParamName.gpu_stats]:{enable:true,order:3},
     [ParamName.cpu_power]:{enable:true},
     [ParamName.gpu_power]:{enable:true},
-    [ParamName.ram]:{enable:true},
-    [ParamName.fps]:{enable:true},
+    [ParamName.ram]:{enable:true,order:4},
+    [ParamName.fps]:{enable:true,order:5},
     [ParamName.frametime]:{enable:false},
     [ParamName.hud_no_margin]:{enable:true},
-    [ParamName.table_columns]:{enable:true,values:14},
-    [ParamName.frame_timing]:{enable:true},
+    [ParamName.table_columns]:{enable:true,values:[14]},
+    [ParamName.frame_timing]:{enable:true,order:6},
   },
   {
     [ParamName.cpu_temp]:{enable:true},
     [ParamName.gpu_temp]:{enable:true},
-    [ParamName.ram]:{enable:true},
-    [ParamName.vram]:{enable:true},
+    [ParamName.ram]:{enable:true,order:1},
+    [ParamName.vram]:{enable:true,order:2},
     [ParamName.io_read]:{enable:true},
     [ParamName.io_write]:{enable:true},
     [ParamName.arch]:{enable:true},
@@ -1030,14 +926,14 @@ export const paramDefalut:{[paramName:string]:ParamDefalut}[] = [
     [ParamName.gpu_power]:{enable:true},
     [ParamName.wine]:{enable:true},
     [ParamName.frametime]:{enable:true},
-    [ParamName.battery]:{enable:true},
+    [ParamName.battery]:{enable:true,order:3},
   },
   {
     [ParamName.full]:{enable:true},
     [ParamName.cpu_temp]:{enable:true},
     [ParamName.gpu_temp]:{enable:true},
-    [ParamName.ram]:{enable:true},
-    [ParamName.vram]:{enable:true},
+    [ParamName.ram]:{enable:true,order:1},
+    [ParamName.vram]:{enable:true,order:2},
     [ParamName.io_read]:{enable:true},
     [ParamName.io_write]:{enable:true},
     [ParamName.arch]:{enable:true},
@@ -1046,6 +942,26 @@ export const paramDefalut:{[paramName:string]:ParamDefalut}[] = [
     [ParamName.gpu_power]:{enable:true},
     [ParamName.wine]:{enable:true},
     [ParamName.frametime]:{enable:true},
-    [ParamName.battery]:{enable:true},
+    [ParamName.battery]:{enable:true,order:3},
   },
 ]
+
+//默认参数排序先后
+export const paramOrder:{[paramName:string]:number} = { 
+  [ParamName.custom_text_center]:1,
+  [ParamName.custom_text]:2,
+  [ParamName.time]:3,
+  [ParamName.version]:4,
+  [ParamName.cpu_stats]:5,
+  [ParamName.core_load]:6,
+  [ParamName.gpu_stats]:7,
+  [ParamName.vram]:8,
+  [ParamName.ram]:9,
+  [ParamName.battery]:10,
+  [ParamName.fan]:11,
+  [ParamName.fsr]:12,
+  [ParamName.fps]:13,
+  [ParamName.frame_timing]:14,
+  [ParamName.frame_count]:15,
+  [ParamName.debug]:16
+}
