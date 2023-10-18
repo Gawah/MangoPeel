@@ -27,7 +27,6 @@ export class Config {
   }
 
   public static loadConfig (){
-    console.log(`steamchannel=${this.channel}`);
     if(this.channel == SteamChannel.rel){
       this.paramList = paramList_rel;
       this.paramOrder = paramOrder_rel;

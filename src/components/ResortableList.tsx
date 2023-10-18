@@ -72,8 +72,8 @@ function ResortableList({
                 <div
                   style={{
                     backgroundColor: '#ffffff',
-                    width: 20,
-                    height: 20,
+                    width: 21,
+                    height: 21,
                     borderRadius: 30,
                     textAlign: 'center',
                     color: '#000000',

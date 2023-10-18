@@ -8,7 +8,7 @@ import {TextInputModal} from "./TextInputModal";
 import ResortableList from "./ResortableList";
 import { LocalizationManager, localizeStrEnum } from "../i18n";
 
-const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number }> = ({ paramName, patch, patchIndex }) => {
+const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number}> = ({ paramName, patch, patchIndex}) => {
 
   const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(Settings.getSettingsIndex(),paramName, patchIndex));
   const [selectedIndex, setSelectedIndex] = useState(patch.args.indexOf(selectedValue));
@@ -25,8 +25,8 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
     };
   }, []);
 
-  const updateSelectedValue = (value: any) => {
-    setSelectedValue(value);
+  const updateSettingsValue = (value: any) => {
+    //setSelectedValue(value);
     Settings.setParamValue(Settings.getSettingsIndex(),paramName, patchIndex, value);
   };
 
@@ -43,7 +43,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
               value={selectedValue}
               layout={"inline"}
               bottomSeparator={"none"}
-              onChangeEnd={updateSelectedValue}
+              onChangeEnd={updateSettingsValue}
             />
           </PanelSectionRow>
           <style>
@@ -83,7 +83,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
               })}
               onChange={(value) => {
                 setSelectedIndex(value);
-                updateSelectedValue(patch.args[value]);
+                updateSettingsValue(patch.args[value]);
               }}
             />
           </PanelSectionRow>
@@ -102,7 +102,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
               bottomSeparator={"none"}
               onChange={(index) => {
                 setSelectedIndex(index.data);
-                updateSelectedValue(index.label);
+                updateSettingsValue(index.label);
               }}
             />
           </PanelSectionRow>
@@ -122,7 +122,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
                     strDescription={patch.args?.[1]}
                     defaultValue={selectedValue}
                     OnConfirm={(text) => {
-                      updateSelectedValue(text);
+                      updateSettingsValue(text);
                     }}
                   />
                 );
@@ -136,7 +136,16 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
     case ParamPatchType.resortableList:
       switch(patch.args[0]){
         case(ResortType.paramOrder):
-        var sortList = Settings.getSortParamList(Settings.getSettingsIndex());
+          const [sortList,setsortList] = useState(Settings.getSortParamList(Settings.getSettingsIndex()));
+          useEffect(() => {
+            const updateEvent = () => {
+              setsortList(Settings.getSortParamList(Settings.getSettingsIndex()));
+            };
+            Settings.settingChangeEventBus.addEventListener(paramName, updateEvent);
+            return () => {
+              Settings.settingChangeEventBus.removeEventListener(paramName, updateEvent);
+            };
+          }, []);
           return (
             <>
                 <ResortableList initialArray={sortList.map((data)=>{
@@ -161,10 +170,16 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
       const [enable, setEnable] = useState(Settings.getParamEnable(Settings.getSettingsIndex(),paramData.name as ParamName));
       const [visible,setVisible] = useState(Settings.getParamVisible(Settings.getSettingsIndex(),paramData.name as ParamName));
       const [showPatch,setShowPatch] = useState(false);
+      const [showArrawItem,setShowArrawItem] = useState(true);
       const updateEvent=()=>{
         //console.log(`enable=${enable} new_enable=${new_enable}`);
         setEnable(Settings.getParamEnable(Settings.getSettingsIndex(),paramData.name as ParamName));
         setVisible(Settings.getParamVisible(Settings.getSettingsIndex(),paramData.name as ParamName));
+        
+        //当排序参数数量为0时需要隐藏箭头按钮
+        if(paramData.name == ParamName.legacy_layout){
+          setShowArrawItem(Settings.getSortParamCount(Settings.getSettingsIndex())>0);
+        }
       }
       useEffect(()=>{
         Settings.settingChangeEventBus.addEventListener(paramData.name,updateEvent);
@@ -190,11 +205,11 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
           {showPatch&&(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0 ? (
             <>
               {paramData.patchs?.map((e,patchIndex) => (
-                <ParamPatchItem paramName={paramData.name} patch={e} patchIndex={patchIndex}/>
+                 <ParamPatchItem paramName={paramData.name} patch={e} patchIndex={patchIndex}/>
               ))}
             </>
           ) : null}
-          {(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0 &&
+          {showArrawItem&&(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0&&
           <PanelSectionRow>
           <ButtonItem
               layout="below"

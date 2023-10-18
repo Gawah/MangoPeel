@@ -69,6 +69,16 @@ export enum ParamName {
   fps_limit = "fps_limit",
   fps_limit_method = "fps_limit_method",
   hide_fsr_sharpness = "hide_fsr_sharpness",
+  histogram = "histogram",
+  graphs_cpu_load = "graphs_cpu_load",
+  graphs_cpu_temp = "graphs_cpu_temp",
+  graphs_gpu_load = "graphs_gpu_load",
+  graphs_gpu_temp = "graphs_gpu_temp",
+  graphs_gpu_core_clock = "graphs_gpu_core_clock",
+  graphs_gpu_mem_clock = "graphs_gpu_mem_clock",
+  graphs_vram = "graphs_vram",
+  graphs_ram = "graphs_ram",
+  
 }
 
 export enum ParamGroup{
@@ -76,6 +86,7 @@ export enum ParamGroup{
     LAYOUT="LAYOUT",
     SETTING="SETTING",
     ALPHA="ALPHA",
+    FONT="FONT",
     CUSTOM_TEXT="CUSTOM TEXT",
     CPU="CPU",
     GPU="GPU",

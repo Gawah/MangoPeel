@@ -50,7 +50,6 @@ export class ParamSetting {
   }
 
   public getParamValues(paramName: ParamName) {
-    console.log(`paramName=${paramName}, values=${this.paramMap[paramName]?.paramValues??[]}`)
     return this.paramMap[paramName]?.paramValues??[];
   }
   public setParamValues(paramName: ParamName, paramValue: any[]) {
@@ -73,7 +72,7 @@ export class ParamSetting {
   }
   public setParamOrder(paramName: ParamName, paramOrder: number) {
     if(paramName in this.paramMap){
-      console.log(`name= ${paramName} nowOrder = ${this.paramMap[paramName]!.paramOrder} setOrder = ${paramOrder}`);
+      //console.log(`name= ${paramName} nowOrder = ${this.paramMap[paramName]!.paramOrder} setOrder = ${paramOrder}`);
       //参与排序的参数不可设置为0
       if (this.paramMap[paramName]!.paramOrder !=0 && paramOrder == 0){
         return;
@@ -113,9 +112,13 @@ export class ParamSetting {
     }
     //排序后针对每个参数一一转换
     for (const paramInfo of Object.values(this.paramMap).sort(paramReSort)) {
-      console.log(`resort name=${paramInfo.paramName} order=${paramInfo.paramOrder} work=${this.getParamWork(paramInfo.paramName as ParamName)} visible=${paramInfo.bVisible})}`)
       if (this.getParamWork(paramInfo.paramName as ParamName)) {
-        config += paramInfo.paramName;
+        //图表类参数需要特殊处理
+        if(paramInfo.paramName.startsWith("graphs_")){
+          config += `graphs=${paramInfo.paramName.substring("graphs_".length)}`
+        }else{
+          config += paramInfo.paramName;
+        }
         const valueList = this.getParamValues(paramInfo.paramName as ParamName);
         if (valueList.length > 0) {
           switch (paramInfo.paramName) {
@@ -263,6 +266,10 @@ export class Settings {
       updateGroupList.forEach((groupName)=>{
         this.settingChangeEventBus.dispatchEvent(new Event(groupName));
       })
+      //刷新排序信息
+      if(this.getSettings(index).getParamOrder(paramName)>0){
+        this.settingChangeEventBus.dispatchEvent(new Event(ParamName.legacy_layout));
+      }
       Settings.saveSettingsToLocalStorage();
       Backend.applyConfig(index,this.toMangoConfig(index));
     }
@@ -457,6 +464,13 @@ export class Settings {
     })
   }
 
+  //获取当前生效的排序参数个数
+  public static getSortParamCount(index:number){
+    return Object.values(this.getSettings(index).paramMap).filter((paramInfo)=>{
+      return paramInfo.paramOrder!=0 && this.getParamWork(index,paramInfo.paramName as ParamName)
+    }).length;
+  }
+
   //设置排序参数列表
   public static setParamOrder(index:number,paramName:ParamName,order:number){
     var paramOrder=this.getSettings(index).getParamOrder(paramName);
@@ -491,7 +505,6 @@ export class Settings {
     const settingsJson = JSON.parse(settingsString);
     const loadSetting=serializer.deserializeObject(settingsJson, Settings);
     this._instance.enabled = loadSetting?.enabled??false;
-    console.log(`loadConfig=${settingsJson}`)
     for(var index=0;index<5;index++){
       //加载保存值
       if(loadSetting?.paramSettings?.[index]){
@@ -508,7 +521,6 @@ export class Settings {
   public static saveSettingsToLocalStorage() {
     const settingsJson = serializer.serializeObject(this._instance);
     const settingsString = JSON.stringify(settingsJson);
-    console.log(`saveConfig=${settingsJson}`)
     localStorage.setItem(SETTINGS_KEY, settingsString);
   }
 
