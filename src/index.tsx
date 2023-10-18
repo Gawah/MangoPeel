@@ -8,7 +8,7 @@ import {
 } from "decky-frontend-lib";
 import { VFC,useEffect,useState} from "react";
 import { FaBorderStyle } from "react-icons/fa";
-import { MangoIndex, ParamItem } from "./components";
+import { MangoIndex, ParamItem} from "./components";
 import { LocalizationManager, localizeStrEnum } from "./i18n";
 import { ParamGroup, PluginManager, Settings} from "./util";
 import { Config } from "./util/config";

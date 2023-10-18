@@ -133,6 +133,43 @@ export const paramList:{ [paramName: string]: ParamData }={
       }]
   },
 
+  [ParamName.background_color]:{
+    name:ParamName.background_color,
+    group:ParamGroup.LAYOUT,
+    preCondition:[{disable:[ParamName.no_display,ParamName.preset]}],
+    toggle:{
+        label:localizeStrEnum.BACKGROUND_COLOR_LABEL,
+        description:localizeStrEnum.BACKGROUND_COLOR_DESCRIPTION,
+        defaultEnable:false,
+    },
+    patchs:[{
+        type:ParamPatchType.colorPicker,
+        args:[],
+        defaultValue:"020202",
+    }]
+  },
+
+  [ParamName.frametime_color]:{
+    name:ParamName.frametime_color,
+    group:ParamGroup.LAYOUT,
+    preCondition: [{enable:[ParamName.frame_timing]},{enable:[ParamName.graphs_cpu_load]},{enable:[ParamName.graphs_cpu_temp]},{enable:[ParamName.graphs_gpu_core_clock]},{enable:[ParamName.graphs_gpu_load]},
+    {enable:[ParamName.graphs_gpu_mem_clock]},{enable:[ParamName.graphs_gpu_temp]},{enable:[ParamName.graphs_ram]},{enable:[ParamName.graphs_vram]},
+    {
+      enable:[ParamName.legacy_layout,ParamName.full],
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.preset]
+    }],
+    toggle:{
+        label:localizeStrEnum.FRAMETIME_COLOR_LABEL,
+        description:localizeStrEnum.FRAMETIME_COLOR_DESCRIPTION,
+        defaultEnable:false,
+    },
+    patchs:[{
+        type:ParamPatchType.colorPicker,
+        args:[],
+        defaultValue:"00FF00",
+    }]
+  },
+
   [ParamName.full]:{
     name:ParamName.full,
     group:ParamGroup.LAYOUT,
@@ -199,6 +236,40 @@ export const paramList:{ [paramName: string]: ParamData }={
     patchs:[]
   },
   */
+
+  [ParamName.text_outline_thickness]:{
+    name:ParamName.text_outline_thickness,
+    group:ParamGroup.FONT,
+    preCondition:[{disable:[ParamName.no_display,ParamName.preset]}],
+    toggle:{
+        label: localizeStrEnum.TEXT_OUTLINE_THICKNESS_LABEL,
+        description: localizeStrEnum.TEXT_OUTLINE_THICKNESS_DESCRIPTION,
+        defaultEnable:true,
+    },
+    patchs:[{
+        type:ParamPatchType.slider,
+        args:[0,3,0.1],
+        defaultValue:1.5,
+    }]
+  },
+
+  [ParamName.text_outline_color]:{
+    name:ParamName.text_outline_color,
+    group:ParamGroup.FONT,
+    preCondition:[{
+      enable:[ParamName.text_outline_thickness],
+    }],
+    toggle:{
+        label: localizeStrEnum.TEXT_OUTLINE_COLOR_LABEL,
+        description: localizeStrEnum.TEXT_OUTLINE_COLOR_DESCRIPTION,
+        defaultEnable:true,
+    },
+    patchs:[{
+        type:ParamPatchType.colorPicker,
+        args:[],
+        defaultValue:"000000",
+    }]
+  },
       
   [ParamName.font_scale]:{
       name:ParamName.font_scale,
@@ -251,6 +322,24 @@ export const paramList:{ [paramName: string]: ParamData }={
       }]
   },
 
+  [ParamName.text_color] : {
+    name: ParamName.text_color,
+    group: ParamGroup.CUSTOM_TEXT,
+    preCondition: [{
+      disable: [ParamName.no_display, ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.TEXT_COLOR_LABEL,
+      description: localizeStrEnum.TEXT_COLOR_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "FFFFFF",
+    }]
+},
+
   [ParamName.time] : {
     name: ParamName.time,
     group: ParamGroup.CUSTOM_TEXT,
@@ -284,6 +373,22 @@ export const paramList:{ [paramName: string]: ParamData }={
       defaultValue: "%H:%M:%S"
     }]
   },
+
+  [ParamName.version] : {
+    name: ParamName.version,
+    group: ParamGroup.CUSTOM_TEXT,
+    preCondition: [{
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
+    }, {
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.full,ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.VERSION_LABEL,
+      description: localizeStrEnum.VERSION_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: []
+},
     
   [ParamName.cpu_stats] : {
       name: ParamName.cpu_stats,
@@ -329,6 +434,30 @@ export const paramList:{ [paramName: string]: ParamData }={
         defaultValue: "CPU_TEXT",
       }]
   },
+
+  [ParamName.cpu_color] : {
+    name: ParamName.cpu_color,
+    group: ParamGroup.CPU,
+    preCondition: [{
+      enable: [ParamName.cpu_stats],
+      disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display,ParamName.preset]
+    },{
+      enable: [ParamName.legacy_layout],
+      disable: [ParamName.fps_only, ParamName.no_display,ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.CPU_COLOR_LABEL,
+      description: localizeStrEnum.CPU_COLOR_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "2E97CB",
+    }]
+  },
+
+
     
   [ParamName.cpu_load_change] : {
       name: ParamName.cpu_load_change,
@@ -496,6 +625,28 @@ export const paramList:{ [paramName: string]: ParamData }={
         defaultValue: "GPU_TEXT",
       }]
   },
+
+  [ParamName.gpu_color] : {
+    name: ParamName.gpu_color,
+    group: ParamGroup.GPU,
+    preCondition: [{
+      enable: [ParamName.gpu_stats],
+      disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display,ParamName.preset]
+    }, {
+      enable: [ParamName.legacy_layout],
+      disable: [ParamName.fps_only, ParamName.no_display,ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.GPU_COLOR_LABEL,
+      description: localizeStrEnum.GPU_COLOR_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "2E9762",
+    }]
+},
     
   [ParamName.gpu_load_change] : {
       name: ParamName.gpu_load_change,
@@ -609,6 +760,27 @@ export const paramList:{ [paramName: string]: ParamData }={
       patchs: []
   },
 
+  [ParamName.ram_color] : {
+    name: ParamName.ram_color,
+    group: ParamGroup.RAM,
+    preCondition: [{
+      enable:[ParamName.ram]
+    }, {
+      enable:[ParamName.legacy_layout,ParamName.full],
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.RAM_COLOR_LABEL,
+      description: localizeStrEnum.RAM_COLOR_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "C26693",
+    }]
+  },
+
   [ParamName.graphs_ram]:{
     name: ParamName.graphs_ram,
     group: ParamGroup.RAM,
@@ -651,6 +823,27 @@ export const paramList:{ [paramName: string]: ParamData }={
       defaultEnable: false,
     },
     patchs: []
+  },
+
+  [ParamName.vram_color] : {
+    name: ParamName.vram_color,
+    group: ParamGroup.RAM,
+    preCondition: [{
+      enable:[ParamName.vram]
+    }, {
+      enable:[ParamName.legacy_layout,ParamName.full],
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.VRAM_COLOR_LABEL,
+      description: localizeStrEnum.VRAM_COLOR_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "AD64C1",
+    }]
   },
 
   [ParamName.graphs_vram]:{
@@ -747,6 +940,28 @@ export const paramList:{ [paramName: string]: ParamData }={
       },
       patchs: []
   },
+
+  [ParamName.battery_color] : {
+    name: ParamName.battery_color,
+    group: ParamGroup.BATT,
+    preCondition: [{
+      enable: [ParamName.battery],
+      disable: [ParamName.no_display, ParamName.fps_only,ParamName.preset]
+    }, {
+      enable: [ParamName.legacy_layout, ParamName.full],
+      disable: [ParamName.no_display, ParamName.fps_only,ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.BATTERY_COLOR_LABEL,
+      description: localizeStrEnum.BATTERY_COLOR_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "FF9078",
+    }]
+},
     
   [ParamName.battery_icon] : {
       name: ParamName.battery_icon,
@@ -793,26 +1008,32 @@ export const paramList:{ [paramName: string]: ParamData }={
     },
     patchs: []
   },
+   
 
-  [ParamName.version] : {
-    name: ParamName.version,
-    group: ParamGroup.OTHER,
-    preCondition: [{
-      disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
-    }, {
-      disable: [ParamName.fps_only, ParamName.no_display, ParamName.full,ParamName.preset]
+  [ParamName.engine_color] : {
+    name: ParamName.engine_color,
+    group: ParamGroup.ENGINE,
+    preCondition: [{enable:[ParamName.fan]},{enable:[ParamName.fsr]},{enable:[ParamName.fps]},{enable:[ParamName.frametime]},{enable:[ParamName.show_fps_limit]},
+    {enable:[ParamName.frame_count]},{enable:[ParamName.arch]},{enable:[ParamName.engine_version]},{enable:[ParamName.gamemode]},{enable:[ParamName.vkbasalt]},
+    {enable:[ParamName.resolution]},
+    {
+      enable:[ParamName.legacy_layout,ParamName.full],
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.preset]
     }],
     toggle: {
-      label: localizeStrEnum.VERSION_LABEL,
-      description: localizeStrEnum.VERSION_DESCRIPTION,
+      label: localizeStrEnum.ENGINE_COLOR_LABEL,
+      description: localizeStrEnum.ENGINE_COLOR_DESCRIPTION,
       defaultEnable: false,
     },
-    patchs: []
-},
-    
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "AD64C1",
+    }]
+  },
   [ParamName.fan] : {
       name: ParamName.fan,
-      group: ParamGroup.OTHER,
+      group: ParamGroup.ENGINE,
       preCondition: [{
         disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
       }, {
@@ -828,7 +1049,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     
   [ParamName.fsr] : {
       name: ParamName.fsr,
-      group: ParamGroup.OTHER,
+      group: ParamGroup.ENGINE,
       preCondition: [{
         disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
       }, {
@@ -844,7 +1065,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.hide_fsr_sharpness] : {
     name: ParamName.hide_fsr_sharpness,
-    group: ParamGroup.OTHER,
+    group: ParamGroup.ENGINE,
     preCondition: [{
       enable: [ParamName.fsr]
     },{
@@ -1030,7 +1251,7 @@ export const paramList:{ [paramName: string]: ParamData }={
   
   [ParamName.debug] : {
     name: ParamName.debug,
-    group: ParamGroup.OTHER,
+    group: ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display,ParamName.preset]
     }],
@@ -1095,6 +1316,25 @@ export const paramList:{ [paramName: string]: ParamData }={
       },
       patchs:[]
   },
+  [ParamName.io_color]:{
+    name:ParamName.io_color,
+    group:ParamGroup.IO,
+    preCondition: [{enable:[ParamName.io_write]},{enable:[ParamName.io_read]},
+    {
+      enable:[ParamName.legacy_layout,ParamName.full],
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.preset]
+    }],
+    toggle:{
+        label:localizeStrEnum.IO_COLOR_LABEL,
+        description:localizeStrEnum.IO_COLOR_DESCRIPTION,
+        defaultEnable:false,
+    },
+    patchs: [{
+      type: ParamPatchType.colorPicker,
+      args: [],
+      defaultValue: "A491D3",
+    }]
+},
   /*
   [ParamName.font_size]:{
       name:ParamName.font_size,
@@ -1112,7 +1352,7 @@ export const paramList:{ [paramName: string]: ParamData }={
   }*/
   [ParamName.arch]:{
       name:ParamName.arch,
-      group:ParamGroup.OTHER,
+      group:ParamGroup.ENGINE,
       preCondition: [{
         disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
       }, {
@@ -1129,7 +1369,7 @@ export const paramList:{ [paramName: string]: ParamData }={
   /*
   [ParamName.throttling_status]:{
     name:ParamName.throttling_status,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"throttling_status",
@@ -1140,7 +1380,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.throttling_status_graph]:{
     name:ParamName.throttling_status_graph,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"throttling_status_graph",
@@ -1152,7 +1392,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.engine_version]:{
     name:ParamName.engine_version,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
     }, {
@@ -1168,7 +1408,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.gamemode]:{
     name:ParamName.gamemode,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
     }, {
@@ -1184,7 +1424,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.vkbasalt]:{
     name:ParamName.vkbasalt,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
     }, {
@@ -1200,7 +1440,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.resolution]:{
     name:ParamName.resolution,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
     }, {
@@ -1216,7 +1456,7 @@ export const paramList:{ [paramName: string]: ParamData }={
   /*
   [ParamName.wine]:{
       name:ParamName.wine,
-      group:ParamGroup.OTHER,
+      group:ParamGroup.ENGINE,
       preCondition:[{disable:[ParamName.fps_only,ParamName.no_display]}],
       toggle:{
           label:"wine",

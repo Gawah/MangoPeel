@@ -150,6 +150,9 @@ export class ParamSetting {
           case ParamName.frametime:
             config += `${ParamName.frametime}=0\n`;
             break;
+          case ParamName.text_outline_thickness:
+            config += `${ParamName.text_outline_thickness}=0\n`;
+            break;
         }
       }
     }

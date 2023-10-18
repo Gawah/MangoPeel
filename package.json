@@ -34,6 +34,7 @@
     "@rollup/plugin-typescript": "^8.5.0",
     "@types/react": "16.14.0",
     "@types/webpack": "^5.28.1",
+    "@types/color": "^3.0.3",
     "rollup": "^2.79.1",
     "rollup-plugin-import-assets": "^1.1.1",
     "shx": "^0.3.4",
@@ -42,7 +43,8 @@
   },
   "dependencies": {
     "react-icons": "^4.10.1",
-    "typescript-json-serializer": "^4.3.0"
+    "typescript-json-serializer": "^4.3.0",
+    "color": "^4.2.3"
   },
   "pnpm": {
     "peerDependencyRules": {

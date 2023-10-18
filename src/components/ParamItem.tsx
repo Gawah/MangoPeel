@@ -7,6 +7,7 @@ import { SlowSliderField } from "./SlowSliderField";
 import {TextInputModal} from "./TextInputModal";
 import ResortableList from "./ResortableList";
 import { LocalizationManager, localizeStrEnum } from "../i18n";
+import { ColorPickModal } from "./ColorPickModal";
 
 const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number}> = ({ paramName, patch, patchIndex}) => {
 
@@ -161,6 +162,45 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
         default:
           return <></>
       }
+    case ParamPatchType.colorPicker:
+      return <PanelSectionRow>
+      <ButtonItem
+        onClick={() =>
+          showModal(
+            <ColorPickModal
+            defaultValue={selectedValue} 
+            OnConfirm={(color)=>{
+              updateSettingsValue(color);
+            }}
+            />
+          )
+        }
+        layout={"below"}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <span>#{selectedValue}</span>
+          <div
+            style={{
+              marginLeft: "auto",
+              width: "24px",
+              height: "24px",
+              backgroundColor: "#000",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: `#${selectedValue}`,
+                width: "20px",
+                height: "20px",
+              }}
+            />
+          </div>
+        </div>
+      </ButtonItem>
+    </PanelSectionRow>
     default:
       return null;
   }

@@ -78,13 +78,24 @@ export enum ParamName {
   graphs_gpu_mem_clock = "graphs_gpu_mem_clock",
   graphs_vram = "graphs_vram",
   graphs_ram = "graphs_ram",
-  
+  text_outline_thickness = "text_outline_thickness",
+  text_outline_color = "text_outline_color",
+  cpu_color = "cpu_color",
+  gpu_color = "gpu_color",
+  text_color = "text_color",
+  vram_color = "vram_color",
+  ram_color = "ram_color",
+  engine_color = "engine_color",
+  io_color = "io_color",
+  background_color = "background_color",
+  battery_color = "battery_color",
+  frametime_color = "frametime_color"
 }
 
 export enum ParamGroup{
     PRESET="PRESET",
     LAYOUT="LAYOUT",
-    SETTING="SETTING",
+//  SETTING="SETTING",
     ALPHA="ALPHA",
     FONT="FONT",
     CUSTOM_TEXT="CUSTOM TEXT",
@@ -94,7 +105,7 @@ export enum ParamGroup{
     RAM="RAM",
     BATT="BATT",
     FPS="FPS",
-    OTHER="OTHER",
+    ENGINE="ENGINE",
 }
 
 export enum ParamPatchType{
@@ -103,6 +114,7 @@ export enum ParamPatchType{
     notchSlider="notchSlider",
     textInput="textInput",
     resortableList="resortableList",
+    colorPicker="colorPicker",
     none="none"
 }
 

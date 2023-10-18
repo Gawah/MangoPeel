@@ -269,6 +269,22 @@ export const paramList:{ [paramName: string]: ParamData }={
       defaultValue: "%H:%M:%S"
     }]
   },
+
+  [ParamName.version] : {
+    name: ParamName.version,
+    group: ParamGroup.CUSTOM_TEXT,
+    preCondition: [{
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
+    }, {
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.full]
+    }],
+    toggle: {
+      label: localizeStrEnum.VERSION_LABEL,
+      description: localizeStrEnum.VERSION_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: []
+},
     
   [ParamName.cpu_stats] : {
       name: ParamName.cpu_stats,
@@ -780,26 +796,10 @@ export const paramList:{ [paramName: string]: ParamData }={
     },
     patchs: []
   },
-
-  [ParamName.version] : {
-    name: ParamName.version,
-    group: ParamGroup.OTHER,
-    preCondition: [{
-      disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
-    }, {
-      disable: [ParamName.fps_only, ParamName.no_display, ParamName.full]
-    }],
-    toggle: {
-      label: localizeStrEnum.VERSION_LABEL,
-      description: localizeStrEnum.VERSION_DESCRIPTION,
-      defaultEnable: false,
-    },
-    patchs: []
-},
     
   [ParamName.fan] : {
       name: ParamName.fan,
-      group: ParamGroup.OTHER,
+      group: ParamGroup.ENGINE,
       preCondition: [{
         disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
       }, {
@@ -815,7 +815,7 @@ export const paramList:{ [paramName: string]: ParamData }={
     
   [ParamName.fsr] : {
       name: ParamName.fsr,
-      group: ParamGroup.OTHER,
+      group: ParamGroup.ENGINE,
       preCondition: [{
         disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
       }, {
@@ -831,7 +831,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.hide_fsr_sharpness] : {
     name: ParamName.hide_fsr_sharpness,
-    group: ParamGroup.OTHER,
+    group: ParamGroup.ENGINE,
     preCondition: [{
       enable: [ParamName.fsr]
     },{
@@ -1019,7 +1019,7 @@ export const paramList:{ [paramName: string]: ParamData }={
   
   [ParamName.debug] : {
     name: ParamName.debug,
-    group: ParamGroup.OTHER,
+    group: ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display]
     }],
@@ -1103,7 +1103,7 @@ export const paramList:{ [paramName: string]: ParamData }={
   }
   [ParamName.arch]:{
       name:ParamName.arch,
-      group:ParamGroup.OTHER,
+      group:ParamGroup.ENGINE,
       preCondition: [{
         disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
       }, {
@@ -1119,7 +1119,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.throttling_status]:{
     name:ParamName.throttling_status,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"throttling_status",
@@ -1130,7 +1130,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.throttling_status_graph]:{
     name:ParamName.throttling_status_graph,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition:[{disable:[ParamName.no_display]}],
     toggle:{
         label:"throttling_status_graph",
@@ -1141,7 +1141,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.engine_version]:{
     name:ParamName.engine_version,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
     }, {
@@ -1157,7 +1157,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.gamemode]:{
     name:ParamName.gamemode,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
     }, {
@@ -1173,7 +1173,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.vkbasalt]:{
     name:ParamName.vkbasalt,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
     }, {
@@ -1189,7 +1189,7 @@ export const paramList:{ [paramName: string]: ParamData }={
 
   [ParamName.resolution]:{
     name:ParamName.resolution,
-    group:ParamGroup.OTHER,
+    group:ParamGroup.ENGINE,
     preCondition: [{
       disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout]
     }, {
@@ -1206,7 +1206,7 @@ export const paramList:{ [paramName: string]: ParamData }={
   /*
   [ParamName.wine]:{
       name:ParamName.wine,
-      group:ParamGroup.OTHER,
+      group:ParamGroup.ENGINE,
       preCondition:[{disable:[ParamName.fps_only,ParamName.no_display]}],
       toggle:{
           label:"wine",
