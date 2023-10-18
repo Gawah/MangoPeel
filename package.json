@@ -1,6 +1,6 @@
 {
   "name": "MangoPeel",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A decky plugin for custom performance monitoring style.",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
