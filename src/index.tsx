@@ -12,18 +12,22 @@ import { MangoIndex, ParamItem} from "./components";
 import { LocalizationManager, localizeStrEnum } from "./i18n";
 import { ParamGroup, PluginManager, Settings} from "./util";
 import { Config } from "./util/config";
+import ParamGroupTabs from "./components/ParamGroupTabs";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
   return (
     <>
       <PanelSection>
         <MangoIndex></MangoIndex>
-      </PanelSection>
-      <>{
-        Object.values(ParamGroup).map((groupName)=>{
+      <>
+        <ParamGroupTabs props={Object.values(ParamGroup).map((groupName)=>{
           var groupItem=Object.values(Config.paramList).filter((paramData) => {
             return paramData.group==groupName;
           })
+          return {groupName,groupItem}; 
+        }).filter(({groupName,groupItem})=>{
+          if(groupItem.length==0)
+            return false;
           const [visible,setVisible] = useState(Settings.getGroupVisible(Settings.getSettingsIndex(),groupName));
           useEffect(()=>{
             const updateEvent=()=>{
@@ -34,18 +38,20 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
               Settings.settingChangeEventBus.removeEventListener(groupName,updateEvent);
           }
           },[])
-          return groupItem.length>0&&visible?(
-          <PanelSection title={groupName}>
+          return visible
+        }).map(({groupName,groupItem})=>{
+          return {label:groupName,Node:<div>
           {groupItem.map((paramData)=>{
             return(
               <>
-                <ParamItem paramData={paramData}></ParamItem>
+                <ParamItem key={paramData.name} paramData={paramData}></ParamItem>
               </>)
             })}
-          </PanelSection>
-          ):(<></>)
-        })}
+          </div>}
+        })
+        }></ParamGroupTabs>
       </>
+      </PanelSection>
       <PanelSection>
         <PanelSectionRow>
             <ButtonItem

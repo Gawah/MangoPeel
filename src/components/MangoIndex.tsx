@@ -51,6 +51,7 @@ export const MangoIndex: VFC = () => {
               `#MangoPeel_IndexSlider
               .gamepadslider_SliderNotchTick_Fv1Ht.gamepadslider_TickActive_1gnUV {
                   background-color: #8b929a!important;
+                  background: #8b929a!important;
               }`
             }
           </style>

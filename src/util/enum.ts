@@ -95,10 +95,8 @@ export enum ParamName {
 export enum ParamGroup{
     PRESET="PRESET",
     LAYOUT="LAYOUT",
-//  SETTING="SETTING",
-    ALPHA="ALPHA",
-    FONT="FONT",
-    CUSTOM_TEXT="CUSTOM TEXT",
+    //SETTING="SETTING",
+    CUSTOM_TEXT="TITLE",
     CPU="CPU",
     GPU="GPU",
     IO="IO",
@@ -106,6 +104,11 @@ export enum ParamGroup{
     BATT="BATT",
     FPS="FPS",
     ENGINE="ENGINE",
+    GRAPHS="GRAPHS",
+    ALPHA="ALPHA",
+    FONT="FONT",
+    COLOR="COLOR",
+
 }
 
 export enum ParamPatchType{
