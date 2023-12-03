@@ -7,7 +7,7 @@ import { SlowSliderField } from "./SlowSliderField";
 import {TextInputModal} from "./TextInputModal";
 import ResortableList from "./ResortableList";
 import { LocalizationManager, localizeStrEnum } from "../i18n";
-import { ColorPickModal } from "./ColorPickModal";
+import { ColorPickSlider } from "./ColorPickSlider";
 
 const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number}> = ({ paramName, patch, patchIndex}) => {
 
@@ -163,6 +163,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
           return <></>
       }
     case ParamPatchType.colorPicker:
+      /*
       return <PanelSectionRow>
       <ButtonItem
         onClick={() =>
@@ -201,7 +202,12 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
         </div>
       </ButtonItem>
     </PanelSectionRow>
-    default:
+    */
+      return <ColorPickSlider defaultValue={selectedValue} 
+        OnConfirm={(color)=>{
+          updateSettingsValue(color);
+        }}/>
+      default:
       return null;
   }
 };
