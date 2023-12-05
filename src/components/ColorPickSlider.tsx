@@ -1,7 +1,7 @@
 
 import Color from "color"
 import { SlowSliderField } from "./SlowSliderField";
-import { PanelSectionRow } from "decky-frontend-lib";
+import { Focusable, PanelSectionRow } from "decky-frontend-lib";
 import { useState } from "react";
 
 interface ColorPickSliderProps {
@@ -15,23 +15,49 @@ export function ColorPickSlider({
 }: ColorPickSliderProps) {
   var [HSLValue,setHSLValue]=useState(Color(`#${defaultValue}`).hsl().array());
   return ( <>
-    <PanelSectionRow id="MangoPeel_ColorPickSliderH">
+  <PanelSectionRow id="MangoPeel_ColorPickSliderH">
     <SlowSliderField
       min={0}
-      max={360}
+      max={359}
       step={1}
-      showValue={false}
+      label={<div style={{ display: "flex", alignItems: "center",fontSize:11}}>
+      <span>{`${Color.hsl(`hsl(${HSLValue[0]}, ${HSLValue[1]}%, ${HSLValue[2]}%)`).rgb().hex()}`}</span>
+      <div
+        style={{
+          marginLeft: "54px",
+          width: "20px",
+          height: "20px",
+          backgroundColor: "#000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: 'absolute',
+          marginBottom: "1px",
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: `${Color.hsl(`hsl(${HSLValue[0]}, ${HSLValue[1]}%, ${HSLValue[2]}%)`).rgb().hex()}`,
+            width: "16px",
+            height: "16px",
+          }}
+        />
+      </div>
+    </div>}
       layout={"inline"}
       bottomSeparator={"none"}
+      onChange={(Hue) => {
+        setHSLValue(Color.hsl(`hsl(${Hue}, ${HSLValue[1]}%, ${HSLValue[2]}%)`).array());
+      } }
       onChangeEnd={(Hue) => {
         var rgb=Color.hsl(`hsl(${Hue}, ${HSLValue[1]}%, ${HSLValue[2]}%)`).rgb().hex();
-        setHSLValue(Color.hsl(`hsl(${Hue}, ${HSLValue[1]}%, ${HSLValue[2]}%)`).array());
         OnConfirm(rgb.replace("#", ""));
       } }
       value={HSLValue[0]}
       />
       </PanelSectionRow>
-      <PanelSectionRow id="MangoPeel_ColorPickSliderS">
+      <Focusable style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',minHeight:40}}>
+      <PanelSectionRow style={{ position: 'absolute', left: 0, zIndex: 1}} id="MangoPeel_ColorPickSliderS">
       <SlowSliderField 
       min={0}
       max={100}
@@ -39,15 +65,17 @@ export function ColorPickSlider({
       showValue={false}
       layout={"inline"}
       bottomSeparator={"none"}
+      onChange={(Saturation) => {
+        setHSLValue(Color.hsl(`hsl(${HSLValue[0]}, ${Saturation}%, ${HSLValue[2]}%)`).array());
+      } }
       onChangeEnd={(Saturation) => {
         var rgb=Color.hsl(`hsl(${HSLValue[0]}, ${Saturation}%, ${HSLValue[2]}%)`).rgb().hex();
-        setHSLValue(Color.hsl(`hsl(${HSLValue[0]}, ${Saturation}%, ${HSLValue[2]}%)`).array());
         OnConfirm(rgb.replace("#", ""));
       } }
       value={HSLValue[1]}
       />
       </PanelSectionRow>
-      <PanelSectionRow id="MangoPeel_ColorPickSliderL">
+      <PanelSectionRow style={{ position: 'absolute', right: 0, zIndex: 1}} id="MangoPeel_ColorPickSliderL">
       <SlowSliderField
       min={0}
       max={100}
@@ -55,6 +83,9 @@ export function ColorPickSlider({
       showValue={false}
       layout={"inline"}
       bottomSeparator={"none"}
+      onChange={(Lightness) => { 
+        setHSLValue(Color.hsl(`hsl(${HSLValue[0]}, ${HSLValue[1]}%, ${Lightness}%)`).array());
+      } }
       onChangeEnd={(Lightness) => {
         var rgb=Color.hsl(`hsl(${HSLValue[0]}, ${HSLValue[1]}%, ${Lightness}%)`).rgb().hex();
         setHSLValue(Color.hsl(`hsl(${HSLValue[0]}, ${HSLValue[1]}%, ${Lightness}%)`).array());
@@ -63,18 +94,49 @@ export function ColorPickSlider({
       value={HSLValue[2]}
       />
       </PanelSectionRow>
+      </Focusable>
+    
       <style>
             {
               //缩短滑动条
-              `#MangoPeel_ColorPickSlider
+              `#MangoPeel_ColorPickSliderH
               .gamepaddialog_Field_S-_La.gamepaddialog_ChildrenWidthFixed_1ugIU 
               .gamepaddialog_FieldChildrenWithIcon_2ZQ9w{
-                min-width: 215px!important;
-              } `
+                min-width: 180px!important;
+              }
+              .gamepaddialog_Field_S-_La.gamepaddialog_StandardPadding_XRBFu{
+                --field-row-children-spacing:0px
+              }
+              
+              #MangoPeel_ColorPickSliderS
+              .gamepaddialog_Field_S-_La.gamepaddialog_ChildrenWidthFixed_1ugIU 
+              .gamepaddialog_FieldChildrenWithIcon_2ZQ9w{
+                min-width: 118px!important;
+              }
+              .gamepaddialog_Field_S-_La.gamepaddialog_StandardPadding_XRBFu{
+                --field-row-children-spacing:0px
+              }
+
+              #MangoPeel_ColorPickSliderL
+              .gamepaddialog_Field_S-_La.gamepaddialog_ChildrenWidthFixed_1ugIU 
+              .gamepaddialog_FieldChildrenWithIcon_2ZQ9w{
+                min-width: 118px!important;
+              }
+              .gamepaddialog_Field_S-_La.gamepaddialog_StandardPadding_XRBFu{
+                --field-row-children-spacing:0px
+              } 
+              `
+              
             }
             {
               //调整标签位置
-              `#MangoPeel_ColorPickSlider 
+              `#MangoPeel_ColorPickSliderS
+              .gamepadslider_DescriptionValue_2oRwF {
+                width: 43px;
+                margin-left: 0;
+                flex-direction: column;
+              }
+              #MangoPeel_ColorPickSliderL
               .gamepadslider_DescriptionValue_2oRwF {
                 width: 43px;
                 margin-left: 0;
@@ -115,16 +177,16 @@ export function ColorPickSlider({
               }`
             }
             {
-              `#MangoPeel_ColorPickSliderS
+              `#MangoPeel_ColorPickSliderL
               .gamepadslider_SliderTrack_Mq25N{
                 background: linear-gradient(
                   to right,
-                  hsl(${HSLValue[0]}, ${HSLValue[1]}%, 0%),
-                  hsl(${HSLValue[0]}, ${HSLValue[1]}%, 20%),
-                  hsl(${HSLValue[0]}, ${HSLValue[1]}%, 40%),
-                  hsl(${HSLValue[0]}, ${HSLValue[1]}%, 60%),
-                  hsl(${HSLValue[0]}, ${HSLValue[1]}%, 80%),
-                  hsl(${HSLValue[0]}, ${HSLValue[1]}%, 100%),
+                  hsl(${HSLValue[0]},  ${HSLValue[1]}%, 0%),
+                  hsl(${HSLValue[0]},  ${HSLValue[1]}%, 20%),
+                  hsl(${HSLValue[0]},  ${HSLValue[1]}%, 40%),
+                  hsl(${HSLValue[0]},  ${HSLValue[1]}%, 60%),
+                  hsl(${HSLValue[0]},  ${HSLValue[1]}%, 80%),
+                  hsl(${HSLValue[0]},  ${HSLValue[1]}%, 100%)
                 ) !important;
                 --left-track-color: #0000 !important;
                 --colored-toggles-main-color: #0000 !important;

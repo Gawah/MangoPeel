@@ -14,42 +14,44 @@ import { ParamGroup, PluginManager, Settings} from "./util";
 import { Config } from "./util/config";
 import ParamGroupTabs from "./components/ParamGroupTabs";
 
+
 const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
   return (
     <>
       <PanelSection>
         <MangoIndex></MangoIndex>
       <>
-        <ParamGroupTabs props={Object.values(ParamGroup).map((groupName)=>{
-          var groupItem=Object.values(Config.paramList).filter((paramData) => {
-            return paramData.group==groupName;
-          })
-          return {groupName,groupItem}; 
-        }).filter(({groupName,groupItem})=>{
-          if(groupItem.length==0)
-            return false;
-          const [visible,setVisible] = useState(Settings.getGroupVisible(Settings.getSettingsIndex(),groupName));
-          useEffect(()=>{
-            const updateEvent=()=>{
-              setVisible(Settings.getGroupVisible(Settings.getSettingsIndex(),groupName));
-            }
-            Settings.settingChangeEventBus.addEventListener(groupName,updateEvent);
-            return ()=>{
-              Settings.settingChangeEventBus.removeEventListener(groupName,updateEvent);
-          }
-          },[])
-          return visible
-        }).map(({groupName,groupItem})=>{
-          return {label:groupName,Node:<div>
-          {groupItem.map((paramData)=>{
-            return(
-              <>
-                <ParamItem key={paramData.name} paramData={paramData}></ParamItem>
-              </>)
-            })}
-          </div>}
-        })
-        }></ParamGroupTabs>
+        <ParamGroupTabs props={Object.values(ParamGroup).map((groupName) => {
+            var groupItem = Object.values(Config.paramList).filter((paramData) => {
+              return paramData.group == groupName;
+            });
+            return { groupName, groupItem };
+          }).filter(({ groupName, groupItem }) => {
+            if (groupItem.length == 0)
+              return false;
+            const [visible, setVisible] = useState(Settings.getGroupVisible(Settings.getSettingsIndex(), groupName));
+            useEffect(() => {
+              const updateEvent = () => {
+                setVisible(Settings.getGroupVisible(Settings.getSettingsIndex(), groupName));
+              };
+              Settings.settingChangeEventBus.addEventListener(groupName, updateEvent);
+              return () => {
+                Settings.settingChangeEventBus.removeEventListener(groupName, updateEvent);
+              };
+            }, []);
+            return visible;
+          }).map(({ groupName, groupItem }) => {
+            return {
+              label: groupName, id: groupName, Node: <div>
+                {groupItem.map((paramData) => {
+                  return (
+                    <div>
+                      <ParamItem key={paramData.name} paramData={paramData}></ParamItem>
+                    </div>);
+                })}
+              </div>
+            };
+          })}></ParamGroupTabs>
       </>
       </PanelSection>
       <PanelSection>
