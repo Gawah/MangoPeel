@@ -239,18 +239,22 @@ export class Settings {
   public static getSettingsIndex():number{
     return this._steamIndex;
   }
+
   public static setSettingsIndex(index:number){
     if(this._steamIndex!=index){
       this._steamIndex=index;
-      //刷新整个界面
-      for (const data of Object.values(Config.paramList)) {
-        this.updateParamVisible(index,data.name as ParamName);
-        this.settingChangeEventBus.dispatchEvent(new Event(data.name));
-      }
-      //刷新组标题
-      for(var groupName in ParamGroup){
-        this.settingChangeEventBus.dispatchEvent(new Event(groupName));
-      }
+      //延迟1帧刷新，防止一些逻辑还没跑完就刷新界面
+      setTimeout(() => {
+        //刷新整个界面
+        for (const data of Object.values(Config.paramList)) {
+          this.updateParamVisible(index,data.name as ParamName);
+          this.settingChangeEventBus.dispatchEvent(new Event(data.name));
+        }
+        //刷新组标题
+        for(var groupName in ParamGroup){
+          this.settingChangeEventBus.dispatchEvent(new Event(groupName));
+        }
+      }, 0);
     }
   }
 

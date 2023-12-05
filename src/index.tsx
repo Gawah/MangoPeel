@@ -49,7 +49,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
     })
     return () => {
       Object.values(ParamGroup).map((groupName) => {
-        Settings.settingChangeEventBus.addEventListener(groupName, updateProps);
+        Settings.settingChangeEventBus.removeEventListener(groupName, updateProps);
       })
     };
   }, []);

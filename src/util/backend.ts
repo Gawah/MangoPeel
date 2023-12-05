@@ -2,11 +2,9 @@ import {ServerAPI } from "decky-frontend-lib";
 export class Backend {
   private static serverAPI: ServerAPI;
   private static applyCount:number;
-  public static backendEventBus = new EventTarget();
   public static async init(serverAPI: ServerAPI) {
     this.serverAPI = serverAPI;
     this.applyCount = 0;
-    this.backendEventBus.dispatchEvent(new Event("BackEndInit"));
   }
 
   public static async getSteamIndex(){
