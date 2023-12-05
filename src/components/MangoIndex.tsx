@@ -2,22 +2,37 @@ import {
   PanelSectionRow,
   SliderField
 } from "decky-frontend-lib";
-import {useState,useEffect, VFC} from "react";
+import {useEffect, useRef, useState, VFC} from "react";
 import { localizeStrEnum,LocalizationManager} from "../i18n";
-import { Backend, Settings } from "../util";
+import { Backend, Settings, prefStore } from "../util";
 
 export const MangoIndex: VFC = () => {
   const [index, setIndex] = useState(Settings.getSettingsIndex());
+  const [disabledSlider, setDisableSlider] = useState<boolean>(prefStore.getSteamIndex()==-1);
+  const disabledUpdate = useRef<number>(0);
   const checkUpdate=()=>{
-    Backend.getSteamIndex().then((nowIndex)=>{
+    if(disabledUpdate.current){
+      return;
+    }
+    //perfstore拿不到下标时，回退到后端获取
+    var perfStoreLevel = prefStore.getSteamIndex();
+    setDisableSlider(perfStoreLevel==-1);
+    if(perfStoreLevel==-1){
+      Backend.getSteamIndex().then((nowIndex)=>{
         setIndex(nowIndex);
+        //console.log("nowIndex=",nowIndex,"diabledUpdate=",disabledUpdate.current)
         Settings.setSettingsIndex(nowIndex);
     });
+    }else{
+      setIndex(perfStoreLevel);
+      //console.log("perfStoreLevel=",perfStoreLevel,"diabledUpdate=",disabledUpdate.current)
+      Settings.setSettingsIndex(perfStoreLevel);
+    }
   }
   useEffect(()=>{
     checkUpdate();
     var intervl=setInterval(()=>{
-      checkUpdate();
+        checkUpdate();
     },200)
     //Settings.settingChangeEventBus.addEventListener("mangoIndex",updateEvent);
     return ()=>{
@@ -40,12 +55,24 @@ export const MangoIndex: VFC = () => {
                 {notchIndex: 3,label:"3",value:3},
                 {notchIndex: 4,label:"4",value:4}
               ]}
-              disabled={true}
+              disabled={disabledSlider}
               notchCount={5}
               value={index}
+              onChange={(value)=>{
+                disabledUpdate.current++;
+                setIndex(value);
+                //console.log("value=",value,"diabledUpdate=",disabledUpdate.current)
+                setTimeout(()=>{
+                  disabledUpdate.current--;
+                },1000)
+                Settings.setSettingsIndex(value);
+                prefStore.setSteamIndex(value);
+              }}
             />
           </PanelSectionRow>
-          <style>
+          {
+            disabledSlider&&
+            <style>
             {
               //底部标签置为灰色
               `#MangoPeel_IndexSlider
@@ -55,6 +82,7 @@ export const MangoIndex: VFC = () => {
               }`
             }
           </style>
+          }
         </div>
     );
 };

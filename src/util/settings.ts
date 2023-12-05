@@ -2,6 +2,7 @@ import { JsonObject, JsonProperty, JsonSerializer } from 'typescript-json-serial
 import { Backend } from './backend';
 import { Config } from './config';
 import { ParamGroup, ParamName, ParamPatchType} from './enum';
+import { prefStore } from './perfStore';
 
 const SETTINGS_KEY = "MangoPeel";
 const serializer = new JsonSerializer();
@@ -178,9 +179,13 @@ export class Settings {
     this.loadSettingsFromLocalStorage();
 
     //初始下标
-    await Backend.getSteamIndex().then((nowIndex)=>{
-      Settings.setSettingsIndex(nowIndex);
-  });
+    if(prefStore.getSteamIndex()!=-1){
+      this._steamIndex=prefStore.getSteamIndex()
+    }else{
+      await Backend.getSteamIndex().then((nowIndex)=>{
+        Settings.setSettingsIndex(nowIndex);
+      });
+    }
   }
 
   /*
