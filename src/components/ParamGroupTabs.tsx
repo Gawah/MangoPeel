@@ -31,6 +31,7 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
   const tabRef = useRef<TabProps>(tab);
   const tabFocusedIndexRef = useRef<number[]>([]);//页面内激活的组件下标
   const tabFocusableElements = useRef<any>();
+  const bTabNeedFocus = useRef<boolean>(false);
 
   // 聚焦到当前分页的第index个可聚焦组件
   const focusTabElement = (index: number) => {
@@ -69,10 +70,12 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
         if (inputs.ulButtons && inputs.ulButtons & (1 << 2)) {
           R1StateRef.current = true;
           setButtonPress(2);
+          bTabNeedFocus.current=true;
         }
         else if(inputs.ulButtons && inputs.ulButtons & (1 << 3)) {
           L1StateRef.current = true;
           setButtonPress(1);
+          bTabNeedFocus.current=true;
         }
         //松开触发事件
         if(R1StateRef.current && !(inputs.ulButtons & (1 << 2))){
@@ -80,12 +83,14 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
           setActiveTabByIndex(activeIndexRef.current+1);
           setTimeout(() => {
             setButtonPress(0);
+            bTabNeedFocus.current=false;
           }, 100);
         }else if(L1StateRef.current && !(inputs.ulButtons & (1 << 3))){
           L1StateRef.current = false;
           setActiveTabByIndex(activeIndexRef.current-1);
           setTimeout(() => {
             setButtonPress(0);
+            bTabNeedFocus.current=false;
           }, 100);
         }
       }
@@ -134,11 +139,15 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
     
     if(!tabFocusedIndexRef?.current?.[activeIndexRef.current]){
         //console.log("无记录的聚焦组件,聚焦到第一个组件","当前页面为:",activeIndexRef.current);
-        focusTabElement(0);
+        if(bTabNeedFocus.current){
+          focusTabElement(0);
+        }
     }else{
       //console.log("调用聚焦事件,组件下标为:",tabFocusedIndexRef?.current?.[activeIndexRef.current],"当前页面为:",activeIndexRef.current);
       //聚焦到记录的组件位置
-      focusTabElement(tabFocusedIndexRef?.current?.[activeIndexRef.current]);
+      if(bTabNeedFocus.current){
+        focusTabElement(tabFocusedIndexRef?.current?.[activeIndexRef.current]);
+      }
     }
     tabRef?.current?.onTabChange && tabRef.current.onTabChange(activeIndexRef.current);
     return (()=>{
