@@ -523,6 +523,24 @@ export const paramList:{ [paramName: string]: ParamData }={
       },
       patchs: []
   },
+
+  [ParamName.gpu_voltage] : {
+    name: ParamName.gpu_voltage,
+    group: ParamGroup.GPU,
+    preCondition: [{
+      enable: [ParamName.gpu_stats],
+      disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display, ParamName.full,ParamName.preset]
+    }, {
+      enable: [ParamName.legacy_layout],
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.full,ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.GPU_VOLTAGE_LABEL,
+      description: localizeStrEnum.GPU_VOLTAGE_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: []
+},
     
   [ParamName.ram] : {
       name: ParamName.ram,
@@ -732,6 +750,38 @@ export const paramList:{ [paramName: string]: ParamData }={
     toggle: {
       label: localizeStrEnum.HIDE_FSR_SHARPNESS_LABEL,
       description: localizeStrEnum.HIDE_FSR_SHARPNESS_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: []
+  },
+
+  [ParamName.hdr] : {
+    name: ParamName.hdr,
+    group: ParamGroup.ENGINE,
+    preCondition: [{
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
+    }, {
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.full,ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.HDR_LABEL,
+      description: localizeStrEnum.HDR_DESCRIPTION,
+      defaultEnable: false,
+    },
+    patchs: []
+  },
+
+  [ParamName.refresh_rate] : {
+    name: ParamName.refresh_rate,
+    group: ParamGroup.ENGINE,
+    preCondition: [{
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.legacy_layout,ParamName.preset]
+    }, {
+      disable: [ParamName.fps_only, ParamName.no_display, ParamName.full,ParamName.preset]
+    }],
+    toggle: {
+      label: localizeStrEnum.REFRESH_RATE_LABEL,
+      description: localizeStrEnum.REFRESH_RATE_DESCRIPTION,
       defaultEnable: false,
     },
     patchs: []
@@ -1551,22 +1601,24 @@ export const paramOrder:{[paramName:string]:number} = {
   [ParamName.battery]:13,
   [ParamName.fan]:14,
   [ParamName.fsr]:15,
-  [ParamName.fps]:16,
-  [ParamName.frame_timing]:17,
-  [ParamName.frame_count]:18,
-  [ParamName.debug]:19,
-  [ParamName.arch]:20,
-  [ParamName.engine_version]:21,
-  [ParamName.gamemode]:22,
-  [ParamName.vkbasalt]:23,
-  [ParamName.show_fps_limit]:24,
-  [ParamName.resolution]:25,
-  [ParamName.graphs_cpu_load]:26,
-  [ParamName.graphs_cpu_temp]:27,
-  [ParamName.graphs_gpu_core_clock]:28,
-  [ParamName.graphs_gpu_load]:29,
-  [ParamName.graphs_gpu_mem_clock]:30,
-  [ParamName.graphs_gpu_temp]:31,
-  [ParamName.graphs_ram]:32,
-  [ParamName.graphs_vram]:33,
+  [ParamName.hdr]:16,
+  [ParamName.refresh_rate]:17,
+  [ParamName.fps]:18,
+  [ParamName.frame_timing]:19,
+  [ParamName.frame_count]:20,
+  [ParamName.debug]:21,
+  [ParamName.arch]:22,
+  [ParamName.engine_version]:23,
+  [ParamName.gamemode]:24,
+  [ParamName.vkbasalt]:25,
+  [ParamName.show_fps_limit]:26,
+  [ParamName.resolution]:27,
+  [ParamName.graphs_cpu_load]:28,
+  [ParamName.graphs_cpu_temp]:29,
+  [ParamName.graphs_gpu_core_clock]:30,
+  [ParamName.graphs_gpu_load]:31,
+  [ParamName.graphs_gpu_mem_clock]:32,
+  [ParamName.graphs_gpu_temp]:33,
+  [ParamName.graphs_ram]:34,
+  [ParamName.graphs_vram]:35,
 }

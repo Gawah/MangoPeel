@@ -182,5 +182,12 @@
     "USE_PERAPP_CONFIG_LABEL" : "Use per-game Overlay Level",
     "USING" : "Using",
     "DEFAULT" : " Default ",
-    "MANGOLEVEL" : "Overlay Level"
+    "MANGOLEVEL" : "Overlay Level",
+    "HDR_LABEL" : "HDR",
+    "HDR_DESCRIPTION" : "Display the current HDR status",
+    "REFRESH_RATE_LABEL" : "Refresh Rate",
+    "REFRESH_RATE_DESCRIPTION" : "Display the current refresh rate",
+    "GPU_VOLTAGE_LABEL" : "GPU Voltage",
+    "GPU_VOLTAGE_DESCRIPTION" : "Display the voltage of the GPU"
+
 }

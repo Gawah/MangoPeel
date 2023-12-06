@@ -182,5 +182,11 @@
     "USE_PERAPP_CONFIG_LABEL" : "使用按游戏设置的界面等级",
     "USING" : "正在使用",
     "DEFAULT" : "默认",
-    "MANGOLEVEL" : "界面等级"
+    "MANGOLEVEL" : "界面等级",
+    "HDR_LABEL" : "HDR",
+    "HDR_DESCRIPTION" : "显示当前HDR状态",
+    "REFRESH_RATE_LABEL" : "刷新率",
+    "REFRESH_RATE_DESCRIPTION" : "显示当前刷新率大小",
+    "GPU_VOLTAGE_LABEL" : "GPU电压",
+    "GPU_VOLTAGE_DESCRIPTION" : "显示GPU的电压大小"
 }
