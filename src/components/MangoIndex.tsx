@@ -1,44 +1,32 @@
 import {
+  Marquee,
   PanelSectionRow,
-  SliderField
+  SliderField,
+  ToggleField
 } from "decky-frontend-lib";
-import {useEffect, useRef, useState, VFC} from "react";
+import {useEffect, useState, VFC} from "react";
 import { localizeStrEnum,LocalizationManager} from "../i18n";
-import { Backend, Settings, prefStore } from "../util";
+import { DEFAULT_APP, RunningApps, Settings, prefStore } from "../util";
 
 export const MangoIndex: VFC = () => {
   const [index, setIndex] = useState(Settings.getSettingsIndex());
   const [disabledSlider, setDisableSlider] = useState<boolean>(prefStore.getSteamIndex()==-1);
-  const disabledUpdate = useRef<number>(0);
-  const checkUpdate=()=>{
-    if(disabledUpdate.current){
-      return;
-    }
-    //perfstore拿不到下标时，回退到后端获取
-    var perfStoreLevel = prefStore.getSteamIndex();
-    setDisableSlider(perfStoreLevel==-1);
-    if(perfStoreLevel==-1){
-      Backend.getSteamIndex().then((nowIndex)=>{
-        setIndex(nowIndex);
-        //console.log("nowIndex=",nowIndex,"diabledUpdate=",disabledUpdate.current)
-        Settings.setSettingsIndex(nowIndex);
-    });
-    }else{
-      setIndex(perfStoreLevel);
-      //console.log("perfStoreLevel=",perfStoreLevel,"diabledUpdate=",disabledUpdate.current)
-      Settings.setSettingsIndex(perfStoreLevel);
-    }
+  const [override, setOverWrite] = useState<boolean>(Settings.perAppOverWrite());
+  const [overrideable,setOverWriteable] = useState<boolean>(RunningApps.active()!=DEFAULT_APP);
+  //刷新界面
+  const updateEvent=(index:number)=>{
+    setIndex(index);
+    setOverWrite(Settings.perAppOverWrite());
+    setOverWriteable(RunningApps.active()!=DEFAULT_APP);
+    setDisableSlider(prefStore.getSteamIndex()==-1)
   }
+
   useEffect(()=>{
-    checkUpdate();
-    var intervl=setInterval(()=>{
-        checkUpdate();
-    },200)
-    //Settings.settingChangeEventBus.addEventListener("mangoIndex",updateEvent);
+    //监听overlayLevel
+    prefStore.registerOverlayLevelListener(updateEvent);
     return ()=>{
-      clearInterval(intervl);
-      //Settings.settingChangeEventBus.removeEventListener("mangoIndex",updateEvent);
-  }
+      prefStore.removeOverlayLevelListener(updateEvent);
+    }
   },[])
   return (
         <div>
@@ -59,15 +47,39 @@ export const MangoIndex: VFC = () => {
               notchCount={5}
               value={index}
               onChange={(value)=>{
-                disabledUpdate.current++;
                 setIndex(value);
                 //console.log("value=",value,"diabledUpdate=",disabledUpdate.current)
-                setTimeout(()=>{
-                  disabledUpdate.current--;
-                },1000)
-                Settings.setSettingsIndex(value);
+                //Settings.setSettingsIndex(value);
                 prefStore.setSteamIndex(value);
               }}
+            />
+          </PanelSectionRow>
+          <PanelSectionRow>
+          <ToggleField
+            label={LocalizationManager.getString(localizeStrEnum.USE_PERAPP_CONFIG_LABEL)}
+            description={
+              <div style={{ display: "flex", justifyContent: "left" }}>
+                <img src={RunningApps.active_appInfo()?.icon_data ? "data:image/" + RunningApps.active_appInfo()?.icon_data_format + ";base64," + RunningApps.active_appInfo()?.icon_data : "/assets/" + RunningApps.active_appInfo()?.appid + "_icon.jpg?v=" + RunningApps.active_appInfo()?.icon_hash} width={20} height={20}
+                  style={{ paddingRight:"5px",display: override && overrideable ? "block" : "none" }}
+                />
+                <div style={{lineHeight:"20px",whiteSpace:"pre"}}>{LocalizationManager.getString(localizeStrEnum.USING) + (override && overrideable ?"『":"")}</div>
+                <Marquee play={true} fadeLength={10} delay={1} style={{
+                  maxWidth:"100px",
+                  lineHeight:"20px",
+                  whiteSpace:"pre",
+                }}>
+                {(override && overrideable ? `${RunningApps.active_appInfo()?.display_name}` : `${LocalizationManager.getString(localizeStrEnum.DEFAULT)}`)}
+                </Marquee>
+                <div style={{lineHeight:"20px",whiteSpace:"pre",}}>{(override && overrideable ?"』":"")+LocalizationManager.getString(localizeStrEnum.MANGOLEVEL)}</div>
+                
+              </div>
+            }
+            checked={override && overrideable}
+            disabled={!overrideable}
+            onChange={(override) => {
+              setOverWrite(override);
+              Settings.setPerAppOverWrite(override);
+            }}
             />
           </PanelSectionRow>
           {

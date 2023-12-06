@@ -3,9 +3,55 @@ import { Backend } from './backend';
 import { Config } from './config';
 import { ParamGroup, ParamName, ParamPatchType} from './enum';
 import { prefStore } from './perfStore';
+import { Router } from 'decky-frontend-lib';
+import { AppOverviewExt } from './interface';
 
 const SETTINGS_KEY = "MangoPeel";
 const serializer = new JsonSerializer();
+
+type ActiveAppChangedHandler = (newAppId: string, oldAppId: string) => void;
+type UnregisterFn = () => void;
+export const DEFAULT_APP = "0";
+export class RunningApps {
+  private static listeners: ActiveAppChangedHandler[] = [];
+  private static lastAppId: string = DEFAULT_APP;
+  private static intervalId: any;
+
+  private static pollActive() {
+    const newApp = RunningApps.active();
+    if (this.lastAppId != newApp) {
+      this.listeners.forEach((h) => h(newApp, this.lastAppId));
+    }
+    this.lastAppId = newApp;
+  }
+
+  static register() {
+    if (this.intervalId == undefined)
+      this.intervalId = setInterval(() => this.pollActive(), 100);
+  }
+
+  static unregister() {
+    if (this.intervalId != undefined)
+      clearInterval(this.intervalId);
+
+    this.listeners.splice(0, this.listeners.length);
+  }
+
+  static listenActiveChange(fn: ActiveAppChangedHandler): UnregisterFn {
+    const idx = this.listeners.push(fn) - 1;
+    return () => {
+      this.listeners.splice(idx, 1);
+    };
+  }
+
+  static active() {
+    return Router.MainRunningApp?.appid || DEFAULT_APP;
+  }
+
+  static active_appInfo() {
+    return Router.MainRunningApp as unknown as AppOverviewExt || null;
+  }
+}
 
 @JsonObject()
 export class ParamInfo {
@@ -162,29 +208,128 @@ export class ParamSetting {
 }
 
 @JsonObject()
+export class perAppSetting{
+  @JsonProperty()
+  overwrite?:boolean = false;
+  @JsonProperty()
+  index?:number = 0;
+
+  constructor(overwrite?:boolean,index?:number){
+    this.overwrite=overwrite??false;
+    this.index=index??0;
+  }
+  deepCopy(copyTarget:perAppSetting){
+    this.overwrite=copyTarget.overwrite;
+    this.index = copyTarget.index;
+  }
+}
+
+
+@JsonObject()
 export class Settings {
   private static _instance = new Settings();
   private static _steamIndex = -1;
   private static _dependencyGraph: Record<string, string[]>[] = [];
   public static settingChangeEventBus = new EventTarget();
+  
   @JsonProperty()
   public enabled = true;
   @JsonProperty({ isDictionary: true, type: ParamSetting })
   public paramSettings: Record<number, ParamSetting> = {};
+  @JsonProperty({isDictionary:true, type: perAppSetting })
+  public perAppSetting: { [appId: string]: perAppSetting} = {};
+
+  public static overlayLevelUpdate(number:number){
+    //设置不同且perfstore可以进行设置
+    if(number!=Settings._steamIndex){
+        //prefStore.setSteamIndex(number);
+        Settings.setSettingsIndex(number);
+    }
+  }
 
   public static async init(): Promise<void> {
+    RunningApps.register();
     //初始化设置
     this.initSettingsFromConfig();
     //加载保存值
     this.loadSettingsFromLocalStorage();
-
     //初始下标
-    if(prefStore.getSteamIndex()!=-1){
-      this._steamIndex=prefStore.getSteamIndex()
+    var trySetResult = await prefStore.trySetSteamIndex(this.perAppIndex(),10);
+    if(trySetResult){
+      Settings.setSettingsIndex(this.perAppIndex());
     }else{
       await Backend.getSteamIndex().then((nowIndex)=>{
-        Settings.setSettingsIndex(nowIndex);
+        this._steamIndex=nowIndex;
       });
+    }
+
+    //监听数值变化
+    prefStore.registerOverlayLevelListener(this.overlayLevelUpdate);
+
+    //切换app时，更换设置
+    RunningApps.listenActiveChange((_newAppId,_oldAppId)=>{
+      var perAppIndex=this.perAppIndex();
+      this.overlayLevelUpdate(perAppIndex);
+      prefStore.trySetSteamIndex(perAppIndex,10);
+    })
+  }
+
+  public static async unregister(): Promise<void> {
+    RunningApps.unregister();
+    prefStore.removeOverlayLevelListener(this.overlayLevelUpdate);
+  }
+
+  //获取当前配置文件
+  public static ensurePerAppSetting(): perAppSetting {
+    const appId = RunningApps.active(); 
+    //没有配置文件的时候新生成一个
+    if (!(appId in this._instance.perAppSetting)) {
+      //创建一个perapp配置文件
+      this._instance.perAppSetting[appId]=new perAppSetting();
+      if(!(DEFAULT_APP in this._instance.perAppSetting)){
+        //创建一个默认配置文件
+        this._instance.perAppSetting[DEFAULT_APP]=new perAppSetting();
+        this._instance.perAppSetting[DEFAULT_APP].overwrite=false;
+        this._instance.perAppSetting[DEFAULT_APP].index=this._steamIndex;
+      }
+      this._instance.perAppSetting[appId].deepCopy(this._instance.perAppSetting[DEFAULT_APP]);  
+    }
+    //如果未开启覆盖，则使用默认配置文件
+    if(!this._instance.perAppSetting[appId].overwrite){
+      return this._instance.perAppSetting[DEFAULT_APP];
+    }
+    //使用appID配置文件
+    return this._instance.perAppSetting[appId];
+  }
+
+  public static perAppOverWrite():boolean {
+    if(RunningApps.active()==DEFAULT_APP){
+      return false;
+    }
+    return Settings.ensurePerAppSetting().overwrite!!;
+  }
+
+  public static perAppIndex():number {
+    return Settings.ensurePerAppSetting().index!!;
+  }
+
+  public static setPerAppIndex(index:number){
+    if(this.perAppIndex()!=index){
+      this.ensurePerAppSetting().index=index;
+      Settings.saveSettingsToLocalStorage();
+    }
+  }
+
+  public static setPerAppOverWrite(overwrite:boolean){
+    if(RunningApps.active()!=DEFAULT_APP&&this.perAppOverWrite()!=overwrite){
+      this._instance.perAppSetting[RunningApps.active()].overwrite=overwrite;
+      var perAppIndex=this.perAppIndex();
+      //如果关闭后的index发生了变化，则进行切换
+      if(perAppIndex!=this._steamIndex&&prefStore.getSteamIndex()!=-1){
+        prefStore.setSteamIndex(perAppIndex);
+        Settings.setSettingsIndex(perAppIndex);
+      }
+      Settings.saveSettingsToLocalStorage();
     }
   }
 
@@ -243,6 +388,7 @@ export class Settings {
   public static setSettingsIndex(index:number){
     if(this._steamIndex!=index){
       this._steamIndex=index;
+      this.setPerAppIndex(index);
       //延迟1帧刷新，防止一些逻辑还没跑完就刷新界面
       setTimeout(() => {
         //刷新整个界面
@@ -517,6 +663,7 @@ export class Settings {
     const settingsJson = JSON.parse(settingsString);
     const loadSetting=serializer.deserializeObject(settingsJson, Settings);
     this._instance.enabled = loadSetting?.enabled??false;
+    this._instance.perAppSetting = loadSetting?.perAppSetting??{DEFAULT_APP:new perAppSetting(false,prefStore.getSteamIndex()==-1?4:prefStore.getSteamIndex())};
     for(var index=0;index<5;index++){
       //加载保存值
       if(loadSetting?.paramSettings?.[index]){

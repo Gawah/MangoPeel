@@ -1,5 +1,5 @@
 {
-    "MANGOINDEX_LABEL":"Current Performance Overlay Level",
+    "MANGOINDEX_LABEL":"Performance Overlay Level",
     "MANGOINDEX_LABEL_CLOSE":"OFF",
     "RESET_PARAM_DEFAULT":"Reset all configurations",
     "PARAM_MANUALLY_SORT_TITLE":"Parameter manual sorting",
@@ -98,7 +98,7 @@
     "DEBUG_LABEL":"App",
     "DEBUG_DESCRIPTION": "Display charts of gamescope application frame time and latency",
     "PRESET_LABEL": "Use preset configuration",
-    "PRESET_DESCRIPTION": "Steam preset: 0 (No Hud), 1 (FPS only), 2 (Horizontal), 3 (Expanded), 4 (Detailed). Custom presets can be defined in ~/.config/MangoHud/presets.conf",
+    "PRESET_DESCRIPTION": "Use steam preset. Custom presets can be defined in ~/.config/MangoHud/presets.conf",
     "GPU_MEM_LABEL": "GPU Memory Frequency",
     "GPU_MEM_DESCRIPTION": "Display GPU memory frequency",
     "ARCH_LABEL": "Arch",
@@ -178,5 +178,9 @@
     "TEXT_OUTLINE_COLOR_LABEL": "Text Outline Color",
     "TEXT_OUTLINE_COLOR_DESCRIPTION": "Set the color of global text outline",
     "FRAMETIME_COLOR_LABEL": "Chart Draw Color",
-    "FRAMETIME_COLOR_DESCRIPTION": "Set the color of lines drawn in the chart"
+    "FRAMETIME_COLOR_DESCRIPTION": "Set the color of lines drawn in the chart",
+    "USE_PERAPP_CONFIG_LABEL" : "Use per-game Overlay Level",
+    "USING" : "Using",
+    "DEFAULT" : " Default ",
+    "MANGOLEVEL" : "Overlay Level"
 }

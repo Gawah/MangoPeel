@@ -6,6 +6,7 @@ import { Config } from "./config";
 import { prefStore } from "./perfStore";
 
 
+
 export class PluginManager{
   public static register = async(serverAPI:ServerAPI)=>{
     await Config.init(serverAPI);
@@ -18,7 +19,7 @@ export class PluginManager{
   }
 
   public static unregister = (_serverAPI:ServerAPI)=>{
-    
+    Settings.unregister();
   }
 }
 

@@ -28,3 +28,99 @@ export interface SteamParamDefalut {
     values?: string[]|number[];   //参数默认数值
     order?: number;    //参数排序大小
 }
+
+export interface AppOverview {
+    __proto__: any;
+    appid: number;
+    display_name: string;
+    app_type: number;
+    mru_index: number;
+    rt_recent_activity_time: number;
+    minutes_playtime_forever: string;
+    minutes_playtime_last_two_weeks: number;
+    rt_last_time_played_or_installed: number;
+    rt_last_time_played: number;
+    rt_last_time_locally_played: number;
+    rt_original_release_date: number;
+    rt_steam_release_date: number;
+    size_on_disk: string;
+    m_gameid: string;
+    visible_in_game_list: boolean;
+    m_ulGameId: {
+        low: number;
+        high: number;
+        unsigned: boolean;
+    };
+    library_capsule_filename: string;
+    most_available_clientid: string;
+    selected_clientid: string;
+    rt_custom_image_mtime: number;
+    sort_as: string;
+    association: {
+        name: string;
+        type: number;
+    }[];
+    m_setStoreCategories: Set<number>;
+    m_setStoreTags: Set<number>;
+    per_client_data: [
+        {
+            clientid: string;
+            client_name: string;
+            display_status: number;
+            status_percentage: number;
+            installed: boolean;
+            bytes_downloaded: string;
+            bytes_total: string;
+            is_available_on_current_platform: boolean;
+            cloud_status: number;
+        }
+    ];
+    canonicalAppType: number;
+    local_per_client_data: {
+        clientid: string;
+        client_name: string;
+        display_status: number;
+        status_percentage: number;
+        installed: boolean;
+        bytes_downloaded: string;
+        bytes_total: string;
+        is_available_on_current_platform: boolean;
+        cloud_status: number;
+    };
+    most_available_per_client_data: {
+        clientid: string;
+        client_name: string;
+        display_status: number;
+        status_percentage: number;
+        installed: boolean;
+        bytes_downloaded: string;
+        bytes_total: string;
+        is_available_on_current_platform: boolean;
+        cloud_status: number;
+    };
+    selected_per_client_data: {
+        clientid: string;
+        client_name: string;
+        display_status: number;
+        status_percentage: number;
+        installed: boolean;
+        bytes_downloaded: string;
+        bytes_total: string;
+        is_available_on_current_platform: boolean;
+        cloud_status: number;
+    };
+    review_score_with_bombs: number;
+    review_percentage_with_bombs: number;
+    review_score_without_bombs: number;
+    review_percentage_without_bombs: number;
+    steam_deck_compat_category: number;
+}
+
+export interface AppOverviewExt extends AppOverview {
+    appid: number; // base
+    display_name: string; // base
+    sort_as: string; // base
+    icon_data: string; // base, base64 encoded image
+    icon_data_format: string; // base, image type without "image/" (e.g.: jpg, png)
+    icon_hash: string; // base, url hash to fetch the icon for steam games (e.g.: "/assets/" + appid + "_icon.jpg?v=" + icon_hash)
+}

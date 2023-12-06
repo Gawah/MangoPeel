@@ -1,5 +1,5 @@
 {
-    "MANGOINDEX_LABEL":"當前效能內嵌介面等級",
+    "MANGOINDEX_LABEL":"效能內嵌介面等級",
     "MANGOINDEX_LABEL_CLOSE":"關閉",
     "RESET_PARAM_DEFAULT":"重置所有參數配置",
     "PARAM_MANUALLY_SORT_TITLE":"參數手動排序",
@@ -98,7 +98,7 @@
     "DEBUG_LABEL":"App",
     "DEBUG_DESCRIPTION":"顯示 gamescope 應用程式幀時間和延遲的圖表",
     "PRESET_LABEL" : "使用預設配置",
-    "PRESET_DESCRIPTION" : "steam預設: 0(無Hud) 1(僅FPS) 2(水平) 3(擴展) 4(詳細)，可以在~/.config/MangoHud/presets.conf中自定義預設",
+    "PRESET_DESCRIPTION" : "使用steam預設，可以在~/.config/MangoHud/presets.conf中自定義預設",
     "GPU_MEM_LABEL" : "顯存頻率",
     "GPU_MEM_DESCRIPTION" : "顯示GPU顯存頻率",
     "ARCH_LABEL" : "Arch",
@@ -178,5 +178,9 @@
     "TEXT_OUTLINE_COLOR_LABEL" : "字體輪廓顏色",
     "TEXT_OUTLINE_COLOR_DESCRIPTION" : "設置全局字體輪廓的顏色",
     "FRAMETIME_COLOR_LABEL" : "圖表繪製顏色",
-    "FRAMETIME_COLOR_DESCRIPTION" : "設置圖表中繪製的折線顏色"
+    "FRAMETIME_COLOR_DESCRIPTION" : "設置圖表中繪製的折線顏色",
+    "USE_PERAPP_CONFIG_LABEL" : "使用按遊戲設定的介面等級",
+    "USING" : "正在使用",
+    "DEFAULT" : "默認",
+    "MANGOLEVEL" : "介面等級"
 }
