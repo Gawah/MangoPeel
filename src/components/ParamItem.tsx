@@ -1,4 +1,4 @@
-import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem } from "decky-frontend-lib";
+import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Field, Focusable } from "decky-frontend-lib";
 import { useEffect, useState, VFC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
 import { ParamName, ParamPatchType, ResortType, Settings } from "../util";
@@ -31,12 +31,16 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
     Settings.setParamValue(Settings.getSettingsIndex(),paramName, patchIndex, value);
   };
 
+  const resetParamDefault = ()=>{
+    Settings.resetParamValueDefault(Settings.getSettingsIndex(),paramName,patchIndex);
+  }
+
   switch (patch.type) {
     case ParamPatchType.slider:
       return (
         <>
           <PanelSectionRow id="MangoPeel_Slider">
-            <SlowSliderField
+              <SlowSliderField
               min={patch.args[0]}
               max={patch.args[1]}
               step={patch.args[2]}
@@ -45,7 +49,8 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
               layout={"inline"}
               bottomSeparator={"none"}
               onChangeEnd={updateSettingsValue}
-            />
+              resetValue={Settings.getDefaultParam(Settings.getSettingsIndex(),paramName)?.paramValues[patchIndex]}
+              />
           </PanelSectionRow>
           <style>
             {
@@ -86,6 +91,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
                 setSelectedIndex(value);
                 updateSettingsValue(patch.args[value]);
               }}
+              resetValue={Settings.getDefaultParam(Settings.getSettingsIndex(),paramName)?.paramValues[patchIndex]}
             />
           </PanelSectionRow>
         </>
@@ -94,6 +100,9 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
       return (
         <>
           <PanelSectionRow>
+          <Focusable  style={{ width: "100%", padding: 0, margin: 0, position: "relative" }}
+              onSecondaryActionDescription={LocalizationManager.getString(localizeStrEnum.RESET_PARAM_DEFAULT)}
+              onSecondaryButton={resetParamDefault}>
             <DropdownItem
               label={patch.label}
               rgOptions={patch.args.map((x, i) => {
@@ -106,6 +115,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
                 updateSettingsValue(index.label);
               }}
             />
+            </Focusable>
           </PanelSectionRow>
         </>
       );
@@ -113,6 +123,9 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
       return (
         <>
           <PanelSectionRow>
+          <Focusable  style={{ width: "100%", padding: 0, margin: 0, position: "relative" }}
+              onSecondaryActionDescription={LocalizationManager.getString(localizeStrEnum.RESET_PARAM_DEFAULT)}
+              onSecondaryButton={resetParamDefault}>
             <ButtonItem
               layout="below"
               bottomSeparator={"none"}
@@ -131,6 +144,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
             >
               {selectedValue}
             </ButtonItem>
+            </Focusable>
           </PanelSectionRow>
         </>
       );
@@ -203,7 +217,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
       </ButtonItem>
     </PanelSectionRow>
     */
-      return <ColorPickSlider defaultValue={selectedValue} 
+      return <ColorPickSlider value={selectedValue} resetValue={Settings.getDefaultParam(Settings.getSettingsIndex(),paramName)?.paramValues[patchIndex]}
         OnConfirm={(color)=>{
           updateSettingsValue(color);
         }}/>
@@ -228,6 +242,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
         }
       }
       useEffect(()=>{
+        updateEvent();
         Settings.settingChangeEventBus.addEventListener(paramData.name,updateEvent);
         return ()=>{
           Settings.settingChangeEventBus.removeEventListener(paramData.name,updateEvent);

@@ -66,7 +66,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
             <ButtonItem
             layout="below"
             onClick={() => {
-              Settings.resetParamDefault();
+              Settings.resetAllParamDefault();
             }}>
             {LocalizationManager.getString(localizeStrEnum.RESET_PARAM_DEFAULT)}
             </ButtonItem>

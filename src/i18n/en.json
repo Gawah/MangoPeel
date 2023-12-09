@@ -1,7 +1,7 @@
 {
     "MANGOINDEX_LABEL":"Performance Overlay Level",
     "MANGOINDEX_LABEL_CLOSE":"OFF",
-    "RESET_PARAM_DEFAULT":"Reset all configurations",
+    "RESET_PARAM_DEFAULT":"Reset configurations",
     "PARAM_MANUALLY_SORT_TITLE":"Parameter manual sorting",
     "LEGACY_LAYOUT_LABEL":"Legacy Layout",
     "LEGACY_LAYOUT_DESCRIPTION":"Use traditional parameter layout and order",    
@@ -188,6 +188,6 @@
     "REFRESH_RATE_LABEL" : "Refresh Rate",
     "REFRESH_RATE_DESCRIPTION" : "Display the current refresh rate",
     "GPU_VOLTAGE_LABEL" : "GPU Voltage",
-    "GPU_VOLTAGE_DESCRIPTION" : "Display the voltage of the GPU"
-
+    "GPU_VOLTAGE_DESCRIPTION" : "Display the voltage of the GPU",
+    "RESET_ALL_PARAM_DEFAULT":"Reset all configurations"
 }

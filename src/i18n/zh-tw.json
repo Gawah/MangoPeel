@@ -1,7 +1,7 @@
 {
     "MANGOINDEX_LABEL":"效能內嵌介面等級",
     "MANGOINDEX_LABEL_CLOSE":"關閉",
-    "RESET_PARAM_DEFAULT":"重置所有參數配置",
+    "RESET_PARAM_DEFAULT":"重置參數配置",
     "PARAM_MANUALLY_SORT_TITLE":"參數手動排序",
     "LEGACY_LAYOUT_LABEL":"傳統布局",
     "LEGACY_LAYOUT_DESCRIPTION":"使用傳統的參數布局和參數順序",
@@ -188,5 +188,6 @@
     "REFRESH_RATE_LABEL" : "刷新頻率",
     "REFRESH_RATE_DESCRIPTION" : "顯示目前的刷新頻率大小",
     "GPU_VOLTAGE_LABEL" : "GPU電壓",
-    "GPU_VOLTAGE_DESCRIPTION" : "顯示GPU的電壓大小"
+    "GPU_VOLTAGE_DESCRIPTION" : "顯示GPU的電壓大小",
+    "RESET_ALL_PARAM_DEFAULT":"重置所有參數配置"
 }

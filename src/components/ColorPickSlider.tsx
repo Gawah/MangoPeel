@@ -2,18 +2,21 @@
 import Color from "color"
 import { SlowSliderField } from "./SlowSliderField";
 import { Focusable, PanelSectionRow } from "decky-frontend-lib";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface ColorPickSliderProps {
-  defaultValue?: string;
+  value: string;
+  resetValue?:string;
   OnConfirm: (text: string) => void;
 }
 
 export function ColorPickSlider({
-  defaultValue = "FFFFFF",
+  value,
+  resetValue,
   OnConfirm,
 }: ColorPickSliderProps) {
-  var [HSLValue,setHSLValue]=useState(Color(`#${defaultValue}`).hsl().array());
+  var [HSLValue,setHSLValue]=useState(Color(`#${value}`).hsl().array());
+  var resetHSLValue = useRef(Color(`#${(resetValue??value)}`).hsl().array());
   return ( <>
   <PanelSectionRow id="MangoPeel_ColorPickSliderH">
     <SlowSliderField
@@ -54,9 +57,10 @@ export function ColorPickSlider({
         OnConfirm(rgb.replace("#", ""));
       } }
       value={HSLValue[0]}
+      resetValue={resetHSLValue.current[0]}
       />
       </PanelSectionRow>
-      <Focusable style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',minHeight:40}}>
+      <Focusable style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',minHeight:40, padding: 0, margin: 0,width: "100%"}}>
       <PanelSectionRow style={{ position: 'absolute', left: 0, zIndex: 1}} id="MangoPeel_ColorPickSliderS">
       <SlowSliderField 
       min={0}
@@ -73,6 +77,7 @@ export function ColorPickSlider({
         OnConfirm(rgb.replace("#", ""));
       } }
       value={HSLValue[1]}
+      resetValue={resetHSLValue.current[1]}
       />
       </PanelSectionRow>
       <PanelSectionRow style={{ position: 'absolute', right: 0, zIndex: 1}} id="MangoPeel_ColorPickSliderL">
@@ -92,6 +97,7 @@ export function ColorPickSlider({
         OnConfirm(rgb.replace("#", ""));
       } }
       value={HSLValue[2]}
+      resetValue={resetHSLValue.current[2]}
       />
       </PanelSectionRow>
       </Focusable>

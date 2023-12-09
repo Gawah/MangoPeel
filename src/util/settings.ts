@@ -514,7 +514,8 @@ export class Settings {
       }).length > 0;
   }
 
-  public static resetParamDefault(){
+  //重置所有参数的默认值
+  public static resetAllParamDefault(){
     var index = this.getSettingsIndex();
     Object.entries(Config.paramList).map(([paramName,paramData]) => {
       var defaultParam = this.getDefaultParam(index,paramName as ParamName);
@@ -528,6 +529,14 @@ export class Settings {
       //console.log(`defaultParam: name=${defaultParam.paramName} enable=${defaultParam.bEnable} value=${defaultParam.paramValues} nowvalue=${this.getSettings().getParamValues(paramName as ParamName)} order=${defaultParam.paramOrder}`)
     })
     Backend.applyConfig(index,this.toMangoConfig(index));
+  }
+
+  //重置单一参数的默认值
+  public static resetParamValueDefault(index:number,paramName:ParamName,patchIndex:number){
+    var defaultParam = this.getDefaultParam(index,paramName);
+    this.setParamValue(index,paramName,patchIndex,defaultParam.paramValues[patchIndex])
+    this.updateParamVisible(index,paramName as ParamName);
+    this.settingChangeEventBus.dispatchEvent(new Event(paramName));
   }
 
   
