@@ -111,7 +111,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       },
       patchs:[{
           type:ParamPatchType.slider,
-          args:[0,2160,1,true],
+          args:[-2160,2160,1,true],
           defaultValue:0,
       }]
   },
@@ -128,7 +128,7 @@ export const paramList:{ [paramName: string]: ParamData }={
       },
       patchs:[{
           type:ParamPatchType.slider,
-          args:[0,2160,1,true],
+          args:[-2160,2160,1,true],
           defaultValue:0,
       }]
   },
