@@ -1,4 +1,4 @@
-import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Field, Focusable } from "decky-frontend-lib";
+import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Focusable } from "decky-frontend-lib";
 import { useEffect, useState, VFC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
 import { ParamName, ParamPatchType, ResortType, Settings } from "../util";

@@ -28,6 +28,8 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
   const activeIndexRef = useRef<number>(activeIndex); //当前激活的页面下标
   const L1StateRef =  useRef<boolean>(false); //l1状态
   const R1StateRef =  useRef<boolean>(false); //r1状态
+  const l1PressIndexRef = useRef<number>(-1); //标记哪个控制器按下L1
+  const r1PressIndexRef = useRef<number>(-1); //标记哪个控制器按下R1
   const tabRef = useRef<TabProps>(tab);
   const tabFocusedIndexRef = useRef<number[]>([]);//页面内激活的组件下标
   const tabFocusableElements = useRef<any>();
@@ -69,27 +71,31 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
         //按下标记
         if (inputs.ulButtons && inputs.ulButtons & (1 << 2)) {
           R1StateRef.current = true;
+          r1PressIndexRef.current = inputs.unControllerIndex;
           setButtonPress(2);
           bTabNeedFocus.current=true;
         }
         else if(inputs.ulButtons && inputs.ulButtons & (1 << 3)) {
           L1StateRef.current = true;
+          l1PressIndexRef.current = inputs.unControllerIndex;
           setButtonPress(1);
           bTabNeedFocus.current=true;
         }
         //松开触发事件
-        if(R1StateRef.current && !(inputs.ulButtons & (1 << 2))){
+        if(R1StateRef.current && r1PressIndexRef.current == inputs.unControllerIndex &&!(inputs.ulButtons & (1 << 2))){
           R1StateRef.current = false;
           setActiveTabByIndex(activeIndexRef.current+1);
           setTimeout(() => {
             setButtonPress(0);
+            r1PressIndexRef.current = -1;
             bTabNeedFocus.current=false;
           }, 100);
-        }else if(L1StateRef.current && !(inputs.ulButtons & (1 << 3))){
+        }else if(L1StateRef.current && l1PressIndexRef.current == inputs.unControllerIndex && !(inputs.ulButtons & (1 << 3))){
           L1StateRef.current = false;
           setActiveTabByIndex(activeIndexRef.current-1);
           setTimeout(() => {
             setButtonPress(0);
+            l1PressIndexRef.current = -1;
             bTabNeedFocus.current=false;
           }, 100);
         }
