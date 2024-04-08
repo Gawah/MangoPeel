@@ -45,14 +45,26 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
 
   //激活第index分页
   const setActiveTabByIndex = (index: number) => {
-    var vaildIndex = Math.max(0,Math.min(index,(tabRef.current.props?.length??0)-1))
+    var vaildIndex = tabRef.current.props?.length?(tabRef.current.props.length + index) % tabRef.current.props.length:0;
     setActiveIndex(vaildIndex);
     setActiveTab(tabRef.current.props?.[vaildIndex])
     activeIndexRef.current = vaildIndex;
-    if (containerRef.current&&index==vaildIndex) {
+    if (containerRef.current) {
       const childrenArray = Array.from(containerRef.current.children);
-      const targetElement = childrenArray[index] as HTMLDivElement;
-      containerRef.current.scrollLeft = targetElement.offsetLeft - containerRef.current.offsetLeft - 25;
+      var targetScrollLeft=0;
+      var indexElementWidth = 0;
+      var lastIndexElementWidth = 0;
+      for(var index=0;index<=vaildIndex;index++){
+        const indexElement = childrenArray[index] as HTMLDivElement;
+        lastIndexElementWidth = indexElementWidth;
+        indexElementWidth = indexElement.clientWidth - parseFloat(window.getComputedStyle(indexElement).paddingLeft) - parseFloat(window.getComputedStyle(indexElement).paddingRight);
+        if(index == 0){
+          targetScrollLeft = indexElementWidth/2 - containerRef.current.clientWidth/2;
+          continue;
+        }
+        targetScrollLeft+= lastIndexElementWidth/2 + indexElementWidth/2;
+      }
+      containerRef.current.scrollLeft = targetScrollLeft;
     }
   };
 
@@ -173,7 +185,7 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
           <Field icon={L1Icon} bottomSeparator={"none"}></Field>
         </div>
 
-        <div ref={containerRef} style={{ display: '-webkit-inline-box', overflow:"scroll", width:180}}>
+        <div ref={containerRef} style={{ display: '-webkit-inline-box', overflow:"scroll", width:180,scrollBehavior:"smooth"}}>
           {tab.props?.map((prop) => (
             <Field
               key={prop.label}
