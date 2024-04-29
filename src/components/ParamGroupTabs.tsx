@@ -178,14 +178,24 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
 
 
   return (
+    
     <div>
+      <style>
+          {
+            //去除鼠标停留时背景高光
+            `#MangoPeel_clickableField
+            .gamepaddialog_Field_S-_La.gamepaddialog_Clickable_27UVY:not(.gamepaddialog_Disabled_1pmyx):hover {
+              background: unset;
+            }`
+          }
+      </style>
     <PanelSectionRow>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden'}}>
-        <div style={{ position: 'absolute', left: 0, zIndex: 1,opacity:buttonPress==1?1:0.5}}>
+        <div id='MangoPeel_clickableField' style={{ position: 'absolute', left: 0, zIndex: 1,opacity:buttonPress==1?1:0.5}}>
           <Field icon={L1Icon} bottomSeparator={"none"} focusable = {false}  onClick={()=>setActiveTabByIndex(activeIndexRef.current-1)}></Field>
         </div>
 
-        <div ref={containerRef} style={{ display: '-webkit-inline-box', overflow:"scroll", width:180,scrollBehavior:"smooth"}}>
+        <div id='MangoPeel_clickableField' ref={containerRef} style={{ display: '-webkit-inline-box', overflow:"scroll", width:180,scrollBehavior:"smooth"}}>
           {tab.props?.map((prop,index) => (
             <Field
               key={prop.label}
@@ -206,7 +216,7 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
           ))}
         </div>
 
-        <div style={{ position: 'absolute', right: -10, zIndex: 1 ,opacity:buttonPress==2?1:0.5}}>
+        <div id='MangoPeel_clickableField' style={{ position: 'absolute', right: -10, zIndex: 1 ,opacity:buttonPress==2?1:0.5}}>
           <Field icon={R1ICON} bottomSeparator={"none"} focusable = {false} onClick={()=>setActiveTabByIndex(activeIndexRef.current+1)}></Field>
         </div>
       </div>
