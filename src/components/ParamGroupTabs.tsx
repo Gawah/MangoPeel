@@ -50,7 +50,7 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
     setActiveTab(tabRef.current.props?.[vaildIndex])
     activeIndexRef.current = vaildIndex;
     if (containerRef.current) {
-      const childrenArray = Array.from(containerRef.current.children);
+      const childrenArray = Array.from(containerRef.current.children); 
       var targetScrollLeft=0;
       var indexElementWidth = 0;
       var lastIndexElementWidth = 0;
@@ -66,7 +66,7 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
       }
       containerRef.current.scrollLeft = targetScrollLeft;
     }
-  };
+  }; 
 
   useEffect(()=>{
     //注册按键监听
@@ -182,11 +182,11 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
     <PanelSectionRow>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden'}}>
         <div style={{ position: 'absolute', left: 0, zIndex: 1,opacity:buttonPress==1?1:0.5}}>
-          <Field icon={L1Icon} bottomSeparator={"none"}></Field>
+          <Field icon={L1Icon} bottomSeparator={"none"} focusable = {false}  onClick={()=>setActiveTabByIndex(activeIndexRef.current-1)}></Field>
         </div>
 
         <div ref={containerRef} style={{ display: '-webkit-inline-box', overflow:"scroll", width:180,scrollBehavior:"smooth"}}>
-          {tab.props?.map((prop) => (
+          {tab.props?.map((prop,index) => (
             <Field
               key={prop.label}
               label={<div style={{
@@ -198,13 +198,16 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
               }}>{prop.label}</div>}   
               bottomSeparator={"none"}
               highlightOnFocus={false}
+              focusable = {false} 
+              onClick={()=>setActiveTabByIndex(index)
+              }
             >
             </Field>
           ))}
         </div>
 
         <div style={{ position: 'absolute', right: -10, zIndex: 1 ,opacity:buttonPress==2?1:0.5}}>
-          <Field icon={R1ICON} bottomSeparator={"none"}></Field>
+          <Field icon={R1ICON} bottomSeparator={"none"} focusable = {false} onClick={()=>setActiveTabByIndex(activeIndexRef.current+1)}></Field>
         </div>
       </div>
     </PanelSectionRow>
