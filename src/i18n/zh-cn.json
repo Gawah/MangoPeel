@@ -121,6 +121,8 @@
     "FPS_LIMIT_DESCRIPTION" : "限制应用程序的帧速率,0代表不限制",
     "FPS_LIMIT_METHOD_LABEL" : "FPS限制方法",
     "FPS_LIMIT_METHOD_DESCRIPTION" : "FPS限制器是否应在呈现帧之前或之后等待.选择late(默认)以获得最低延迟或early最平滑的帧时间",
+    "FPS_METRICS_LABEL" : "FPS指标",
+    "FPS_METRICS_DESCRIPTION" : "显示FPS指标. avg:平均帧速率, 0.01: 1% Low 帧",
     "PROCMEM_LABEL" : "进程内存",
     "PROCMEM_DESCRIPTION" : "显示进程的内存使用情况：常驻、共享和/或虚拟",
     "PROCMEM_SHARED_LABEL" : "进程共享内存",

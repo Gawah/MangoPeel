@@ -127,6 +127,8 @@
     "PROCMEM_SHARED_DESCRIPTION": "Display shared memory usage of the process",
     "PROCMEM_VIRT_LABEL": "Process Virtual Memory",
     "PROCMEM_VIRT_DESCRIPTION": "Display virtual memory usage of the process",
+    "FPS_METRICS_LABEL" : "FPS Metrics",
+    "FPS_METRICS_DESCRIPTION" : "Display FPS metrics. avg: average frame rate, 0.01: 1% Low of frame rate",
     "HIDE_FSR_SHARPNESS_LABEL": "Hide FSR Sharpness",
     "HIDE_FSR_SHARPNESS_DESCRIPTION": "Hide FSR sharpness information",
     "BATTERY_WATT_LABEL": "Battery Consumption",
