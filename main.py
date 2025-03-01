@@ -192,7 +192,8 @@ class MangoPeel:
                     logging.info(f"找到mangoapp配置项 appPid={appPid} appCmdLine={appCmdLine} ")
                     findCmd=True
                     break
-            except:
+            except Exception as e:
+                logging.error(e)
                 continue
         if not findCmd:
             logging.error(f"未找到mangoapp配置路径={self._configPath}")
@@ -212,7 +213,8 @@ class MangoPeel:
                     self._inotify.add_watch(self._configPath, IN_MODIFY, self.process_IN_MODIFY)
                     logging.info(f"找到mangoapp配置路径 MANGOHUD_CONFIGFILE={self._configPath}")
                     return True
-            except:
+            except Exception as e:
+                logging.error(e)
                 continue
         return False
     
@@ -230,7 +232,8 @@ class MangoPeel:
         for index in range(len(self._setConfigList)):
             try:
                 self._setConfigList[index] = configs[index]
-            except:
+            except Exception as e:
+                logging.error(e)
                 continue
 
     def setOverwriteConfig(self,index:int,config:str):
