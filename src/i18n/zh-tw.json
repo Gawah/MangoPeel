@@ -121,6 +121,8 @@
     "FPS_LIMIT_DESCRIPTION" : "限制應用程式的幀速率,0代表不限制",
     "FPS_LIMIT_METHOD_LABEL" : "FPS限制方法",
     "FPS_LIMIT_METHOD_DESCRIPTION" : "FPS限制器是否應在呈現幀之前或之後等待。選擇late(預設)以獲得最低延遲或early最平滑的幀時間",
+    "FPS_METRICS_LABEL" : "FPS指標",
+    "FPS_METRICS_DESCRIPTION" : "顯示FPS指標. avg:平均幀率, 0.01: 1% Low 幀",
     "PROCMEM_LABEL" : "進程內存",
     "PROCMEM_DESCRIPTION" : "顯示進程的內存使用情況：常駐、共享和/或虛擬",
     "PROCMEM_SHARED_LABEL" : "進程共享內存",

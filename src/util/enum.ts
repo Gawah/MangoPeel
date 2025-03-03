@@ -71,6 +71,7 @@ export enum ParamName {
   resolution = "resolution",
   fps_limit = "fps_limit",
   fps_limit_method = "fps_limit_method",
+  fps_metrics = "fps_metrics",
   hide_fsr_sharpness = "hide_fsr_sharpness",
   histogram = "histogram",
   graphs_cpu_load = "graphs_cpu_load",

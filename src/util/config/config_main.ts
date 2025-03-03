@@ -873,6 +873,22 @@ export const paramList:{ [paramName: string]: ParamData }={
     }]
   },
 
+  [ParamName.fps_metrics]:{
+    name:ParamName.fps_metrics,
+    group:ParamGroup.FPS,
+    preCondition:[{disable:[ParamName.no_display,ParamName.preset]}],
+    toggle:{
+        label: localizeStrEnum.FPS_METRICS_LABEL,
+        description: localizeStrEnum.FPS_METRICS_DESCRIPTION,
+        defaultEnable: false,
+    },
+    patchs:[{
+      type:ParamPatchType.dropdown,
+      args:["avg","0.01","avg,0.01"],
+      defaultValue:"avg"
+    }]
+  },
+
   [ParamName.frame_timing] : {
     name: ParamName.frame_timing,
     group: ParamGroup.FPS,
