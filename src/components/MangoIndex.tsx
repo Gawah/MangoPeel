@@ -59,7 +59,21 @@ export const MangoIndex: VFC = () => {
             label={LocalizationManager.getString(localizeStrEnum.USE_PERAPP_CONFIG_LABEL)}
             description={
               <div style={{ display: "flex", justifyContent: "left" }}>
-                <img src={RunningApps.active_appInfo()?.icon_data ? "data:image/" + RunningApps.active_appInfo()?.icon_data_format + ";base64," + RunningApps.active_appInfo()?.icon_data : "/assets/" + RunningApps.active_appInfo()?.appid + "_icon.jpg?v=" + RunningApps.active_appInfo()?.icon_hash} width={20} height={20}
+                <img 
+                  src={
+                    RunningApps.active_appInfo()?.icon_data
+                      ? "data:image/" +
+                        RunningApps.active_appInfo()?.icon_data_format +
+                        ";base64," +
+                        RunningApps.active_appInfo()?.icon_data
+                      : "/assets/" +
+                        RunningApps.active_appInfo()?.appid +
+                        "/" +
+                        RunningApps.active_appInfo()?.icon_hash +
+                        ".jpg?c=" +
+                        RunningApps.active_appInfo()?.local_cache_version
+                  }
+                  width={20} height={20}
                   style={{ paddingRight:"5px",display: override && overrideable ? "block" : "none" }}
                 />
                 <div style={{lineHeight:"20px",whiteSpace:"pre"}}>{LocalizationManager.getString(localizeStrEnum.USING) + (override && overrideable ?"『":"")}</div>
