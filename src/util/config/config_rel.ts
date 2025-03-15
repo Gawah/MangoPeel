@@ -447,6 +447,25 @@ export const paramList:{ [paramName: string]: ParamData }={
       },
       patchs: []
   },
+
+  [ParamName.gpu_list] : {
+      name: ParamName.gpu_list,
+      group: ParamGroup.GPU,
+      preCondition: [{
+        enable: [ParamName.gpu_stats],
+        disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display,ParamName.preset]
+      }],
+      toggle: {
+        label: localizeStrEnum.GPU_LIST_LABEL,
+        description: localizeStrEnum.GPU_LIST_DESCRIPTION,
+        defaultEnable: false,
+      },
+      patchs: [{
+        type: ParamPatchType.textInput,
+        args: [],
+        defaultValue: "0"
+      }]
+  },
     
   [ParamName.gpu_text] : {
       name: ParamName.gpu_text,

@@ -447,6 +447,25 @@ export const paramList:{ [paramName: string]: ParamData }={
       },
       patchs: []
   },
+
+  [ParamName.gpu_list] : {
+      name: ParamName.gpu_list,
+      group: ParamGroup.GPU,
+      preCondition: [{
+        enable: [ParamName.gpu_stats],
+        disable: [ParamName.legacy_layout, ParamName.fps_only, ParamName.no_display,ParamName.preset]
+      }],
+      toggle: {
+        label: localizeStrEnum.GPU_LIST_LABEL,
+        description: localizeStrEnum.GPU_LIST_DESCRIPTION,
+        defaultEnable: false,
+      },
+      patchs: [{
+        type: ParamPatchType.textInput,
+        args: [],
+        defaultValue: "0"
+      }]
+  },
     
   [ParamName.gpu_text] : {
       name: ParamName.gpu_text,
@@ -1567,20 +1586,6 @@ export const steamParamDefalut:{[paramName:string]:SteamParamDefalut}[] = [
   },
   {
     [ParamName.preset]:{enable:true,values:[3]},
-    [ParamName.legacy_layout]:{enable:true},
-    [ParamName.cpu_temp]:{enable:true},
-    [ParamName.gpu_temp]:{enable:true},
-    [ParamName.ram]:{enable:true,order:1},
-    [ParamName.vram]:{enable:true,order:2},
-    [ParamName.cpu_power]:{enable:true},
-    [ParamName.gpu_power]:{enable:true},
-    [ParamName.cpu_mhz]:{enable:true},
-    [ParamName.gpu_mem_clock]:{enable:true},
-    [ParamName.gpu_core_clock]:{enable:true},
-    [ParamName.battery]:{enable:true,order:3},
-  },
-  {
-    [ParamName.preset]:{enable:true,values:[4]},
     [ParamName.legacy_layout]:{enable:true},
     [ParamName.full]:{enable:true},
     //[ParamName.throttling_status]:{enable:true},
