@@ -50,6 +50,8 @@
     "CPU_TEMP_LABEL": "CPU温度",
     "CPU_TEMP_DESCRIPTION": "現在のCPU温度を表示する",
     "GPU_STATS_LABEL": "GPU",
+    "GPU_LIST_LABEL": "GPUリスト",
+    "GPU_LIST_DESCRIPTION": "監視するGPUを選択 (例: 最初のGPUは0、2番目のGPUは1、両方は0,1)",
     "GPU_TEXT_LABEL": "GPUテキスト",
     "GPU_TEXT_DESCRIPTION": "GPUテキストを上書きする",
     "GPU_LOAD_CHANGE_LABEL": "GPU負荷変化",

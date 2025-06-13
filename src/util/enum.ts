@@ -12,6 +12,7 @@ export enum ParamName {
   cpu_temp = "cpu_temp",
   cpu_text = "cpu_text",
   gpu_stats = "gpu_stats",
+  gpu_list = "gpu_list",
   gpu_load_change = "gpu_load_change",
   gpu_core_clock = "gpu_core_clock",
   gpu_mem_clock = "gpu_mem_clock",

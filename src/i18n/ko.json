@@ -50,6 +50,8 @@
     "CPU_TEMP_LABEL":"CPU 온도",
     "CPU_TEMP_DESCRIPTION":"현재 CPU 온도를 표시합니다.",
     "GPU_STATS_LABEL":"GPU",
+    "GPU_LIST_LABEL": "GPU 목록",
+    "GPU_LIST_DESCRIPTION": "모니터링할 GPU 선택 (예: 첫 번째 GPU는 0, 두 번째 GPU는 1, 둘 다는 0,1)",
     "GPU_TEXT_LABEL":"GPU 텍스트",
     "GPU_TEXT_DESCRIPTION":"덮어쓰기 GPU 텍스트",
     "GPU_LOAD_CHANGE_LABEL":"GPU 로드 변경",
