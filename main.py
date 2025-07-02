@@ -185,7 +185,7 @@ class MangoPeel:
                     appPid = int(procdir)
                     appProcPath = procPath + "/" + procdir
                     appCmdLine = open(appProcPath + "/" +"cmdline", "r").read().strip()
-                if appCmdLine.startswith("mangoapp"):
+                if appCmdLine.find("mangoapp") != -1:
                     self._procPath = appProcPath
                     self._appPid = appPid
                     self._appcmdLine = appCmdLine
