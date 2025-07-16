@@ -1,26 +1,115 @@
-# MangoPeel
+# MangoPeel Plugin - Fixed for SteamOS 3.7+
 
-[![GitHub downloads](https://img.shields.io/github/downloads/Gawah/MangoPeel/total?color=green&logo=github)](https://github.com/Gawah/MangoPeel/releases)
-[![GitHub forks](https://img.shields.io/github/forks/Gawah/MangoPeel?color=green&logo=github)](https://github.com/Gawah/MangoPeel/forks)
+This is a fixed version of the MangoPeel plugin that works with SteamOS 3.7+ and uses MangoHud presets instead of Steam's overlay system.
 
-[简体中文](README_CN.md) | [English](README.md)
+## What was fixed
 
-MangoPeel is a Steam Deck plugin used for [decky-loader](https://github.com/SteamDeckHomebrew/decky-loader). It allows users to configure their preferred MangoApp styles to override Steam's default five styles. Its functionality is based on finding the MangoApp configuration file and quickly configuring various MangoApp parameters through a shortcut menu UI, which is then written to the configuration file.
+- **SteamOS 3.7+ compatibility**: Plugin now works with latest SteamOS updates
+- **MangoHud presets support**: Uses your `~/.config/MangoHud/presets.conf` file instead of hardcoded Steam configs
+- **Auto-creation**: Automatically creates default presets.conf if it doesn't exist
+- **Arch Linux support**: Tested and working on Arch Linux systems
 
-## Plugin effect screenshots
+## Installation
 
-![](assets/20230527214708_1.jpg)
-![](assets/20230527214713_1.jpg)
+### Prerequisites
 
-## Known issues
-- If the CPU usage is too high, it may cause the pyinotify to stop working. At this time, switching Steam styles may not replace the custom style. Simply switch Steam styles again when the CPU usage is normal.
-- If the font ratio adjustment of MangoApp is too large, it may cause abnormal layout intervals. This is a bug in [mangohud](https://github.com/flightlessmango/MangoHud) and can be fixed by waiting for a patch. 
-- Some parameters, such as colors and corner radius, can be configured in real time in MangoHud, but changing them after MangoApp has started will not take effect. Therefore, they have not been added to the shortcut menu frontend yet. Waiting for [mangohud](https://github.com/flightlessmango/MangoHud) to fix this issue, or finding another way to make changes effective, before adding them to the configuration list.
+1. **MangoHud** must be installed:
+   - Arch Linux: `sudo pacman -S mangohud`
+   - Ubuntu/Debian: `sudo apt install mangohud`
+   - Fedora: `sudo dnf install mangohud`
 
-## Future goals
-- [x] Custom text format
-- [ ] Add various color modification parameters
-- [ ] Allow adding custom parameters
+2. **Decky Loader** must be installed
+3. **Original MangoPeel plugin** must be installed from Decky store
 
-## issues
-   If you encounter any problems, please submit them through [issues](https://github.com/Gawah/MangoPeel/issues).
+### Quick Install
+
+```bash
+cd MangoPeel-Fixed
+chmod +x install.sh
+./install.sh
+```
+
+### Manual Install
+
+1. Backup your original `main.py`:
+   ```bash
+   cp ~/homebrew/plugins/MangoPeel/main.py ~/homebrew/plugins/MangoPeel/main.py.backup
+   ```
+
+2. Copy the fixed `main.py`:
+   ```bash
+   cp main.py ~/homebrew/plugins/MangoPeel/main.py
+   ```
+
+3. Restart Steam or reload Decky Loader
+
+## How it works
+
+The plugin now:
+
+1. **First** checks if you've set custom configs through the plugin UI
+2. **Then** falls back to your MangoHud presets from `~/.config/MangoHud/presets.conf`
+3. **Finally** uses the original Steam configs as a last resort
+
+## Presets Configuration
+
+The plugin will automatically create a `presets.conf` file with 5 presets (0-4) if it doesn't exist:
+
+- **Preset 0**: No display (hidden overlay)
+- **Preset 1**: FPS only (minimal display)
+- **Preset 2**: Balanced (FPS, CPU, GPU, RAM with horizontal layout)
+- **Preset 3**: Detailed (temperatures, VRAM, I/O, system info)
+- **Preset 4**: Full (all available metrics)
+
+You can customize these presets by editing `~/.config/MangoHud/presets.conf`.
+
+### Example preset format:
+```
+[preset 1]
+fps
+gpu_stats
+cpu_stats
+ram
+frametime
+```
+
+## Troubleshooting
+
+### Plugin not working
+- Check that MangoHud is installed: `which mangohud`
+- Verify the plugin directory exists: `ls ~/homebrew/plugins/MangoPeel/`
+- Check the log file: `tail -f /tmp/MangoPeel.log`
+
+### Presets not loading
+- Check if presets.conf exists: `ls ~/.config/MangoHud/presets.conf`
+- Verify the format matches the example above
+- Use the plugin's reload function
+
+### Restore original
+If you want to restore the original plugin:
+```bash
+cp ~/homebrew/plugins/MangoPeel/main.py.backup ~/homebrew/plugins/MangoPeel/main.py
+```
+
+## Files in this package
+
+- `main.py` - Fixed plugin code
+- `install.sh` - Automated installer script
+- `plugin.json` - Plugin metadata
+- `package.json` - Package information
+- `LICENSE` - License file
+- `dist/` - Built frontend assets (if available)
+
+## Credits
+
+- Original MangoPeel plugin by [yxx](https://github.com/Gawah/MangoPeel)
+- SteamOS 3.7+ fix and MangoHud presets support added
+- Tested on Arch Linux and SteamOS
+
+## Support
+
+If you encounter issues:
+1. Check the troubleshooting section above
+2. Review the log file at `/tmp/MangoPeel.log`
+3. Ensure all prerequisites are installed
+4. Try the manual installation method
