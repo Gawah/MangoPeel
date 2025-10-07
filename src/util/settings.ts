@@ -234,6 +234,8 @@ export class Settings {
   
   @JsonProperty()
   public enabled = true;
+  @JsonProperty()
+  public currentTabRoute: string = "";
   @JsonProperty({ isDictionary: true, type: ParamSetting })
   public paramSettings: Record<number, ParamSetting> = {};
   @JsonProperty({isDictionary:true, type: perAppSetting })
@@ -383,6 +385,17 @@ export class Settings {
 
   public static getSettingsIndex():number{
     return this._steamIndex;
+  }
+
+  public static getCurrentTabRoute(): string {
+    return this._instance.currentTabRoute || "";
+  }
+
+  public static setCurrentTabRoute(route: string) {
+    if (this._instance.currentTabRoute !== route) {
+      this._instance.currentTabRoute = route;
+      this.saveSettingsToLocalStorage();
+    }
   }
 
   public static setSettingsIndex(index:number){

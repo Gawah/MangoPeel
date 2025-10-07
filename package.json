@@ -1,6 +1,6 @@
 {
   "name": "MangoPeel",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A decky plugin for custom performance monitoring style.",
   "type": "module",
   "scripts": {

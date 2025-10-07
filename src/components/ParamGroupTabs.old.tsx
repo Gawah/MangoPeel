@@ -113,10 +113,11 @@ const Tab: React.FC<TabProps> = (tab:TabProps) => {
         }
       }
     }
-    let input_register = window.SteamClient.Input.RegisterForControllerStateChanges(handleButtonInput);
-    return (()=>{
-      input_register.unregister();
-    })
+    // 20251003 的steam更新去掉了 RegisterForControllerStateChanges 方法
+    // let input_register = window.SteamClient.Input.RegisterForControllerStateChanges(handleButtonInput);
+    // return (()=>{
+    //   input_register.unregister();
+    // })
   },[])
 
   useEffect(()=>{
