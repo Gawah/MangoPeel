@@ -1,4 +1,4 @@
-import { findModuleChild, sleep } from "decky-frontend-lib";
+import { findModuleChild, sleep } from "@decky/ui";
 import { Backend } from "./backend";
 
 export class prefStore{

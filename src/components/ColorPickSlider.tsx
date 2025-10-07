@@ -1,7 +1,7 @@
 
 import Color from "color"
 import { SlowSliderField } from "./SlowSliderField";
-import { Focusable, PanelSectionRow } from "decky-frontend-lib";
+import { Focusable, PanelSectionRow } from "@decky/ui";
 import { useRef, useState } from "react";
 
 interface ColorPickSliderProps {

@@ -3,7 +3,7 @@ import {
   PanelSectionRow,
   SliderField,
   ToggleField
-} from "decky-frontend-lib";
+} from "@decky/ui";
 import {useEffect, useState, VFC} from "react";
 import { localizeStrEnum,LocalizationManager} from "../i18n";
 import { DEFAULT_APP, RunningApps, Settings, prefStore } from "../util";

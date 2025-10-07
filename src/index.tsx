@@ -1,11 +1,10 @@
 import {
   definePlugin,
-  ServerAPI,
   staticClasses,
   PanelSection,
   ButtonItem,
   PanelSectionRow,
-} from "decky-frontend-lib";
+} from "@decky/ui";
 import { VFC,useEffect,useState} from "react";
 import { FaBorderStyle } from "react-icons/fa";
 import { MangoIndex, ParamItem} from "./components";
@@ -15,7 +14,7 @@ import { Config } from "./util/config";
 import ParamGroupTabs from "./components/ParamGroupTabs";
 
 
-const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
+const Content: VFC<{ }> = ({}) => {
   const getNewProps=()=>{
     return Object.values(ParamGroup).map((groupName) => {
       var groupItem = Object.values(Config.paramList).filter((paramData) => {
@@ -76,14 +75,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
   );
 };
 
-export default definePlugin((serverApi: ServerAPI) => {
-  PluginManager.register(serverApi);
+export default definePlugin(() => {
+  PluginManager.register();
   return {
     title: <div className={staticClasses.Title}>MangoPeel</div>,
-    content: <Content serverAPI={serverApi} />,
+    content: <Content />,
     icon: <FaBorderStyle />,
     onDismount() {
-      PluginManager.unregister(serverApi);
+      PluginManager.unregister();
     },
   };
 });

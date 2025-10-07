@@ -1,4 +1,4 @@
-import { Field, Focusable, PanelSectionRow } from 'decky-frontend-lib';
+import { Field, Focusable, PanelSectionRow } from '@decky/ui';
 import React, { createElement, useEffect, useRef, useState } from 'react';
 
 const L1Icon = createElement("img", {

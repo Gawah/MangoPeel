@@ -1,4 +1,4 @@
-import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Focusable } from "decky-frontend-lib";
+import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Focusable } from "@decky/ui";
 import { useEffect, useState, VFC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
 import { ParamName, ParamPatchType, ResortType, Settings } from "../util";
@@ -39,6 +39,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
     case ParamPatchType.slider:
       return (
         <>
+          {/* @ts-ignore */}
           <PanelSectionRow id="MangoPeel_Slider">
               <SlowSliderField
               min={patch.args[0]}
@@ -274,6 +275,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
           <PanelSectionRow>
           <ButtonItem
               layout="below"
+              // @ts-ignore
               style={{
                 height:10,
               }}

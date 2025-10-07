@@ -3,7 +3,7 @@ import { Backend } from './backend';
 import { Config } from './config';
 import { ParamGroup, ParamName, ParamPatchType} from './enum';
 import { prefStore } from './perfStore';
-import { Router } from 'decky-frontend-lib';
+import { Router } from '@decky/ui';
 import { AppOverviewExt } from './interface';
 
 const SETTINGS_KEY = "MangoPeel";
