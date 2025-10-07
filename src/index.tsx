@@ -31,7 +31,7 @@ const Content: FC<{}> = ({ }) => {
         title: groupName,
         id: groupName,
         content: <div style={{ marginLeft: "-10px", marginRight: "-10px" }}>
-          <PanelSection title={groupName}>
+          <PanelSection>
             {groupItem.map((paramData) => {
               return (
                 <ParamItem key={paramData.name} paramData={paramData}></ParamItem>
