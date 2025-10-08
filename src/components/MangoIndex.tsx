@@ -4,11 +4,11 @@ import {
   SliderField,
   ToggleField
 } from "@decky/ui";
-import {useEffect, useState, VFC} from "react";
+import {useEffect, useState, FC} from "react";
 import { localizeStrEnum,LocalizationManager} from "../i18n";
 import { DEFAULT_APP, RunningApps, Settings, prefStore } from "../util";
 
-export const MangoIndex: VFC = () => {
+export const MangoIndex: FC = () => {
   const [index, setIndex] = useState(Settings.getSettingsIndex());
   const [disabledSlider, setDisableSlider] = useState<boolean>(prefStore.getSteamIndex()==-1);
   const [override, setOverWrite] = useState<boolean>(Settings.perAppOverWrite());
@@ -30,7 +30,8 @@ export const MangoIndex: VFC = () => {
   },[])
   return (
         <div>
-          <PanelSectionRow id="MangoPeel_IndexSlider">
+          <div id="MangoPeel_IndexSlider">
+          <PanelSectionRow>
             <SliderField
               label={LocalizationManager.getString(localizeStrEnum.MANGOINDEX_LABEL)}
               min={0}
@@ -54,6 +55,7 @@ export const MangoIndex: VFC = () => {
               }}
             />
           </PanelSectionRow>
+          </div>
           <PanelSectionRow>
           <ToggleField
             label={LocalizationManager.getString(localizeStrEnum.USE_PERAPP_CONFIG_LABEL)}
@@ -77,6 +79,7 @@ export const MangoIndex: VFC = () => {
                   style={{ paddingRight:"5px",display: override && overrideable ? "block" : "none" }}
                 />
                 <div style={{lineHeight:"20px",whiteSpace:"pre"}}>{LocalizationManager.getString(localizeStrEnum.USING) + (override && overrideable ?"『":"")}</div>
+                {/* @ts-ignore */}
                 <Marquee play={true} fadeLength={10} delay={1} style={{
                   maxWidth:"100px",
                   lineHeight:"20px",

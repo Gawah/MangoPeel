@@ -33,6 +33,7 @@
     "@types/react": "19.1.12",
     "@types/react-dom": "19.1.9",
     "@types/webpack": "^5.28.5",
+    "merge-anything": "^6.0.6",
     "rollup": "^2.79.2",
     "shx": "^0.3.4",
     "tslib": "^2.8.1",

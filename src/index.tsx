@@ -34,6 +34,7 @@ const Content: FC<{}> = ({ }) => {
           <PanelSection>
             {groupItem.map((paramData) => {
               return (
+                // @ts-ignore
                 <ParamItem key={paramData.name} paramData={paramData}></ParamItem>
               );
             })}

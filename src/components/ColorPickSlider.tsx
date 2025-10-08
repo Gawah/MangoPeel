@@ -18,7 +18,8 @@ export function ColorPickSlider({
   var [HSLValue,setHSLValue]=useState(Color(`#${value}`).hsl().array());
   var resetHSLValue = useRef(Color(`#${(resetValue??value)}`).hsl().array());
   return ( <>
-  <PanelSectionRow id="MangoPeel_ColorPickSliderH">
+  <div id="MangoPeel_ColorPickSliderH">
+  <PanelSectionRow>
     <SlowSliderField
       min={0}
       max={359}
@@ -60,8 +61,11 @@ export function ColorPickSlider({
       resetValue={resetHSLValue.current[0]}
       />
       </PanelSectionRow>
+      </div>
+      {/* @ts-ignore */}
       <Focusable style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',minHeight:40, padding: 0, margin: 0,width: "100%"}}>
-      <PanelSectionRow style={{ position: 'absolute', left: 0, zIndex: 1}} id="MangoPeel_ColorPickSliderS">
+      <div id="MangoPeel_ColorPickSliderS" style={{ position: 'absolute', left: 0, zIndex: 1}}>
+      <PanelSectionRow>
       <SlowSliderField 
       min={0}
       max={100}
@@ -80,7 +84,9 @@ export function ColorPickSlider({
       resetValue={resetHSLValue.current[1]}
       />
       </PanelSectionRow>
-      <PanelSectionRow style={{ position: 'absolute', right: 0, zIndex: 1}} id="MangoPeel_ColorPickSliderL">
+      </div>
+      <div id="MangoPeel_ColorPickSliderL" style={{ position: 'absolute', right: 0, zIndex: 1}}>
+      <PanelSectionRow>
       <SlowSliderField
       min={0}
       max={100}
@@ -100,6 +106,7 @@ export function ColorPickSlider({
       resetValue={resetHSLValue.current[2]}
       />
       </PanelSectionRow>
+      </div>
       </Focusable>
     
       <style>
