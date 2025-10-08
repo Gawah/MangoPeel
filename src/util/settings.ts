@@ -84,7 +84,7 @@ export class ParamInfo {
 
 @JsonObject()
 export class ParamSetting {
-  @JsonProperty({ isDictionary: true, type: ParamInfo })
+  @JsonProperty({ dataStructure: "dictionary", type: ParamInfo })
   public paramMap: Record<string, ParamInfo> = {};
 
   public getParamEnable(paramName: ParamName) {
@@ -236,9 +236,9 @@ export class Settings {
   public enabled = true;
   @JsonProperty()
   public currentTabRoute: string = "";
-  @JsonProperty({ isDictionary: true, type: ParamSetting })
+  @JsonProperty({ dataStructure: "dictionary", type: ParamSetting })
   public paramSettings: Record<number, ParamSetting> = {};
-  @JsonProperty({isDictionary:true, type: perAppSetting })
+  @JsonProperty({dataStructure: "dictionary", type: perAppSetting })
   public perAppSetting: { [appId: string]: perAppSetting} = {};
 
   public static overlayLevelUpdate(number:number){
