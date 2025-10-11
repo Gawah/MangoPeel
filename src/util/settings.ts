@@ -3,7 +3,7 @@ import { Backend } from './backend';
 import { Config } from './config';
 import { ParamGroup, ParamName, ParamPatchType} from './enum';
 import { prefStore } from './perfStore';
-import { Router } from 'decky-frontend-lib';
+import { Router } from '@decky/ui';
 import { AppOverviewExt } from './interface';
 
 const SETTINGS_KEY = "MangoPeel";
@@ -84,7 +84,7 @@ export class ParamInfo {
 
 @JsonObject()
 export class ParamSetting {
-  @JsonProperty({ isDictionary: true, type: ParamInfo })
+  @JsonProperty({ dataStructure: "dictionary", type: ParamInfo })
   public paramMap: Record<string, ParamInfo> = {};
 
   public getParamEnable(paramName: ParamName) {
@@ -234,9 +234,11 @@ export class Settings {
   
   @JsonProperty()
   public enabled = true;
-  @JsonProperty({ isDictionary: true, type: ParamSetting })
+  @JsonProperty()
+  public currentTabRoute: string = "";
+  @JsonProperty({ dataStructure: "dictionary", type: ParamSetting })
   public paramSettings: Record<number, ParamSetting> = {};
-  @JsonProperty({isDictionary:true, type: perAppSetting })
+  @JsonProperty({dataStructure: "dictionary", type: perAppSetting })
   public perAppSetting: { [appId: string]: perAppSetting} = {};
 
   public static overlayLevelUpdate(number:number){
@@ -383,6 +385,17 @@ export class Settings {
 
   public static getSettingsIndex():number{
     return this._steamIndex;
+  }
+
+  public static getCurrentTabRoute(): string {
+    return this._instance.currentTabRoute || "";
+  }
+
+  public static setCurrentTabRoute(route: string) {
+    if (this._instance.currentTabRoute !== route) {
+      this._instance.currentTabRoute = route;
+      this.saveSettingsToLocalStorage();
+    }
   }
 
   public static setSettingsIndex(index:number){

@@ -1,4 +1,4 @@
-import { ConfirmModal, TextField } from "decky-frontend-lib";
+import { ConfirmModal, TextField } from "@decky/ui";
 import { useState } from "react";
 import { LocalizationManager, localizeStrEnum } from "../i18n";
 

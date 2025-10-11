@@ -2,16 +2,14 @@ import { paramList as paramList_rel,paramOrder as paramOrder_rel,steamParamDefal
 import { paramList as paramList_main,paramOrder as paramOrder_main,steamParamDefalut as steamParamDefalut_main  } from "./config_main"
 import { ParamData, SteamParamDefalut } from "../interface";
 import { SteamChannel} from "../enum";
-import { ServerAPI } from "decky-frontend-lib";
+import { call } from "@decky/api";
 
 export class Config {
-  private static serverAPI: ServerAPI;
   private static channel: SteamChannel;
   public static paramList:{ [paramName: string]: ParamData };
   public static steamParamDefault:{[ParamName:string]:SteamParamDefalut}[];
   public static paramOrder:{ [paramName: string]: number };
-  public static async init(serverAPI: ServerAPI) {
-    this.serverAPI = serverAPI;
+  public static async init() {
     this.channel = SteamChannel.rel;
     this.paramList = {};
     await this.getSteamChannel();
@@ -19,9 +17,14 @@ export class Config {
   }
 
   public static async getSteamChannel(){
-    await this.serverAPI!.callPluginMethod<{},string>("get_steamChannel",{}).then(res=>{
-      if (res.success){
-        this.channel = res.result as SteamChannel;
+    // await this.serverAPI!.callPluginMethod<{},string>("get_steamChannel",{}).then(res=>{
+    //   if (res.success){
+    //     this.channel = res.result as SteamChannel;
+    //   }
+    // })
+    await call<[], string>("get_steamChannel").then(res => {
+      if (res){
+        this.channel = res as SteamChannel;
       }
     })
   }

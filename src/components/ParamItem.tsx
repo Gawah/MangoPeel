@@ -1,5 +1,5 @@
-import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Focusable } from "decky-frontend-lib";
-import { useEffect, useState, VFC } from "react";
+import { DropdownItem, PanelSectionRow, ToggleField,SliderField,showModal,ButtonItem, Focusable } from "@decky/ui";
+import { useEffect, useState, FC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill} from 'react-icons/ri';
 import { ParamName, ParamPatchType, ResortType, Settings } from "../util";
 import { ParamData, ParamPatch } from "../util/interface";
@@ -9,7 +9,7 @@ import ResortableList from "./ResortableList";
 import { LocalizationManager, localizeStrEnum } from "../i18n";
 import { ColorPickSlider } from "./ColorPickSlider";
 
-const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number}> = ({ paramName, patch, patchIndex}) => {
+const ParamPatchItem: FC<{ paramName: ParamName, patch: ParamPatch; patchIndex: number}> = ({ paramName, patch, patchIndex}) => {
 
   const [selectedValue, setSelectedValue] = useState(Settings.getParamValue(Settings.getSettingsIndex(),paramName, patchIndex));
   const [selectedIndex, setSelectedIndex] = useState(patch.args.indexOf(selectedValue));
@@ -39,6 +39,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
     case ParamPatchType.slider:
       return (
         <>
+          {/* @ts-ignore */}
           <PanelSectionRow id="MangoPeel_Slider">
               <SlowSliderField
               min={patch.args[0]}
@@ -84,7 +85,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
               value={selectedIndex}
               bottomSeparator={"none"}
               notchCount={patch.args.length}
-              notchLabels={patch.args.map((x, i) => {
+              notchLabels={patch.args.map((x: any, i: number) => {
                 return { notchIndex: i, label: x, value: i };
               })}
               onChange={(value) => {
@@ -100,12 +101,13 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
       return (
         <>
           <PanelSectionRow>
+          {/* @ts-ignore */}
           <Focusable  style={{ width: "100%", padding: 0, margin: 0, position: "relative" }}
               onSecondaryActionDescription={LocalizationManager.getString(localizeStrEnum.RESET_PARAM_DEFAULT)}
               onSecondaryButton={resetParamDefault}>
             <DropdownItem
               label={patch.label}
-              rgOptions={patch.args.map((x, i) => {
+              rgOptions={patch.args.map((x: any, i: number) => {
                 return { data: i, label: x };
               })}
               selectedOption={selectedIndex}
@@ -123,6 +125,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
       return (
         <>
           <PanelSectionRow>
+          {/* @ts-ignore */}
           <Focusable  style={{ width: "100%", padding: 0, margin: 0, position: "relative" }}
               onSecondaryActionDescription={LocalizationManager.getString(localizeStrEnum.RESET_PARAM_DEFAULT)}
               onSecondaryButton={resetParamDefault}>
@@ -226,7 +229,7 @@ const ParamPatchItem: VFC<{ paramName: ParamName, patch: ParamPatch; patchIndex:
   }
 };
 
-export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
+export const ParamItem: FC<{ paramData: ParamData}> = ({paramData}) => {
       const [enable, setEnable] = useState(Settings.getParamEnable(Settings.getSettingsIndex(),paramData.name as ParamName));
       const [visible,setVisible] = useState(Settings.getParamVisible(Settings.getSettingsIndex(),paramData.name as ParamName));
       const [showPatch,setShowPatch] = useState(false);
@@ -265,7 +268,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
           </PanelSectionRow>
           {showPatch&&(paramData.toggle.isShowPatchWhenEnable??true)==enable&&paramData.patchs?.length > 0 ? (
             <>
-              {paramData.patchs?.map((e,patchIndex) => (
+              {paramData.patchs?.map((e: ParamPatch, patchIndex: number) => (
                  <ParamPatchItem paramName={paramData.name} patch={e} patchIndex={patchIndex}/>
               ))}
             </>
@@ -274,6 +277,7 @@ export const ParamItem: VFC<{ paramData: ParamData}> = ({paramData}) => {
           <PanelSectionRow>
           <ButtonItem
               layout="below"
+              // @ts-ignore
               style={{
                 height:10,
               }}

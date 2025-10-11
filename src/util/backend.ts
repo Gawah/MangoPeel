@@ -1,26 +1,34 @@
-import {ServerAPI } from "decky-frontend-lib";
+import { call } from "@decky/api";
 export class Backend {
-  private static serverAPI: ServerAPI;
   private static applyCount:number;
-  public static async init(serverAPI: ServerAPI) {
-    this.serverAPI = serverAPI;
+  public static async init() {
     this.applyCount = 0;
   }
 
   public static async getSteamIndex(){
     var steamindex = 0;
-    await this.serverAPI!.callPluginMethod<{},number>("get_steamIndex",{}).then(res=>{
-      if (res.success){
-        steamindex = res.result;
+    // await this.serverAPI!.callPluginMethod<{},number>("get_steamIndex",{}).then(res=>{
+    //   if (res.success){
+    //     steamindex = res.result;
+    //   }
+    // })
+    await call<[], number>("get_steamIndex").then(res=>{
+      if (res){
+        steamindex = res;
       }
     })
     return steamindex;
   }
 
   public static reloadConfig(){
-    this.serverAPI!.callPluginMethod<{},boolean>("ReloadConfigPath",{}).then(res=>{
-      if (res.success){
-        console.debug("ReloadConfigPath = " + res.result);
+    // this.serverAPI!.callPluginMethod<{},boolean>("ReloadConfigPath",{}).then(res=>{
+    //   if (res.success){
+    //     console.debug("ReloadConfigPath = " + res.result);
+    //   }
+    // })
+    call<[], boolean>("ReloadConfigPath").then(res=>{
+      if (res){
+        console.debug("ReloadConfigPath = " + res);
       }
     })
   }
@@ -30,13 +38,23 @@ export class Backend {
     setTimeout(()=>{
       this.applyCount=this.applyCount-1;
       if(this.applyCount==0){
-        this.serverAPI!.callPluginMethod<{},boolean>("SetOverwriteConfig",{"index":index,"config":config})
+        // this.serverAPI!.callPluginMethod<{},boolean>("SetOverwriteConfig",{"index":index,"config":config})
+        call<[number,string], boolean>("SetOverwriteConfig", index, config).then(res => {
+          if (res){
+            console.debug("SetOverwriteConfig = " + res);
+          }
+        })
       }
     },200)
   }
 
   public static applyConfigs(configs:string[]){
-    this.serverAPI!.callPluginMethod<{},boolean>("SetOverwriteConfigs",{"configs":configs})
+    // this.serverAPI!.callPluginMethod<{},boolean>("SetOverwriteConfigs",{"configs":configs})
+    call<[string[]], boolean>("SetOverwriteConfigs", configs).then(res => {
+      if (res){
+        console.debug("SetOverwriteConfigs = " + res);
+      }
+    })
   }
   
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { PanelSectionRow, Field } from 'decky-frontend-lib';
+import { PanelSectionRow, Field } from '@decky/ui';
 import { RiArrowDownSFill, RiArrowUpSFill } from 'react-icons/ri';
 import { LocalizationManager, localizeStrEnum } from '../i18n';
 
@@ -63,6 +63,7 @@ function ResortableList({
   return (
     <>
       {items.map((item, index) => (
+        // @ts-ignore
         <PanelSectionRow key={index}>
           <Field
             bottomSeparator="none"

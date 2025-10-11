@@ -1,4 +1,4 @@
-import { ColorPickerModal} from "decky-frontend-lib";
+import { ColorPickerModal} from "@decky/ui";
 import Color from "color"
 
 interface ColorPickModalProps {

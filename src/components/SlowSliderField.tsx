@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { SliderField, SliderFieldProps } from "decky-frontend-lib";
+import { SliderField, SliderFieldProps } from "@decky/ui";
 
 export interface SlowSliderFieldProps extends SliderFieldProps {
   changeMin?: number;
