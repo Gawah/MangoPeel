@@ -105,10 +105,10 @@ const Content: FC<{}> = ({ }) => {
           className="main-tabs"
           style={{
             height: "95%",
-            width: "300px",
+            width: "calc(100vw - 50px)",
             marginTop: "-12px",
             position: "absolute",
-            overflow: "visible",
+            contain: "layout style paint",
           }}
         >
           <Tabs
