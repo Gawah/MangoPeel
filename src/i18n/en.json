@@ -50,6 +50,8 @@
     "CPU_TEMP_LABEL":"CPU Temp",
     "CPU_TEMP_DESCRIPTION":"Display current CPU temperature",
     "GPU_STATS_LABEL":"GPU",
+    "GPU_LIST_LABEL": "GPU List",
+    "GPU_LIST_DESCRIPTION": "Select which GPU(s) to monitor (e.g. 0 for first GPU, 1 for second GPU, or 0,1 for both)",
     "GPU_TEXT_LABEL":"GPU Text",
     "GPU_TEXT_DESCRIPTION":"Override GPU text",
     "GPU_LOAD_CHANGE_LABEL":"GPU Load Change",

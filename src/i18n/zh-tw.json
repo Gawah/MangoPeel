@@ -50,6 +50,8 @@
     "CPU_TEMP_LABEL": "CPU溫度",
     "CPU_TEMP_DESCRIPTION": "顯示當前CPU的溫度",
     "GPU_STATS_LABEL": "GPU",
+    "GPU_LIST_LABEL": "GPU列表",
+    "GPU_LIST_DESCRIPTION": "選擇要監控的GPU (例如: 0表示第一個GPU, 1表示第二個GPU, 0,1表示兩個都選)",
     "GPU_TEXT_LABEL": "GPU文本",
     "GPU_TEXT_DESCRIPTION": "覆蓋GPU文本",
     "GPU_LOAD_CHANGE_LABEL": "GPU負載變化",
