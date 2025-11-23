@@ -13,6 +13,8 @@ import threading
 import re
 from ctypes import CDLL, get_errno
 from threading import Thread, Timer
+from settings import SettingsManager
+import decky
 
 IN_ACCESS        = 0x00000001  # 文件被访问
 IN_MODIFY        = 0x00000002  # 文件被修改
@@ -340,10 +342,25 @@ class Plugin:
             logging.error(e)
             return "main"
 
+    async def get_settings(self):
+        """Get plugin settings from file system"""
+        return self.settings.getSetting("settings")
+
+    async def set_settings(self, settings):
+        """Save plugin settings to file system"""
+        self.settings.setSetting("settings", settings)
+        logging.debug(f"Saved settings: {settings}")
+        return True
     
     
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
+        # Initialize SettingsManager
+        self.settings = SettingsManager(
+            name="config",
+            settings_directory=decky.DECKY_PLUGIN_SETTINGS_DIR
+        )
+        
         logging.info("Running MangoPeel!")
         self._mango=MangoPeel()
         self._mango.register()

@@ -56,5 +56,17 @@ export class Backend {
       }
     })
   }
+
+  public static async getSettings(): Promise<any> {
+    const res = await call<[], any>("get_settings");
+    if (!res) {
+      return {};
+    }
+    return res;
+  }
+
+  public static async setSettings(settings: any): Promise<boolean> {
+    return await call<[any], boolean>("set_settings", settings);
+  }
   
 }
