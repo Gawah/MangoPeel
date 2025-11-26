@@ -253,8 +253,8 @@ export class Settings {
     RunningApps.register();
     //初始化设置
     this.initSettingsFromConfig();
-    //加载保存值
-    this.loadSettingsFromLocalStorage();
+    //加载保存值（支持自动迁移）
+    await this.loadSettingsFromStorage();
     //初始下标
     var trySetResult = await prefStore.trySetSteamIndex(this.perAppIndex(),10);
     if(trySetResult){
@@ -318,7 +318,7 @@ export class Settings {
   public static setPerAppIndex(index:number){
     if(this.perAppIndex()!=index){
       this.ensurePerAppSetting().index=index;
-      Settings.saveSettingsToLocalStorage();
+      Settings.saveSettingsToStorage();
     }
   }
 
@@ -331,7 +331,7 @@ export class Settings {
         prefStore.setSteamIndex(perAppIndex);
         Settings.setSettingsIndex(perAppIndex);
       }
-      Settings.saveSettingsToLocalStorage();
+      Settings.saveSettingsToStorage();
     }
   }
 
@@ -394,7 +394,7 @@ export class Settings {
   public static setCurrentTabRoute(route: string) {
     if (this._instance.currentTabRoute !== route) {
       this._instance.currentTabRoute = route;
-      this.saveSettingsToLocalStorage();
+      this.saveSettingsToStorage();
     }
   }
 
@@ -441,7 +441,7 @@ export class Settings {
       if(this.getSettings(index).getParamOrder(paramName)>0){
         this.settingChangeEventBus.dispatchEvent(new Event(ParamName.legacy_layout));
       }
-      Settings.saveSettingsToLocalStorage();
+      Settings.saveSettingsToStorage();
       Backend.applyConfig(index,this.toMangoConfig(index));
     }
   }
@@ -464,7 +464,7 @@ export class Settings {
     if(patchIndex>=0&&patchIndex<paramValues.length&&paramValue!=paramValues[patchIndex]){
       paramValues[patchIndex]=paramValue;
       this.getSettings(index).setParamValues(paramName,paramValues);
-      Settings.saveSettingsToLocalStorage();
+      Settings.saveSettingsToStorage();
       Backend.applyConfig(index,this.toMangoConfig(index));
       //this.settingChangeEventBus.dispatchEvent(new Event(paramName))
     }
@@ -535,12 +535,12 @@ export class Settings {
       this.getSettings(index).setParamValues(paramName as ParamName,defaultParam.paramValues);
       this.getSettings(index).setParamEnable(paramName as ParamName,defaultParam.bEnable);
       this.getSettings(index).setParamOrder(paramName as ParamName,defaultParam.paramOrder);
-      Settings.saveSettingsToLocalStorage();
       this.updateParamVisible(index,paramName as ParamName);
       this.settingChangeEventBus.dispatchEvent(new Event(paramName));
       this.settingChangeEventBus.dispatchEvent(new Event(paramData.group));
       //console.log(`defaultParam: name=${defaultParam.paramName} enable=${defaultParam.bEnable} value=${defaultParam.paramValues} nowvalue=${this.getSettings().getParamValues(paramName as ParamName)} order=${defaultParam.paramOrder}`)
     })
+    Settings.saveSettingsToStorage();
     Backend.applyConfig(index,this.toMangoConfig(index));
   }
 
@@ -656,7 +656,7 @@ export class Settings {
     var paramOrder=this.getSettings(index).getParamOrder(paramName);
     if(order!=paramOrder){
       this.getSettings(index).setParamOrder(paramName,order);
-      Settings.saveSettingsToLocalStorage();
+      Settings.saveSettingsToStorage();
       Backend.applyConfig(index,this.toMangoConfig(index));
       //this.settingChangeEventBus.dispatchEvent(new Event(paramName))
     }
@@ -679,30 +679,84 @@ export class Settings {
     }
   }
 
-  //加载保存的配置
-  public static loadSettingsFromLocalStorage(){
-    const settingsString = localStorage.getItem(SETTINGS_KEY) || "{}";
-    const settingsJson = JSON.parse(settingsString);
-    const loadSetting=serializer.deserializeObject(settingsJson, Settings);
-    this._instance.enabled = loadSetting?.enabled??false;
-    this._instance.perAppSetting = loadSetting?.perAppSetting??{DEFAULT_APP:new perAppSetting(false,prefStore.getSteamIndex()==-1?4:prefStore.getSteamIndex())};
-    for(var index=0;index<5;index++){
-      //加载保存值
-      if(loadSetting?.paramSettings?.[index]){
-        this._instance.paramSettings[index].copyParamSettings(loadSetting.paramSettings[index])
+  // 改为私有方法，仅用于数据迁移
+  private static loadSettingsFromLocalStorage() {
+    try {
+      const settingsString = localStorage.getItem(SETTINGS_KEY);
+      if (!settingsString || settingsString === "{}") {
+        return null;
       }
-      //更新可见性
-      for (const data of Object.values(Config.paramList)) {
-        this.updateParamVisible(index,data.name);
-      }
-    }      
+      const settingsJson = JSON.parse(settingsString);
+      return serializer.deserializeObject(settingsJson, Settings);
+    } catch (error) {
+      console.error("Failed to load from localStorage:", error);
+      return null;
+    }
   }
 
-  //保存配置到本地
-  public static saveSettingsToLocalStorage() {
-    const settingsJson = serializer.serializeObject(this._instance);
-    const settingsString = JSON.stringify(settingsJson);
-    localStorage.setItem(SETTINGS_KEY, settingsString);
+  // 新方法：从后端加载配置（支持自动迁移）
+  public static async loadSettingsFromStorage() {
+    try {
+      // 1. 先从后端读取
+      const settingsJson = await Backend.getSettings();
+      let loadSetting = null;
+
+      if (!settingsJson || Object.keys(settingsJson).length === 0) {
+        // 2. 后端无数据，检查 localStorage 旧数据
+        console.log("[MangoPeel] No backend data, checking localStorage...");
+        loadSetting = this.loadSettingsFromLocalStorage();
+        
+        if (loadSetting) {
+          console.log("[MangoPeel] Found localStorage data, migrating...");
+          // 迁移到后端
+          const settingsJson = serializer.serializeObject(loadSetting);
+          await Backend.setSettings(settingsJson);
+          console.log("[MangoPeel] Migration completed");
+        } else {
+          console.log("[MangoPeel] No saved settings, using defaults");
+          return;
+        }
+      } else {
+        // 3. 后端有数据，直接反序列化
+        loadSetting = serializer.deserializeObject(settingsJson, Settings);
+        console.log("[MangoPeel] Loaded settings from backend");
+      }
+
+      // 4. 应用配置
+      if (loadSetting) {
+        this._instance.enabled = loadSetting?.enabled ?? false;
+        this._instance.currentTabRoute = loadSetting?.currentTabRoute ?? "";
+        this._instance.perAppSetting = loadSetting?.perAppSetting ?? {
+          DEFAULT_APP: new perAppSetting(
+            false,
+            prefStore.getSteamIndex() == -1 ? 4 : prefStore.getSteamIndex()
+          )
+        };
+        
+        for (var index = 0; index < 5; index++) {
+          if (loadSetting?.paramSettings?.[index]) {
+            this._instance.paramSettings[index].copyParamSettings(
+              loadSetting.paramSettings[index]
+            );
+          }
+          for (const data of Object.values(Config.paramList)) {
+            this.updateParamVisible(index, data.name);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("[MangoPeel] Failed to load settings:", error);
+    }
+  }
+
+  // 重命名并改为异步方法
+  public static async saveSettingsToStorage() {
+    try {
+      const settingsJson = serializer.serializeObject(this._instance);
+      await Backend.setSettings(settingsJson);
+    } catch (error) {
+      console.error("[MangoPeel] Failed to save settings:", error);
+    }
   }
 
 }
