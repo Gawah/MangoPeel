@@ -29,6 +29,122 @@ IN_DELETE       = 0x00000200  # 子文件删除
 IN_DELETE_SELF   = 0x00000400  # 自身（被监视的项本身）被删除
 IN_MOVE_SELF     = 0x00000800  # 自身（被监视的项本身）被移动
 
+def create_default_presets_file():
+    """Create default presets.conf file if it doesn't exist"""
+    presets_path = os.path.expanduser("~/.config/MangoHud/presets.conf")
+    config_dir = os.path.dirname(presets_path)
+    
+    # Create config directory if it doesn't exist
+    if not os.path.exists(config_dir):
+        os.makedirs(config_dir, exist_ok=True)
+        logging.info(f"Created MangoHud config directory: {config_dir}")
+    
+    # Create default presets file
+    default_presets = """[preset 0]
+no_display
+
+[preset 1]
+frame_timing=0
+cpu_stats=0
+gpu_stats=0
+fps=1
+fps_only
+legacy_layout=0
+width=40
+frametime=0
+
+[preset 2]
+legacy_layout=0
+horizontal
+battery
+gpu_stats
+cpu_stats
+cpu_power
+gpu_power
+ram
+fps
+frametime=0
+hud_no_margin
+table_columns=14
+frame_timing=1
+
+[preset 3]
+cpu_temp
+gpu_temp
+ram
+vram
+io_read
+io_write
+arch
+gpu_name
+cpu_power
+gpu_power
+wine
+frametime
+battery
+
+[preset 4]
+full
+cpu_temp
+gpu_temp
+ram
+vram
+io_read
+io_write
+arch
+gpu_name
+cpu_power
+gpu_power
+wine
+frametime
+battery"""
+    
+    try:
+        with open(presets_path, 'w') as f:
+            f.write(default_presets)
+        logging.info(f"Created default MangoHud presets file at {presets_path}")
+    except Exception as e:
+        logging.error(f"Error creating default presets file: {e}")
+
+def load_mangohud_presets():
+    """Load MangoHud presets from presets.conf file"""
+    presets_path = os.path.expanduser("~/.config/MangoHud/presets.conf")
+    presets = {}
+    
+    if not os.path.exists(presets_path):
+        logging.warning(f"MangoHud presets file not found at {presets_path}")
+        create_default_presets_file()
+    
+    try:
+        with open(presets_path, 'r') as f:
+            content = f.read()
+        
+        current_preset = None
+        current_config = []
+        
+        for line in content.split('\n'):
+            line = line.strip()
+            if line.startswith('[preset ') and line.endswith(']'):
+                if current_preset is not None:
+                    presets[current_preset] = '\n'.join(current_config)
+                preset_match = re.search(r'\[preset (\d+)\]', line)
+                if preset_match:
+                    current_preset = int(preset_match.group(1))
+                    current_config = []
+            elif line and not line.startswith('#') and current_preset is not None:
+                current_config.append(line)
+        
+        if current_preset is not None:
+            presets[current_preset] = '\n'.join(current_config)
+        
+        logging.info(f"Loaded {len(presets)} MangoHud presets")
+        return presets
+    except Exception as e:
+        logging.error(f"Error loading MangoHud presets: {e}")
+        return {}
+
+MANGOHUD_PRESETS = load_mangohud_presets()
+
 STEAM_CONFIG=[
     [
         "control=mangohud\nmangoapp_steam\nfsr_steam_sharpness=5\nnis_steam_sharpness=10\nno_display",
@@ -183,17 +299,17 @@ class MangoPeel:
             return True
         for procdir in os.listdir(procPath):
             try:
-                if os.path.isdir(procPath + "/" + procdir):
+                if os.path.isdir(procPath + "/" + procdir) and procdir.isdigit():
                     appPid = int(procdir)
                     appProcPath = procPath + "/" + procdir
                     appCmdLine = open(appProcPath + "/" +"cmdline", "r").read().strip()
-                if appCmdLine.find("mangoapp") != -1:
-                    self._procPath = appProcPath
-                    self._appPid = appPid
-                    self._appcmdLine = appCmdLine
-                    logging.info(f"找到mangoapp配置项 appPid={appPid} appCmdLine={appCmdLine} ")
-                    findCmd=True
-                    break
+                    if appCmdLine.find("mangoapp") != -1:
+                        self._procPath = appProcPath
+                        self._appPid = appPid
+                        self._appcmdLine = appCmdLine
+                        logging.info(f"找到mangoapp配置项 appPid={appPid} appCmdLine={appCmdLine} ")
+                        findCmd=True
+                        break
             except Exception as e:
                 logging.error(e)
                 continue
@@ -254,8 +370,10 @@ class MangoPeel:
             if not self._findConfig:
                 return
             nowConfig = open(self._configPath, "r").read().strip()
-            #没有mangopeel的标签 则查找是否是steam写入的配置 并记录下标
+            
+            # Check if we have a mangopeel flag
             if not nowConfig.startswith("mangopeel_flag"):
+                # Try to identify Steam config patterns
                 for index in range(len(STEAM_CONFIG)):
                     if nowConfig in STEAM_CONFIG[index]:
                         self._steamIndex=index
@@ -275,12 +393,24 @@ class MangoPeel:
                     self._bmangoapp_steam = nowConfig.find("mangoapp_steam") != -1
                     logging.debug(f"识别到steam下标={self._steamIndex} 是否写入mangoapp_steam={self._bmangoapp_steam}")
                 
-            if not self._findConfig or self._steamIndex<0 or self._setConfigList[self._steamIndex] == "":
+            if not self._findConfig or self._steamIndex<0:
                 return
-            if self._bmangoapp_steam:
-                writeStr = (f"mangopeel_flag={self._steamIndex}\nmangoapp_steam\n" + self._setConfigList[self._steamIndex])
+            
+            # Use MangoHud presets if available, otherwise fall back to Steam config
+            config_to_write = ""
+            if self._setConfigList[self._steamIndex] != "":
+                config_to_write = self._setConfigList[self._steamIndex]
+            elif self._steamIndex in MANGOHUD_PRESETS:
+                config_to_write = MANGOHUD_PRESETS[self._steamIndex]
+                logging.info(f"Using MangoHud preset {self._steamIndex}")
             else:
-                writeStr = f"mangopeel_flag={self._steamIndex}\n" + self._setConfigList[self._steamIndex]
+                logging.warning(f"No preset found for index {self._steamIndex}")
+                return
+            
+            if self._bmangoapp_steam:
+                writeStr = (f"mangopeel_flag={self._steamIndex}\nmangoapp_steam\n" + config_to_write)
+            else:
+                writeStr = f"mangopeel_flag={self._steamIndex}\n" + config_to_write
 
             if writeStr.replace("\n","")!= nowConfig.replace("\n",""):
                 open(self._configPath, "w").write(writeStr)
@@ -293,6 +423,8 @@ class Plugin:
 
     async def ReloadConfigPath(self):
         try:
+            global MANGOHUD_PRESETS
+            MANGOHUD_PRESETS = load_mangohud_presets()
             if self._mango.findConfigPath(True):
                 self._mango.overWriteConfig()
                 return True
@@ -336,8 +468,12 @@ class Plugin:
     
     async def get_steamChannel(self):
         try:
-            steamChannel =  open("/var/lib/steamos-branch", "r").read().strip()
-            return steamChannel
+            if os.path.exists("/var/lib/steamos-branch"):
+                steamChannel =  open("/var/lib/steamos-branch", "r").read().strip()
+                return steamChannel
+            else:
+                logging.debug("SteamOS branch file not found, returning 'main'")
+                return "main"
         except Exception as e:
             logging.error(e)
             return "main"
